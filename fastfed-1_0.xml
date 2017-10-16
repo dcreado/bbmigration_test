@@ -300,7 +300,7 @@
 	  <figure><artwork><![CDATA[
  {
    "identity_provider": {
-     "provider_uri": "https://app.example.com",
+     "provider_uri": "https://idp.example.com",
      "name": "My Identity Provider",
      "icons": {
        "large_icon_uri": "https://idp.example.com/images/tile.png",
@@ -416,18 +416,19 @@
 	</t>
 	<t>
 	  The FastFed Handshake is initiated by sending a request to the
-	  Identity Provider with a parameter that contains the Application
-	  Provider Metadata location.
+	  Identity Provider with a parameter containing the FastFed URL of the
+	  Application Provider.
 	</t>
 	<t>
 	  The handshake may be initiated by the Identity Provider or the
 	  Application Provider. The flow is the same for each, only varying by
-	  whether the Handshake Start Endpoint is invoked by the Identity
+	  whether the Handshake endpoint is invoked by the Identity
 	  Provider (by sending a request to itself) or by the Application
 	  Provider.
 	</t>
 	<t>
-	  In abstract, the FastFed Handshake follows the following steps:
+	  Upon receiving a handshake initiation request, the abstract flow
+	  follows these steps:
 	</t>
 	<t>
 	  <list style="numbers">
