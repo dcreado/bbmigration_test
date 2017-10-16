@@ -203,10 +203,10 @@ McAdams                  Expires April 18, 2018                 [Page 3]
    but without a clear recommendation on how to assemble the pieces into
    a whole.  As a result, each hosted application may choose to assemble
    standards in different ways or even ignore them, such as by declaring
-   their own user attribute schema.  As a result, each hosted
-   application can be an architectural one-off that an administrator
-   must study and understand before beginning to configure a federation
-   relationship.
+   their own user attribute schema.  The resulting impact is that each
+   hosted application can be an architectural one-off that an
+   administrator must study and understand before beginning to configure
+   a federation relationship.
 
    Another area of difficulty arises because there is no standard
    mechanism for an identity provider and application provider to
