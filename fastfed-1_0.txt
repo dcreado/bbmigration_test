@@ -1,0 +1,4200 @@
+
+
+
+
+                                                              D. McAdams
+                                                                  Amazon
+                                                        October 15, 2017
+
+
+                         FastFed 1.0 - draft 00
+                              fastfed-1_0
+
+Abstract
+
+   FastFed simplifies the administrative effort to configure identity
+   federation between an identity provider and a hosted application.
+   The specification defines metadata documents, APIs, and flows to
+   enable an administrator to quickly connect two providers that support
+   common standards such as OpenID Connect, SAML, and SCIM, and allows
+   configuration changes to be communicated directly between the
+   identity provider and hosted application on a recurring basis.
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   4
+     1.1.  Requirements Notation and Conventions . . . . . . . . . .   5
+     1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   6
+   2.  Abbreviations . . . . . . . . . . . . . . . . . . . . . . . .   6
+   3.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     3.1.  Metadata  . . . . . . . . . . . . . . . . . . . . . . . .   7
+     3.2.  Endpoints . . . . . . . . . . . . . . . . . . . . . . . .   9
+     3.3.  FastFed Handshake . . . . . . . . . . . . . . . . . . . .  10
+     3.4.  Provider Authorization  . . . . . . . . . . . . . . . . .  11
+     3.5.  User Schemas and Provisioning . . . . . . . . . . . . . .  12
+       3.5.1.  Schema Selection  . . . . . . . . . . . . . . . . . .  13
+       3.5.2.  Attribute Filtering . . . . . . . . . . . . . . . . .  13
+       3.5.3.  Attibute Mapping  . . . . . . . . . . . . . . . . . .  14
+       3.5.4.  User Provisioning . . . . . . . . . . . . . . . . . .  15
+     3.6.  Recurring Activities  . . . . . . . . . . . . . . . . . .  16
+   4.  Metadata  . . . . . . . . . . . . . . . . . . . . . . . . . .  16
+     4.1.  Metadata Serialization  . . . . . . . . . . . . . . . . .  16
+     4.2.  Metadata Languages and Scripts  . . . . . . . . . . . . .  17
+     4.3.  Provider Metadata . . . . . . . . . . . . . . . . . . . .  17
+       4.3.1.  Capabilities  . . . . . . . . . . . . . . . . . . . .  18
+       4.3.2.  Common Provider Metadata  . . . . . . . . . . . . . .  21
+       4.3.3.  Identity Provider Metadata  . . . . . . . . . . . . .  22
+       4.3.4.  Application Provider Metadata . . . . . . . . . . . .  22
+     4.4.  Instance Metadata . . . . . . . . . . . . . . . . . . . .  23
+       4.4.1.  Common Instance Metadata  . . . . . . . . . . . . . .  23
+       4.4.2.  Identity Provider Instance Metadata . . . . . . . . .  24
+       4.4.3.  Application Provider Instance Metadata  . . . . . . .  24
+     4.5.  Metadata Extensions for Specific Protocols  . . . . . . .  25
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 1]
+
+                               FastFed 1.0                  October 2017
+
+
+       4.5.1.  Extensions for SAML SSO . . . . . . . . . . . . . . .  25
+       4.5.2.  Extensions for OIDC SSO . . . . . . . . . . . . . . .  26
+       4.5.3.  Extensions for SCIM Provisoning . . . . . . . . . . .  27
+   5.  Metadata Endpoints  . . . . . . . . . . . . . . . . . . . . .  27
+     5.1.  Provider Metadata Endpoint  . . . . . . . . . . . . . . .  27
+       5.1.1.  Location  . . . . . . . . . . . . . . . . . . . . . .  28
+       5.1.2.  Read Request  . . . . . . . . . . . . . . . . . . . .  28
+       5.1.3.  Read Response . . . . . . . . . . . . . . . . . . . .  28
+     5.2.  Instance Metadata Endpoint  . . . . . . . . . . . . . . .  29
+       5.2.1.  Location  . . . . . . . . . . . . . . . . . . . . . .  29
+       5.2.2.  Read Request  . . . . . . . . . . . . . . . . . . . .  29
+       5.2.3.  Read Response . . . . . . . . . . . . . . . . . . . .  30
+       5.2.4.  Read Error Response . . . . . . . . . . . . . . . . .  30
+   6.  Provider Compatibility Evaluation . . . . . . . . . . . . . .  30
+   7.  FastFed Handshake . . . . . . . . . . . . . . . . . . . . . .  31
+     7.1.  Common Considerations . . . . . . . . . . . . . . . . . .  31
+       7.1.1.  TLS Requirments . . . . . . . . . . . . . . . . . . .  31
+       7.1.2.  HTTP Redirects  . . . . . . . . . . . . . . . . . . .  32
+       7.1.3.  Serialization . . . . . . . . . . . . . . . . . . . .  32
+         7.1.3.1.  Query String Serialization  . . . . . . . . . . .  32
+         7.1.3.2.  Form Serialization  . . . . . . . . . . . . . . .  32
+       7.1.4.  Halting the Handshake . . . . . . . . . . . . . . . .  32
+     7.2.  Handshake Flow  . . . . . . . . . . . . . . . . . . . . .  33
+       7.2.1.  Handshake Start at Identity Provider  . . . . . . . .  33
+         7.2.1.1.  Identity Provider Receives Start Request  . . . .  33
+         7.2.1.2.  Identity Provider Authenticates Administrator . .  34
+         7.2.1.3.  Identity Provider Reads Application Provider
+                   Metadata  . . . . . . . . . . . . . . . . . . . .  34
+         7.2.1.4.  Identity Provider Verifies Compatibility with
+                   Application Provider  . . . . . . . . . . . . . .  34
+         7.2.1.5.  Identity Provider Obtains Initial Consent from
+                   Administrator . . . . . . . . . . . . . . . . . .  34
+         7.2.1.6.  Identity Provider Generates Instance Metadata . .  35
+         7.2.1.7.  Identity Provider Response  . . . . . . . . . . .  36
+       7.2.2.  Handshake Receipt by Application Provider . . . . . .  36
+         7.2.2.1.  Application Provider Authenticates Administrator   36
+         7.2.2.2.  Application Provider Reads Provider Metadata  . .  37
+         7.2.2.3.  Application Provider Reads Instance Metadata  . .  37
+         7.2.2.4.  Application Provider Verifies Compatibility . . .  37
+         7.2.2.5.  Application Provider Generates Instance Metadata   38
+         7.2.2.6.  Application Provider Obtains Consent from
+                   Administrator . . . . . . . . . . . . . . . . . .  38
+         7.2.2.7.  Application Provider Enables Federation with the
+                   Identity Provider . . . . . . . . . . . . . . . .  38
+         7.2.2.8.  Application Provider Response . . . . . . . . . .  39
+       7.2.3.  Handshake Completion by Identity Provider . . . . . .  39
+         7.2.3.1.  Identity Provider Authenticates State Paramater .  39
+         7.2.3.2.  Identity Provider Reads Instance Metadata . . . .  39
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 2]
+
+                               FastFed 1.0                  October 2017
+
+
+         7.2.3.3.  Identity Provider Verifies Compatibility with
+                   Instance Metadata . . . . . . . . . . . . . . . .  40
+         7.2.3.4.  Identity Provider Obtains Final Consent from
+                   Administrator . . . . . . . . . . . . . . . . . .  40
+         7.2.3.5.  Identity Provider Enables Federation  . . . . . .  40
+   8.  Provider Authorization  . . . . . . . . . . . . . . . . . . .  41
+     8.1.  OAuth Scheme  . . . . . . . . . . . . . . . . . . . . . .  41
+       8.1.1.  FastFed Grant Type  . . . . . . . . . . . . . . . . .  41
+       8.1.2.  OAuth Extensions to Provider Metadata . . . . . . . .  42
+       8.1.3.  OAuth Extensions to Instance Metadata . . . . . . . .  42
+       8.1.4.  OAuth Extensions to Handshake Flows . . . . . . . . .  42
+         8.1.4.1.  Extension to Step 6.2.1.7 - Identity Provider
+                   Response  . . . . . . . . . . . . . . . . . . . .  43
+         8.1.4.2.  Extension to Step 6.2.2.3 - Application Provider
+                   Reads Instance Metadata . . . . . . . . . . . . .  43
+         8.1.4.3.  Extension to Step 6.2.2.8 - Application Provider
+                   Response  . . . . . . . . . . . . . . . . . . . .  45
+         8.1.4.4.  Extension to Step 6.2.3.2 - Identity Provider
+                   Reads Instance Metadata . . . . . . . . . . . . .  45
+         8.1.4.5.  Extension to Step 6.2.3.5 - Identity Provider
+                   Enables Federations . . . . . . . . . . . . . . .  46
+       8.1.5.  Applicability to OIDC . . . . . . . . . . . . . . . .  46
+       8.1.6.  Applicability to SAML . . . . . . . . . . . . . . . .  46
+       8.1.7.  Applicability to SCIM . . . . . . . . . . . . . . . .  46
+   9.  User Schemas  . . . . . . . . . . . . . . . . . . . . . . . .  47
+     9.1.  Attribute Path  . . . . . . . . . . . . . . . . . . . . .  47
+     9.2.  Attribute Mapping . . . . . . . . . . . . . . . . . . . .  47
+     9.3.  SCIM Specifications for FastFed . . . . . . . . . . . . .  48
+       9.3.1.  SCIM Attribute Path Syntax  . . . . . . . . . . . . .  48
+       9.3.2.  SCIM Attribute Mapping Syntax . . . . . . . . . . . .  49
+         9.3.2.1.  Simple SCIM to SAML . . . . . . . . . . . . . . .  49
+         9.3.2.2.  Simple SCIM to OIDC . . . . . . . . . . . . . . .  52
+   10. Recurring Activities  . . . . . . . . . . . . . . . . . . . .  54
+     10.1.  Recurring Activities Capabilities  . . . . . . . . . . .  54
+     10.2.  Extensions to Provider Metadata  . . . . . . . . . . . .  55
+     10.3.  Extensions to Instance Metadata  . . . . . . . . . . . .  55
+     10.4.  Extensions to Provider Compatiblity Evaluation . . . . .  55
+     10.5.  Extensions to Instance Metadata Validation . . . . . . .  56
+     10.6.  Requirements for Icon Refresh  . . . . . . . . . . . . .  57
+       10.6.1.  Publication Requirements . . . . . . . . . . . . . .  57
+       10.6.2.  Consumption Requirements . . . . . . . . . . . . . .  58
+     10.7.  Requirements for SAML Certificate Rotation . . . . . . .  58
+       10.7.1.  Publication Requirements . . . . . . . . . . . . . .  59
+       10.7.2.  Consumption Requirements . . . . . . . . . . . . . .  60
+     10.8.  Requirements for OIDC Key Rotation . . . . . . . . . . .  60
+       10.8.1.  Publication Requirements . . . . . . . . . . . . . .  61
+         10.8.1.1.  Publication of New Signing Keys  . . . . . . . .  62
+         10.8.1.2.  Publication of New Client Secret . . . . . . . .  62
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 3]
+
+                               FastFed 1.0                  October 2017
+
+
+       10.8.2.  Publication Requirements . . . . . . . . . . . . . .  63
+         10.8.2.1.  Consumption of New Signing Keys  . . . . . . . .  63
+         10.8.2.2.  Consumption of New Client Secret . . . . . . . .  64
+   11. Interoperability Requirements . . . . . . . . . . . . . . . .  65
+     11.1.  Interoperability for OIDC 1.0  . . . . . . . . . . . . .  65
+       11.1.1.  Identity Provider Requirements . . . . . . . . . . .  65
+       11.1.2.  Application Provider Requirements  . . . . . . . . .  66
+     11.2.  Interoperability for SAML 2.0  . . . . . . . . . . . . .  68
+       11.2.1.  Identity Provider Requirements . . . . . . . . . . .  68
+       11.2.2.  Application Provider Requirements  . . . . . . . . .  68
+     11.3.  Interoperability for SCIM 2.0  . . . . . . . . . . . . .  69
+       11.3.1.  Identity Provider Requirements . . . . . . . . . . .  69
+       11.3.2.  Application Provider Requirements  . . . . . . . . .  70
+   12. FastFed Compatibility Descriptions  . . . . . . . . . . . . .  71
+   13. Security Considerations . . . . . . . . . . . . . . . . . . .  72
+   14. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  72
+   15. Normative References  . . . . . . . . . . . . . . . . . . . .  72
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  74
+   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  75
+   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  75
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  75
+
+1.  Introduction
+
+   Despite the existence of well-established standards, identity
+   federation remains difficult to configure and maintain.
+
+   One source of difficulty arises because the existing identity
+   standards each solve a portion of the federation ecosystem, such as
+   authentication, schema definition, or end-user information exchange;
+   but without a clear recommendation on how to assemble the pieces into
+   a whole.  As a result, each hosted application may choose to assemble
+   standards in different ways or even ignore them, such as by declaring
+   their own user attribute schema.  As a result, each hosted
+   application can be an architectural one-off that an administrator
+   must study and understand before beginning to configure a federation
+   relationship.
+
+   Another area of difficulty arises because there is no standard
+   mechanism for an identity provider and application provider to
+   directly exchange metadata required by existing standards.  Instead,
+   a human administrator must copy-and-paste information between the two
+   providers.  This is typically done by opening a web page for each
+   provider and following online instructions to copy information
+   between them.  Copy-and-paste errors, overlooked steps, or incomplete
+   documentation can result in non-functional configuration that is
+   difficult to debug.
+
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 4]
+
+                               FastFed 1.0                  October 2017
+
+
+   Finally, a working configuration may cease to function when the
+   configuration becomes stale, such as when certificates expire.  The
+   lack of a direct communication channel between the identity provider
+   and application provider requires that human administrators remember
+   to periodically refresh the configuration and rotate certificates.
+   In some implementations, planned refresh activities such as
+   certificate rotation can temporarily break the ability for federated
+   users to sign-in to the hosted application.
+
+   As a result of these challenges, administrators find it necessary to
+   acquire domain expertise in the identity standards and spend
+   significant time configuring, debugging, and maintaining the
+   federations.
+
+   The goal of FastFed is to simplify the administrator experience.  An
+   ecosystem of FastFed-enabled providers will enable administrators to
+   instantiate new federation relationships with a few clicks in a web-
+   based workflow, and without needing to understand the underlying
+   technologies.
+
+   To encourage adoption and minimize intrusive changes, FastFed does
+   not alter existing standards nor break existing implementations.
+   Rather, FastFed aims to make existing standards easier to adopt.
+
+   To enable this, FastFed defines additional metadata documents, APIs,
+   and flows that allow an administrator to quickly connect two
+   providers that support the common identity standards.  In addition,
+   FastFed defines interoperability profiles which describe the subset
+   of existing standards which must be implemented for a Provider to
+   label themselves as FastFed Compatible.
+
+1.1.  Requirements Notation and Conventions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in RFC
+   2119 [RFC2119].
+
+   In the .txt version of this specification, values are quoted to
+   indicate that they are to be taken literally.  When using these
+   values in protocol messages, the quotes MUST NOT be used as part of
+   the value.  In the HTML version of this specification, values to be
+   taken literally are indicated by the use of "this fixed-width font".
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 5]
+
+                               FastFed 1.0                  October 2017
+
+
+1.2.  Terminology
+
+   FastFed acts as a high-level metadata description layer which
+   references many different underlying standards.  To avoid confusion
+   of terminology, the FastFed specification will explicitly reference
+   the relevent standards inline when using terminology from those
+   standards.
+
+   In addition, this specification defines the following terms.  When
+   used in this document, the terms refer to the definitions here and
+   not any of terminology from underlying standards:
+
+   Administrator  A human end-user who is reponsible for establishing
+      the federation between an Identity Provider and Application
+      Provider.  An Administrator is typically a member of an
+      organization with privileges to enable single sign-on to hosted
+      applications for other members of their organization.
+
+   Application Provider  An online service or website which requires
+      end-user provisioning and authentication from an Identity
+      Provider.
+
+   FastFed URL  A shorthand alias for the FastFed Provider Metadata
+      Endpoint (Section 5.1).  Providers may advertise their "FastFed
+      URL" in the documentation for enabling single sign-on.
+
+   Identity Provider  A service that is capable of authenticating end-
+      users and providing information about the authentation event and
+      the end-user to an Application Provider.  May also be capable of
+      pre-provisioning user information to the Application Provider.
+
+   Multi-Tenant Provider  A Provider who serves multiple customers from
+      a single instance of a service.  Each customer is logically
+      isolated from other customers of the service.
+      The FastFed specification treats all Providers as potentially
+      Multi-Tenant.
+
+   Provider  An entity that can act as an Application Provider, an
+      Identity Provider, or both.
+
+2.  Abbreviations
+
+   The following abbreviations are used in this specification:
+
+   OIDC  OpenID Connect, as defined in [OpenID.Core] and related
+      specifications.
+
+
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 6]
+
+                               FastFed 1.0                  October 2017
+
+
+   SAML  Security Assertion Markup Language, as defined in
+      [SAML.Profiles] and related specficiations.
+
+   SCIM  System for Cross-domain Identity Management, as defined in
+      [RFC7643] and related specifications.
+
+   SSO  Single sign-on, as enabled by protocols such as OIDC and SAML.
+
+3.  Overview
+
+   This section provides an introductory overview of the key concepts in
+   FastFed.  The following concepts are explored:
+
+   Metadata  Configuration that describes the capabilities and
+      preferences of a Provider.
+
+   Endpoints  Locations where Metadata documents can be retrieved.
+
+   Handshake  Flows that describe how an Identity Provider and
+      Application Provider share Metatdata documents with each other,
+      thereby establishing the federation.
+
+   Provider Authorization  Enables access controls on Metadata
+      exchanges.
+
+   User Schema, Attribute Mapping, and Provisioning  Describes how
+      Providers agree on a common user schema, bind the schema to an SSO
+      protocol, and declare capabilities for user provisioning.
+
+   Recurring Activities  Optional features to periodically refresh the
+      information exchanged during a Handshake, including certificate
+      rotations.
+
+3.1.  Metadata
+
+   FastFed uses Metadata documents to enable Identity Providers and
+   Application Providers to programmatically discover the capabilities
+   of one other and exchange any configuration necessary to enable
+   federation.
+
+   FastFed Metadata is split into two distinct document types:
+
+   o  Provider Metadata
+
+   o  Instance Metadata
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 7]
+
+                               FastFed 1.0                  October 2017
+
+
+3.1.1.  Provider Metadata
+
+   Provider Metadata describes the capabilities and configurations of
+   the Provider.
+
+   The primary purpose of Provider Metadata is to bootstrap the FastFed
+   Handshake (Section 7).  To do so, Provider Metadata describes the
+   capabilities of providers so that compatibility can be evaluated when
+   initiating the handshake; e.g. if an Application Provider requires
+   SAML, the Identity Provider must also support SAML.
+
+   Provider Metadata also specifies the endpoints for performing the
+   FastFed Handshake, plus optional values such as icon images that can
+   aesthetically improve the handshake flows seen by Administrators.
+
+   Provider Metadata is segmented into blocks for "identity_provider"
+   and "application_provider".  An entity can define one, or both
+   blocks, depending on the roles they are capable of performing.
+
+   The following is a non-normative example of Provider Metadata:
+
+ {
+   "identity_provider": {
+     "provider_uri": "https://app.example.com",
+     "name": "My Identity Provider",
+     "icons": {
+       "large_icon_uri": "https://idp.example.com/images/tile.png",
+       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     }
+     capabilities: {
+       "sso_protocols_supported": ["OIDC","SAML"],
+       "user_schemas_supported": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+       "user_provisioning_modes_supported": ["SCIM","JIT","Custom","NoProvisioning"],
+       "provider_authz_schemes_supported": ["OAuth"]
+     }
+     "fastfed_handshake_start_uri": "https://idp.example.com/fastfed/start",
+     "fastfed_handshake_finish_uri": "https://idp.example.com/fastfed/finish"
+ }
+
+3.1.2.  Instance Metadata
+
+   Instance Metadata describes the configuration to be used when
+   instantiating a specific instance of a federated relationship between
+   the tenant of an Identity Provider and the tenant of an Application
+   Provider.  For example, if SAML is chosen as the SSO protocol, the
+   Instance Metadata document will specify the URL of the SAML Metadata
+   files, which may themselves include tenant-specific customizations
+   such as vanity sign-in URLs.
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 8]
+
+                               FastFed 1.0                  October 2017
+
+
+   Instance Metadata documents are exchanged during the Fast Fed
+   Handshake, and are the means by which the Providers are able to
+   programmatically share information without requiring an Administrator
+   to copy-and-paste configuration between the two parties.
+
+   The following is a non-normative examples of Instance Metadata for an
+   Identity Provider:
+
+ {
+   "identity_provider_instance": {
+     "tenant_id": "k2lini4cj509ut09cj0jcjwee9gj0jeg",
+     "sso_protocol": "SAML",
+     "saml_metadata_uri": "https://tenant12345.example.com/saml-metadata.xml",
+     "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+     "user_provisioning_mode": "JIT"
+     "provider_authz_scheme": "OAuth",
+     "oauth_token_endpoint": "https://tenant12345.example.com/token",
+ }
+
+3.2.  Endpoints
+
+   Endpoints describe the semantics for exchanging information between
+   the Providers.
+
+   FastFed defines two Endpoints for retrieving Metadata documents:
+
+   o  Provider Metadata Endpoint (Section 5.1)
+
+   o  Instance Metadata Endpoint (Section 5.2)
+
+   And, three Endpoints for the FastFed Handshake
+
+   o  FastFed Handshake Start Endpoint (Section 7.2.1.1)
+
+   o  FastFed Handshake Receive Endpoint (Section 7.2.1.7)
+
+   o  FastFed Handshake Finish Endpoint (Section 7.2.2.8)
+
+3.2.1.  Provider Metadata Endpoint (abbr.  "FastFed URL")
+
+   The Provider Metadata Endpoint, also referred to as the "FastFed
+   URL", vends the Provider Metadata.  This URL is the only attribute
+   that Administrators need to copy and paste in order to initiate the
+   FastFed Handshake flows.
+
+   Providers typically advertise their FastFed URL in their SSO
+   documentation.  In addition, catalogs of pre-configured FastFed URLs
+   may further simplify the Administrator experience.  For example, an
+
+
+
+McAdams                  Expires April 18, 2018                 [Page 9]
+
+                               FastFed 1.0                  October 2017
+
+
+   Identity Provider may offer a catalog of Application Providers in
+   which the FastFed URL for each Application Provider has been pre-
+   configured.
+
+3.2.2.  Other Endpoints
+
+   All other FastFed Endpoints are either discoverable from the Provider
+   Metadata document, or exchanged as part of the FastFed Handshake
+   flows.  From an Administrator perspective, these other Endpoints may
+   be regarded as an implementation detail and not part of their visible
+   experience.
+
+3.3.  FastFed Handshake
+
+   The FastFed Handshake flow is the means by which Metadata documents
+   are exchanged and a federation relationship becomes established.
+
+   The FastFed Handshake is initiated by sending a request to the
+   Identity Provider with a parameter that contains the Application
+   Provider Metadata location.
+
+   The handshake may be initiated by the Identity Provider or the
+   Application Provider.  The flow is the same for each, only varying by
+   whether the Handshake Start Endpoint is invoked by the Identity
+   Provider (by sending a request to itself) or by the Application
+   Provider.
+
+   In abstract, the FastFed Handshake follows the following steps:
+
+   1.  Identity Provider authenticates the Administrator
+
+   2.  Identity Provider reads the Application Provider Metadata and
+       verifies compatibility
+
+   3.  Identity Provider redirects the Administrator to the Application
+       Provider
+
+   4.  Application Provider authenticates the Administrator
+
+   5.  Application Provider reads Instance Metadata from the Identity
+       Provider
+
+   6.  Application Provider stores the federation configuration
+
+   7.  Application Provider redirects the Administrator back to the
+       Identity Provider
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 10]
+
+                               FastFed 1.0                  October 2017
+
+
+   8.  Identity Provider reads Instance Metadata from the Application
+       Provider
+
+   9.  Identity Provider stores the federation configuration
+
+      +----------+              +----------------+         .----.
+      |   User   |<-----(1)---->|                |        |.____.|
+      |   Agent  |              |    Identity    |--(9)-->| Data |
+      |      +---|------(3)-----|    Provider    |        | Store|
+      |      | +-|------------->|                |         "----"
+      |      | | |              +----------------+
+      |      | | |                 |    ^    |
+      |      | | |                 |    |    |
+      |      | | |                 |    |    |
+      |      | | |                (2)  (5)  (8)
+      |      | | |                 |    |    |
+      |      | | |                 |    |    |
+      |      | | |                 V    |    V
+      |      | | |              +----------------+         .----.
+      |      | +-|------(7)-----|                |        |.____.|
+      |      +---|------------->|  Application   |--(6)-->| Data |
+      |          |              |    Provider    |        | Store|
+      |          |<-----(4)---->|                |         "----"
+      +----------+              +----------------+
+
+                    Figure 1: Abstract Handshake Flow
+
+3.4.  Provider Authorization
+
+   For privacy reasons, Multi-Tenant Providers may be unwilling or
+   prohibited from exposing tenant data to unauthorized audiences.  In
+   some cases, simply acknowledging the existence of a tenant may be
+   prohibited.  Such information can only be released with explicit
+   authorization from the tenant.
+
+   To enable these privacy controls, FastFed includes the ability to
+   select an authorization scheme for calls between Providers.
+
+   One scheme defined in this specificatin uses OAuth [RFC6749].  The
+   OAuth tokens are exchanged between Providers during the FastFed
+   Handshake.  The OAuth tokens demonstrate that an authorized
+   Administrator has approved access to the tenant information.  The
+   tokens can be used to gate access to any resource that is used when
+   configuring and maintaining a federation relationship.  (See
+   Section 8.1)
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 11]
+
+                               FastFed 1.0                  October 2017
+
+
+3.5.  User Schemas and Provisioning
+
+   Federated Identity Management requires a common, agreed upon schema
+   to describe user information, plus a mechanism to transmit user
+   information across organizational boundaries.
+
+   While previous standards each define pieces of the solution, they
+   lack guidance on assembling the pieces into an end-to-end flow.  For
+   example, the SCIM specification defines a User schema, but does not
+   specify how to bind the schema into SAML or OIDC assertions.
+   Alternatively, OIDC defines a schema for Standard Claims and a User
+   Info Endpoint to retrieve them.  However, the claims are weighted
+   toward describing social media users and may lack attributes
+   necessary to describe users from the enterprise sector or educational
+   sector.  In addition, the OIDC claims are bound to the OIDC protocol
+   and it is unspecified how the same schema could be reused with an
+   Application Provider that requires SAML instead of OIDC.  Finally, it
+   is not uncommon for an Application Provider to completely ignore all
+   preexisting standards and define their own schema which federation
+   partners must adhere to in SAML or OIDC messages.
+
+   Administrators bear the burden of this inconsistency.  The lack of
+   agreement amongst federation participants requires an Administrator
+   to bridge the divide by defining schema transformation rules that map
+   user attributes from an Identity Provider format into an Application
+   Provider format.  This mapping is unique for each Application
+   Provider and must be defined for each federation.  Understanding and
+   defining these transformation rules is a major contributor to the
+   friction of adopting federation.
+
+   To eliminate the burden from Administrators, Providers must agree
+   upon a shared vocabulary for user attributes.  This is accomplished
+   by requiring both parties to share a common schema for use within the
+   FastFed Metadata documents.  This schema serves as a common lingua
+   franca for communicating the user attributes to be exchanged.
+
+   FastFed also provides an Attribute Mapping capability so that
+   Application Providers may declare how they would like user attributes
+   communicated to them as part of a particular SSO protocol.  By using
+   the Attribute Mappings, a Provider can become FastFed-enabled while
+   continuing to operate an existing federation endpoint that relies on
+   non-standard schemas.  This shifts the burden for attribute mapping
+   from the Administrator to the Application Provider, and further
+   improves the situation by only asking the Application Provider to
+   define the mapping once, in the Metadata, where it can be reused
+   across all FastFed-enabled relationships.
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 12]
+
+                               FastFed 1.0                  October 2017
+
+
+3.5.1.  Schema Selection
+
+   FastFed Metadata allows Providers to declare the schemas they
+   understand.  Providers should choose schemas that are likely to be
+   shared by federation partners.  The lack of a common schema between
+   an Identity Provider and Application Provider will be regarded as an
+   incompatibility and the FastFed handshake will be halted before
+   completion.
+
+   FastFed recommends the use of the SCIM User Resource Schema and the
+   SCIM Enterprise User Schema Extension.  This specification uses SCIM
+   in examples and references.  However, other schemas may be used.
+
+   The following is a non-normative example showing a snippet from a
+   Provider Metadata with a list of schemas understood by an Identity
+   Provider:
+
+    {
+      "identity_provider": {
+        capabilities: {
+          ...
+          "user_schemas_supported": [
+            "urn:ietf:params:scim:schemas:core:2.0:User",
+            "urn:ietf:params:scim:schemas:enterprise:2.0:User"
+          ],
+        }
+        ...
+
+3.5.2.  Attribute Filtering
+
+   User schemas can potentially contain many pieces of information about
+   a user.  For example, the SCIM User Resource defines more than 25
+   different attribute types, some containing sensitive user
+   information.  It is typically unnecessary to share all user
+   information with a hosted application.  In recognition of this,
+   FastFed provides a mechanism for Application Providers to define the
+   subset of attributes needed to use the application.
+
+   Identity Providers display the list of requested attributes during
+   the FastFed Handshake so that Administrators may review and approve
+   the attributes to be released.
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata for an Application Provider who desires 3
+   attributes from a SCIM User Resource.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 13]
+
+                               FastFed 1.0                  October 2017
+
+
+    {
+      "application_provider_instance": {
+        ...
+        "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+        "desired_user_attributes": [
+          {"required": ["username", "emails[primary eq true]"],
+           "optional": ["name.formatted"]
+          }
+        ],
+        ...
+
+3.5.3.  Attibute Mapping
+
+   Attribute Mapping is the process of copying user attributes from a
+   schema into the specific structure required of an SSO protocol such
+   as SAML or OIDC.  This may include relabeling the name of the
+   attribute.
+
+   Application Providers declare how they would like schema information
+   transmitted to them for a given SSO protocol.  Identity Providers are
+   responsible for applying the mapping to outgoing SSO messages.
+
+   FastFed specifies mappings for SCIM-to-SAML and SCIM-to-OIDC.
+   Application Providers may copy the reference examples, or define a
+   custom mapping.  Custom mappings allow an Application Provider to
+   become FastFed compliant even if their SSO endpoint uses a non-
+   standard format for user attributes.
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata which contains a SCIM-to-SAML attribute mapping:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 14]
+
+                               FastFed 1.0                  October 2017
+
+
+ {
+   "application_provider_instance": {
+     ...
+     "sso_protocol": "SAML",
+     "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+     "user_attribute_mapping": {
+       "mapping_syntax": "simple_scim_to_saml",
+       "mapping_rules": {
+         "name_id": {
+           "format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+           "value": "id",
+         },
+         "attributes": [
+           {"name": "name",
+            "value": "displayName"
+           },
+           {"name": "email",
+            "value": "email[primary eq true].value"
+           },
+           {"name": "groups",
+            "value": "groups.displayName"
+           }
+         ]
+     },
+     ...
+
+3.5.4.  User Provisioning
+
+   User Provisioning is the process of creating user accounts in the
+   hosted application.  Common patterns include the following:
+
+      Pre-Provisioning
+
+         Accounts are pre-created in the application prior to an end-
+         user signing into the application.  In addition, updates to
+         user information in the Identity Provider are automatically
+         propagated to the application
+
+      Just In Time Provisioning (JIT)
+
+         Accounts are created when a user first signs-in.  The user
+         attributes for account creation are supplied as part of the
+         sign-in protocol.  If the account already exists, it is updated
+         using the attributes supplied as part of the sign-in protocol.
+         A consequence of JIT Provisioning is that user information is
+         never updated unless a user signs-in.  In addition, users that
+         become deactivated in the Identity Provider may continue to
+         exist in the Application Provider.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 15]
+
+                               FastFed 1.0                  October 2017
+
+
+      Ephemeral Users
+
+         No long-lived user accounts exist in the application.  User
+         information is discarded when the session ends.
+
+   FastFed Metadata enables Providers to describe their provisioning
+   requirements and capabilities.  See Section 4.3.1 and Section 4.4.1.
+
+3.6.  Recurring Activities
+
+   Some federation information needs to be updated on recurring basis.
+   FastFed specifies the following recurring activities:
+
+   o  SAML Certificate Rotation
+
+   o  Open ID Connect Key Rotation, including rotation of client_secret
+
+   o  Icon Image Refresh
+
+   See section Section 10 for details.
+
+   The following is a non-normative example showing a snippet of
+   Provider Metadata describing the supported recurring activities:
+
+    {
+      "identity_provider": {
+        ...
+        "recurring_activities": {
+            "icon_refresh: ["publish", "consume"],
+            "saml_certificate_rotation": ["publish"]
+            "oidc_key_rotation": ["publish"]
+        },
+        ...
+
+4.  Metadata
+
+4.1.  Metadata Serialization
+
+   All FastFed Metadata is represented in JSON format.  Property names
+   and string values are represented as JSON strings.  Numerical values
+   are represented as JSON numbers.  Boolean values are represented as
+   JSON Booleans.  Lists are represented as JSON arrays.  Complex
+   structures are represented as JSON objects.  Omitted properties and
+   properties with no value SHOULD be omitted from the object and not
+   represented by a JSON null value.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 16]
+
+                               FastFed 1.0                  October 2017
+
+
+4.2.  Metadata Languages and Scripts
+
+   Human-readable Metadata values and Metadata values that reference
+   human-readable values MAY be represented in multiple languages and
+   scripts.  For example, values such as client_name and large_icon_uri
+   might have multiple locale-specific values for some Providers.
+
+   To specify the languages and scripts, BCP47 [RFC5646] [RFC5646]
+   language tags are added to Client Metadata member names, delimited by
+   a # character.
+
+   If such a human-readable field is sent without a language tag,
+   parties using it MUST NOT make any assumptions about the language,
+   character set, or script of the string value, and the string value
+   MUST be used as-is wherever it is presented in a user interface.  To
+   facilitate interoperability, it is RECOMMENDED that any human-
+   readable fields sent without language tags contain values suitable
+   for display on a wide variety of systems.
+
+4.3.  Provider Metadata
+
+   Provider Metadata enables Providers to advertise their capabilities
+   and evaluate compatibility with other Providers by comparing
+   capabilities.  The Provider Metadata also contains the endpoint
+   configuration needed to perform the FastFed Handshake.
+
+   Provider Metadata is a structure with the following top-level
+   attributes:
+
+   identity_provider  OPTIONAL.  Structure containing the attributes
+      described by Identity Provider Metadata (Section 4.3.3).  The
+      existence of this element indicates the entity is capable of
+      acting as an Identity Provider.
+
+   application_provider  OPTIONAL.  Structure containing the attributes
+      described by Application Provider Metadata (Section 4.3.4) The
+      existence of this element indicates the entity is capable of
+      acting as an Application Provider.
+
+   If a single Provider is capable of acting as both an Identity
+   Provider and an Application Provider, the Provider Metadata MAY
+   contain both parts.
+
+   If neither part is specified, the FastFed Handshake will halt as per
+   Section 7.1.4.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 17]
+
+                               FastFed 1.0                  October 2017
+
+
+4.3.1.  Capabilities
+
+   Capabilities describe the supported behaviors of a Provider.  They
+   are included in the Metatdata for both Identity Providers and
+   Application Providers and are the primary tool to evaluate if two
+   Providers are compatible with one another.
+
+   Capabilities are represented as a structure with the following
+   attributes:
+
+   sso_protocols_supported  REQUIRED.  A list of strings specifying the
+      SSO protocols supported by the Provider.  Valid values for this
+      element include the following:
+
+         "OIDC"
+
+
+
+            The Provider supports OpenID Connect as defined in
+            Section 11.1
+
+         "SAML"
+
+
+
+            The Provider supports SAML as defined in Section 11.2
+
+   user_schemas_supported  REQUIRED.  A list of URNs specifying the user
+      schemas understood by the Provider.  FastFed does not mandate a
+      specific schema, but RECOMMENDS the use of SCIM.
+
+      If the SCIM User Schemas and Extensions defined in [RFC7643] do
+      not meet the needs of a Provider, the Provider SHOULD coordinate
+      with other potential integration partners to agree upon a commonly
+      understood schema with the necessary user attributes.  The
+      Provider SHOULD consider defining this schema as an extension of
+      the core SCIM User Resource.
+
+      If SCIM is used, the SCIM Core Schemas defined in [RFC7643] MUST
+      be represented using the following values:
+
+         "urn:ietf:params:scim:schemas:core:2.0:User"
+
+
+
+            Indicates the Provider understands the core SCIM User
+            Resource Schema specified in Section 4.1 of SCIM Core
+            [RFC7643] [RFC7643]
+
+
+
+McAdams                  Expires April 18, 2018                [Page 18]
+
+                               FastFed 1.0                  October 2017
+
+
+         "urn:ietf:params:scim:schemas:enterprise:2.0:User"
+
+
+
+            Indicates the provider understands the SCIM Enterprise User
+            Schema Extension specified in Section 4.3 of SCIM Core
+            [RFC7643] [RFC7643]
+
+      When one schema extends another schema, Providers MUST list both
+      schemas if they are capable of using either the extended or the
+      base schema when integrating with federation partners.  If the
+      extended schema is mandatory, Providers MUST list only the
+      extended schema.
+
+   user_provisioning_modes_supported  REQUIRED.  A list of strings
+      defining the requirements and capabilities for provisioning user
+      accounts into an application.  The list must contain at least one
+      value.  The following values are defined:
+
+         "SCIM"
+
+
+
+            A Provider supports pre-provisioning of user accounts via
+            the SCIM protocol, as defined in Section 4.5.3 and
+            Section 11.3.
+
+         "JIT"
+
+
+
+            Application Providers who support Just In Time Provisioning
+            (JIT) MUST create and update user accounts when an end-user
+            signs-in to the application.  The Application Provider MAY
+            support non-standard out-of-band mechanisms to update or
+            delete user accounts in the application, and MAY provide a
+            URI to document the options for Administrators.  The
+            "provisioning_documentation_uri" is specified in Instance
+            Metadata (Section 4.4.1).
+
+            Identity Providers who support JIT provisioning MUST inform
+            Administrators who are configuring single sign-on with the
+            application that the application uses JIT provisioning; and
+            while single sign-on will work, the application may hold a
+            copy of user information that can become stale over time.
+            The Identity Provider MAY point the Administrator to
+            documentation for the Application Provider with more
+            information if the Application Provider has specified the
+
+
+
+McAdams                  Expires April 18, 2018                [Page 19]
+
+                               FastFed 1.0                  October 2017
+
+
+            "provisioning_documentation_uri" in their Instance Metadata
+            (Section 4.4.1).
+
+         "Custom"
+
+
+
+            Application Providers who use Custom provisioning MUST
+            require that Administrators execute non-standard out-of-band
+            mechanisms before end-users may sign-in to the application
+            using SSO protocols.  Application Providers MUST reject SSO
+            attempts by end-users who have not been been provisioned
+            through the custom process.  The use of Custom provisioning
+            SHOULD be avoided whenever possible, but may be appropriate
+            for certain applications in which the benefits of using
+            FastFed to configure the SSO relationship are desired, even
+            though SSO will not function until other activities are
+            performed by the Administrator.
+            The Applicaton Provider MUST include a
+            "provisioning_documentation_uri" in their Instance Metadata
+            (Section 4.4.1) which points to guidance for the
+            Administrator to setup provisioning.
+
+            Identity Providers who support Custom provisioning MUST
+            inform Administrators who are configuring single sign-on
+            with the application that SSO will not function until
+            additional provisioning actions are taken.  The Identity
+            Provider MUST display a link, supplied by the Application
+            Provider, to the documentation which describes the necessary
+            actions for an Administrator to take.  The documentation
+            location is specified in the
+            "provisioning_documentation_uri" within the Application
+            Provider's Instance Metadata (Section 4.4.1).
+
+         "NoProvisioning"
+
+
+
+            Application Providers who use "NoProvisioning" MUST use
+            ephemeral sessions or accounts that do not require pre-
+            provisioning and do not rely upon long-lived data that
+            persists after the user session has ended.
+
+            Identity Providers who support "NoProvisioning" have no
+            required responsibilities, but MAY inform Administrators who
+            have finished configuring single sign-on with an application
+            that no additional actions are necessary to use the
+            application.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 20]
+
+                               FastFed 1.0                  October 2017
+
+
+            An Identity Provider who includes "NoProvisioning" as the
+            only value in their list of supported provisioning modes has
+            effectively declared they support no user provisioning at
+            all.  This will cause the FastFed Handshake to halt when
+            attempting to integrate with Application Providers who
+            require one of the other provisioning modes.
+
+   provider_authz_schemes_supported  REQUIRED.  A list of strings
+      specifying the authorization schemes supported by the Provider.
+      Valid values for this element include the following:
+
+         "OAuth"
+
+
+
+            The Provider supports OAuth as defined in Section 8.1
+
+4.3.2.  Common Provider Metadata
+
+   Common Provider Metadata describes properties that are shared by both
+   Identity Providers and Application Providers.
+
+   Common Provider Metadata is a structure with the following values:
+
+   provider_uri  REQUIRED.  A Uniform Resource Identifier [RFC3986]
+      which uniquely identifies a Provider.  Typically used as the
+      primary key for programmatic use cases that require storing and
+      retrieving Provider information.
+
+   name  REQUIRED.  The name of the Provider, suitable for display to
+      end-users.  The value SHOULD be the primary textual label by which
+      this Provider is normally displayed when presenting it to end-
+      users.  If desired, representation of this value in different
+      languages and scripts is represented as described in Section 4.2.
+
+   icons  OPTIONAL.  A structure containing URLs that reference an icon
+      for the Provider.  The values must point to a valid image file.
+      If defined, these image specifications supercede any overlapping
+      image specification contained in the configuration metadata for
+      underlying protocols referenced by the FastFed Metadata; e.g. the
+      "logo_uri" defined in OpenID Connect Dynamic Client Registration
+      1.0 [OpenID.Registration] [OpenID.Registration]
+
+      This structure has the following attributes:
+
+      large_icon_uri  A URL that points to an image file that can be
+         used as a tile in grid layouts or similar situations in which a
+         larger icon delivers a preferable end-user experience.  Image
+
+
+
+McAdams                  Expires April 18, 2018                [Page 21]
+
+                               FastFed 1.0                  October 2017
+
+
+         dimensions MUST NOT be smaller than 128x128 pixels and MUST NOT
+         exceed 256x256 pixels.  Images files SHOULD be in PNG format,
+         but Providers MAY accept alternative formats.  Providers who
+         consume and display the image MAY resize the image to a smaller
+         dimension and/or convert to alternative formats.
+         If desired, representation of this value in different languages
+         and scripts is represented as described in Section 4.2.
+
+      small_icon_uri  A URL that points to an image file for use in list
+         layouts, as a favicon, or similar situations in which a small
+         icon delivers a preferable end-user experience.  Image
+         dimensions MUST NOT be smaller than 16x16 pixels and MUST NOT
+         exceed 32x32 pixels.  Images files SHOULD be in PNG format, but
+         Providers MAY accept alternative formats.  Providers who
+         consume and display the image MAY resize the image to a smaller
+         dimension and/or convert to alternative formats.
+         If desired, representation of this value in different languages
+         and scripts is represented as described in Section 4.2.
+
+   capabilities  REQUIRED.  A structure describing the capabilities of
+      the Provider, defined in Section 4.3.1.
+
+4.3.3.  Identity Provider Metadata
+
+   Identity Provider Metadata is a structure that includes all the
+   elements defined in Common Provider Metadata (Section 4.3.2), plus
+   the following additional elements:
+
+   fastfed_handshake_start_uri  REQUIRED.  A URL which specifies the
+      endpoint for starting a FastFed Handshake request with the
+      Identity Provider.  See Section 7.2.1.1.
+
+   fastfed_handshake_finish_uri  REQUIRED.  A URL which specifies the
+      endpoint for finishing a FastFed Handshake with the Identity
+      Provider.  See Section 7.2.2.8.
+
+4.3.4.  Application Provider Metadata
+
+   Application Provider Metadata is a structure that includes all the
+   elements defined in Common Provider Metadata (Section 4.3.2), plus
+   the following additional elements:
+
+   fastfed_handshake_receive_uri  REQUIRED.  A URL which specifies the
+      endpoint for Application Providers to receive a FastFed Handshake
+      request from an Identity Provider.  See Section 7.2.1.7.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 22]
+
+                               FastFed 1.0                  October 2017
+
+
+4.4.  Instance Metadata
+
+   Instance Metadata represents the specific capabilities chosen by a
+   Provider to use when establishing a federation relationship with
+   another Provider.
+
+   Instance Metadata is a structure with the following top-level
+   attributes:
+
+   identity_provider_instance  OPTIONAL.  A structure containing the
+      attributes defined in Identity Provider Instance Metadata
+      (Section 4.4.2).  The existence of this element indicates the
+      entity is acting as an Identity Provider in the federation
+      relationship.
+
+   application_provider_instance  OPTIONAL.  A structure containing the
+      attributes defined in Application Provider Instance Metadata
+      (Section 4.4.3).  The existence of this element indicates the
+      entity is acting as an Application Provider in the federation
+      relationship.
+
+   A Provider MUST include one of either the "identity_provider" or
+   "application_provider" elements, corresponding to the role it is
+   playing in the federation relationship.  A Provider MUST NOT include
+   both elements.
+
+4.4.1.  Common Instance Metadata
+
+   Common Instance Metadata describes properties that are shared by both
+   Identity Providers and Application Providers.
+
+   Common Instance Metadata contains the following values:
+
+   name  OPTIONAL.  If specified, this element overrides at an instance-
+      level the name defined in the Provider Metadata (Section 4.3.2).
+
+   icons  OPTIONAL.  If specified, this element overrides at an
+      instance-level the icons defined in the Provider Metadata
+      (Section 4.3.2).  If only a subset of icon structure members are
+      specified in this override (e.g. "large_icon_uri", but not
+      "small_icon_uri"), any unspecified members retain the original
+      definition defined at the Provider level.
+
+   tenant_id  REQUIRED.  A string value which uniquely identifies the
+      tenant of the Provider for whom the federation relationship is
+      being configured.  Used to detect duplicate attempts to create a
+      federation relationship between a tenant in the Identity Provider
+      and a tenant in the Application Provider.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 23]
+
+                               FastFed 1.0                  October 2017
+
+
+      The combination of "tenant_id" plus "provider_uri" (defined in
+      Provider Metadata (Section 4.3)) MUST be globally unique.  The
+      "tenant_id" is case-sensitive and MAY be an opaque identifier.
+
+   sso_protocol  REQUIRED.  A string value containing the SSO protocol
+      to be used for sign-in between the Identity Provider and the
+      Application Provider, chosen from the list of
+      "sso_protocols_supported" defined in the Provider Capabilities
+      (Section 4.3.1); e.g.  "SAML" or "OIDC".
+
+      Specific SSO protocols may extend the Instance Metadata with
+      additional required attributes.  See the requirements for specific
+      SSO protocols in Section 4.5.
+
+   user_schema  REQUIRED.  A string value containing the user schema to
+      be used by the Identity Provider and Application Provider, chosen
+      from the list of "user_schemas_supported" defined in the Provider
+      Capabilities (Section 4.3.1); e.g.
+      "["urn:ietf:params:scim:schemas:core:2.0:Schema"]"
+
+   user_provisioning_mode  REQUIRED.  A string value containing the user
+      provisioning mode to be used, chosen from the list of
+      "user_provisioning_modes_supported" defined in the Provider
+      Capabilities (Section 4.3.1); e.g.  "SCIM".
+
+   provider_authz_scheme  REQUIRED.  A string value containing the
+      authorization scheme to be used for communication between the
+      Identity Provider and Application Provider, chosen from the list
+      of "provider_authz_schemes_supported" defined in the Provider
+      Capabilities (Section 4.3.1); e.g.  "OAuth".
+
+      Specific authorization schemes may extend the Instance Metadata
+      with additional required attributes.  See the requirements for
+      specific schemes in Section 8.
+
+4.4.2.  Identity Provider Instance Metadata
+
+   Identity Provider Instance Metadata is a structure that includes all
+   the elements defined in Common Instance Metadata (Section 4.4.1).
+
+   No additional elements are added to the Identity Provider Metadata.
+
+4.4.3.  Application Provider Instance Metadata
+
+   Application Provider Instance Metadata is a structure that includes
+   all the elements defined in Common Instance Metadata (Section 4.4.1),
+   plus the following attributes:
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 24]
+
+                               FastFed 1.0                  October 2017
+
+
+   desired_user_attributes  REQUIRED.  A structure describing the end-
+      user attributes that the Application Provider desires from the
+      Identity Provider.  During the FastFed Handshake, Administrators
+      have an opportunity to review and consent to the release of the
+      desired attributes.
+
+      Attributes MUST be specified using the Attribute Path Syntax
+      (Section 9.1) for the chosen user schema.  E.g., the Attribute
+      Path for SCIM formatted name is "name.formatted".
+
+      The structure contains the following elements:
+
+      required_attributes  A list of attributes, identified by their
+         Attribute Paths, which the Identity Provider MUST release to
+         the Application Provider.
+
+      optional_attributes  A list of attributes, identified by their
+         Attribute Paths, which the Identity Provider MAY release to the
+         Application Provider.  The application MUST remain functional
+         if the Identity Provider chooses not to release the
+         "optional_attributes", albeit with minor degradations in user
+         experience; e.g. falling back to labeling end-users with an
+         opaque "userName" instead of a human-readable "displayName".
+
+   user_attribute_mapping  OPTIONAL.  A structure of type Attribute
+      Mapping (Section 9.2).  While this value is optional, it is
+      REQUIRED to map user attributes from a user schema into the format
+      of the chosen SSO protocol.  If not specified, no user attributes
+      will be provided within the sign-on assertions.
+      The syntax of the mapping must be applicable to the selected user
+      schema and SSO protocol.  See Section 9.3.2.1 for mapping SCIM-to-
+      SAML and Section 9.3.2.2 for mapping SCIM-to-OIDC.
+
+   provisioning_documentation_uri  OPTIONAL, but REQUIRED for certain
+      provisioning modes.  See detailed specifications for each
+      provisioning mode in Section 4.3.1 under the definition of
+      "user_provisioning_modes_supported".
+
+4.5.  Metadata Extensions for Specific Protocols
+
+   This section describes the additional values to be specified in
+   Metadata documents when using certain protocols.
+
+4.5.1.  Extensions for SAML SSO
+
+   When using the "SAML" SSO protocol, the Common Instance Metadata
+   (Section 4.4.1) structure is extended with the following attributes:
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 25]
+
+                               FastFed 1.0                  October 2017
+
+
+   saml_metadata_uri  REQUIRED when using SAML.  Contains the URL
+      location of a SAML Metadata document as specified in Section 11.2.
+
+      Both the Identity Provider and Application Provider will include
+      this value in their Instance Metadata, since each publishes their
+      own SAML metadata.
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata for an Identity Provider using SAML:
+
+ "identity_provider_instance": {
+   "tenant_id": "k2lini4cj509ut09cj0jcjwee9gj0jeg",
+   "sso_protocol": "SAML",
+   "saml_metadata_uri": "https://tenant12345.example.com/saml-metadata.xml",
+   ...
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata for an Application Provider using SAML:
+
+ "application_provider_instance": {
+   "tenant_id": "3jp2c2JaQ2c52f5hrWC",
+   "sso_protocol": "SAML",
+   "saml_metadata_uri": "https://tenant56789.example.com/saml-metadata.xml",
+   ...
+
+4.5.2.  Extensions for OIDC SSO
+
+   When using the "OIDC" SSO protocol, the specifications in
+   Section 11.1 require that both parties support OpenID Connect
+   Discovery 1.0 [OpenID.Discovery] [OpenID.Discovery] and OpenID
+   Connect Dynamic Client Registration 1.0 [OpenID.Registration]
+   [OpenID.Registration].  These specifications require that an Identity
+   Provider share the location of an OpenID Provider Configuration
+   Endpoint.
+
+   This is accomplished by extending the Identity Provider Instance
+   Metadata (Section 4.4.2) structure with the following attributes:
+
+   oidc_configuration_uri  REQUIRED when using OIDC.  Contains the
+      Issuer location for OpenID Provider Configuration Information, as
+      specified in Section 4 of OpenID Connect Discovery 1.0
+      [OpenID.Discovery] [OpenID.Discovery]
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata for an Identity Provider using OIDC:
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 26]
+
+                               FastFed 1.0                  October 2017
+
+
+ "identity_provider_instance": {
+   "tenant_id": "k2lini4cj509ut09cj0jcjwee9gj0jeg",
+   "sso_protocol": "OIDC",
+   "oidc_configuration_uri": "https://tenant12345.example.com/oidc-configuration",
+   ...
+
+4.5.3.  Extensions for SCIM Provisoning
+
+   When using the "SCIM" user provisioning mode, the Application
+   Provider needs to share the location of their SCIM endpoint.
+
+   To enable this, the Application Provider Instance Metadata
+   (Section 4.4.3) structure is extended with the following attributes:
+
+   scim_service_uri  REQUIRED when using SCIM provisioning.  A string
+      value containing the URL for SCIM endpoint as specified in
+      Section 3.2 of the SCIM Protocol [RFC7644] [RFC7644].
+
+   The following is a non-normative example showing a snippet of
+   Instance Metadata for an Application Provider using SCIM
+   provisioning:
+
+ "application_provider_instance": {
+   "tenant_id": "3jp2c2JaQ2c52f5hrWC",
+   "sso_protocol": "SAML",
+   "saml_metadata_uri": "https://tenant56789.example.com/saml-metadata.xml",
+   "user_provisioning_mode": "SCIM",
+   "scim_service_uri": "https://tenant56789.examole.com/scim"
+   ...
+
+5.  Metadata Endpoints
+
+   Metadata Endpoints describe the semantics for reading the Metadata
+   documents.
+
+5.1.  Provider Metadata Endpoint
+
+   A request to this endpoint will return the Provider Metadata document
+   defined in Section 4.3.
+
+   The Provider Metadata Endpoint MUST be accessible to other Providers
+   who are permitted to initiate a FastFed Handhake Flow with the
+   entity.  Access to the Endpoint SHOULD NOT require Administrators to
+   perform preconfiguration or preregistration of any form between the
+   two Providers, except the necessary act of inputting the URL for the
+   Provider Metadata Endpoint (a.k.a.  "FastFed URL") to initiate the
+   FastFed Handshake.  Requests to the endpoint may be rate-limited or
+   otherwise limited to prevent a denial-of-service attack.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 27]
+
+                               FastFed 1.0                  October 2017
+
+
+5.1.1.  Location
+
+   The means of discovering the location of a Provider Metadata Endpoint
+   for a specific Provider is out of scope of this specification.
+
+   As a reference to implementers, Providers typically include their
+   Provider Metadata Endpoint (a.k.a.  "FastFed URL") in their SSO
+   documentation materials.  Providers may also construct predefined
+   catalogs of common integration partners with whom federations can be
+   instantiated, where the FastFed URLs of the partners are part of the
+   catalog.
+
+5.1.2.  Read Request
+
+   Provider Metadata can be read by making an HTTP GET request to the
+   Provider Metadata Endpoint.
+
+   The following is a non-normative example read request:
+
+     GET /fastfed/provider-metadata HTTP/1.1
+     Accept: application/json
+     Host: provider.example.com
+
+5.1.3.  Read Response
+
+   Upon a successful read operation, the server SHOULD return all
+   available Provider Metadata.
+
+   A successful response SHOULD use the HTTP 200 OK status code and
+   return a JSON document [RFC4627] using the application/json_content
+   type with the Provider Metadata values as top-level members of the
+   root JSON object.
+
+   The following is a non-normative example read response (with line
+   wraps within values for display purposes only):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 28]
+
+                               FastFed 1.0                  October 2017
+
+
+ HTTP/1.1 200 OK
+ Content-Type: application/json
+ {
+   "identity_provider": {
+     "provider_uri": "https://app.example.com",
+     "name": "My Identity Provider",
+     "icons": {
+       "large_icon_uri": "https://idp.example.com/images/tile.png",
+       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     }
+     capabilities: {
+       "sso_protocols_supported": ["OIDC","SAML"],
+       "user_schemas_supported": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+       "user_provisioning_modes_supported": ["JIT","Custom","NoProvisioning"],
+       "provider_authz_schemes_supported": ["OAuth"]
+     }
+     "fastfed_handshake_start_uri": "https://idp.example.com/fastfed/start",
+     "fastfed_handshake_finish_uri": "https://idp.example.com/fastfed/finish"
+ }
+
+5.2.  Instance Metadata Endpoint
+
+   A request to this endpoint will return the Instance Metadata document
+   defined in Section 4.4:
+
+   If client authorization is required as per Section 8, the caller MUST
+   use one of the authorization methods supported by the Provider when
+   requesting Instance Metadata.
+
+5.2.1.  Location
+
+   The location of the Instance Metadata Endpoint is shared with
+   Providers during the FastFed Handshake, as part of the request
+   parameters.  See 7.2.1.7 and 7.2.2.8.
+
+5.2.2.  Read Request
+
+   Instance Metadata can be read by making an HTTP GET request to the
+   Instance Metadata Endpoint.  The following is a non-normative example
+   read request:
+
+     GET /tenant12345/instance-metadata HTTP/1.1
+     Accept: application/json
+     Host: provider.example.com
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 29]
+
+                               FastFed 1.0                  October 2017
+
+
+5.2.3.  Read Response
+
+   Upon a successful read operation, the server SHOULD return all
+   available Instance Metadata.
+
+   A successful response SHOULD use the HTTP 200 OK status code and
+   return a JSON document [RFC4627] using the application/json_content
+   type with the Provider Metadata values as top-level members of the
+   root JSON object.
+
+   The following is a non-normative example read response (with line
+   wraps within values for display purposes only):
+
+ HTTP/1.1 200 OK
+ Content-Type: application/json
+ {
+   "identity_provider_instance": {
+     "tenant_id": "k2lini4cj509ut09cj0jcjwee9gj0jeg",
+     "sso_protocol": "SAML",
+     "saml_metadata_uri": "https://tenant12345.example.com/saml-metadata.xml",
+     "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+     "user_provisioning_mode": "JIT",
+     "provider_authz_scheme": "OAuth",
+     "oauth_token_endpoint": "https://tenant12345.example.com/token",
+ }
+
+5.2.4.  Read Error Response
+
+   If authorization was required by the server and caller authorization
+   was missing or invalid, the server MUST respond with the HTTP 401
+   Unauthorized status code.  If the client does not have permission to
+   read the record, the server MUST return an HTTP 403 Forbidden.
+
+   The following is a non-normative example error response:
+
+     HTTP/1.1 401 Unauthorized
+     WWW-Authenticate: Bearer error="invalid_token",
+       error_description="The access token expired"
+     Cache-Control: no-store
+     Pragma: no-cache
+
+6.  Provider Compatibility Evaluation
+
+   A compatibility evaluation is the act of comparing the abilities of
+   two Providers to determine if they can interoperate.  For FastFed,
+   this is accomplished by examining the intersection of Provider
+   Capabilities (Section 4.3.1).  The process is specified below.
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 30]
+
+                               FastFed 1.0                  October 2017
+
+
+   For reference, all FastFed Capabilities are represented as lists of
+   strings.  This includes the following attributes:
+
+   o  sso_protocols_supported
+
+   o  user_schemas_supported
+
+   o  user_provisioning_modes_supported
+
+   o  provider_authz_schemes_supported
+
+   Each list is evaluated for compatibility via the following steps:
+
+   o  Missing or undefined lists MUST be treated as empty lists.
+
+   o  If both Providers have empty lists for an element, they are
+      compatible for that element.
+
+   o  If at least one Provider has a non-empty list, the intersection is
+      calculated between the list from the Identity Provider and the
+      list from the Application Provider.  If the intersection is non-
+      empty, the Providers are compatible for that element.
+
+   o  The resulting intersection of capabilities represents the
+      compatible choices which a Provider can choose from when
+      determining how to configure federation with another Provider.
+
+   If the Providers are incompatible for at least one list, then the
+   Providers MUST be treated as incompatible.
+
+7.  FastFed Handshake
+
+7.1.  Common Considerations
+
+7.1.1.  TLS Requirments
+
+   The FastFed Handshake can include the exchange of secret materials
+   and private tenant information.  All implementations MUST require the
+   use of TLS for all FastFed Endpoints, including the Metadata
+   Endpoints and FastFed Handshake Endpoints.  If an underlying protocol
+   also exposes their own endpoints (e.g.  SAML Metadata Files), those
+   endpoints SHOULD use TLS, too.
+
+   Which TLS version(s) ought to be implemented will vary over time, and
+   depends on the widespread deployment and known security
+   vulnerabilities at the time of implementation.  To protect against
+   information disclosure and tampering, confidentiality protection MUST
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 31]
+
+                               FastFed 1.0                  October 2017
+
+
+   be applied using TLS with a ciphersuite that provides confidentiality
+   and integrity protection.
+
+   Whenever TLS is used, a TLS server certificate check MUST be
+   performed, per [RFC6125].
+
+7.1.2.  HTTP Redirects
+
+   This specification makes use of HTTP redirections, in which a
+   Provider directs the Administrator's user-agent to another
+   destination.  While the examples in this specification show the use
+   of the HTTP 302 status code, any other method available via the user-
+   agent to accomplish this redirection is allowed and is considered to
+   be an implementation detail.
+
+7.1.3.  Serialization
+
+   The FastFed Handshake uses HTTP GET and POST to transmit requests.
+   Request parameters may be serialized using the following methods:
+
+   o  Query String Serialization
+
+   o  Form Serialization
+
+7.1.3.1.  Query String Serialization
+
+   In order to serialize the parameters using the Query String
+   Serialization, the Client constructs the string by adding the
+   parameters and values to the query component of a URL using the
+   application/x-www-form-urlencoded format as defined by
+   [W3C.REC-html401-19991224].  Query String Serialization is typically
+   used in HTTP GET requests.  The same serialization method is also
+   used when adding parameters to the fragment component of a URL.
+
+7.1.3.2.  Form Serialization
+
+   Parameters and their values are Form Serialized by adding the
+   parameter names and values to the entity body of the HTTP request
+   using the application/x-www-form-urlencoded format as defined by
+   [W3C.REC-html401-19991224].  Form Serialization is typically used in
+   HTTP POST requests.
+
+7.1.4.  Halting the Handshake
+
+   In certain circumstances, the FastFed Handshake cannot proceed and
+   must be halted.  This may occur, for example, if the Providers do not
+   share common capabilities.
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 32]
+
+                               FastFed 1.0                  October 2017
+
+
+   When halting the handshake, the Provider who decides to halt SHOULD
+   display an informative message to the Administrator explaining why
+   the action was halted and any steps that can be taken by the
+   Administrator to correct the situation.  The details of this
+   communication to the Administrator are outside the scope of the
+   specification.
+
+7.2.  Handshake Flow
+
+7.2.1.  Handshake Start at Identity Provider
+
+7.2.1.1.  Identity Provider Receives Start Request
+
+   The FastFed Handshake begins by sending an HTTP GET or POST to the
+   Identity Provider's "fastfed_handshake_start_uri", as defined within
+   the Identity Provider Metadata per Section 4.3.3.
+
+   The request contains the following parameters:
+
+   provider_metadata_uri  REQUIRED.  The URL of the Provider Metadata
+      Endpoint (Section 5.1) for the Application Provider with whom the
+      handshake will be performed.
+
+   Identity Providers MUST support the use of HTTP GET and POST.
+   Clients MAY use the HTTP GET or POST methods.
+
+   If using the HTTP GET method, the request parameters are serialized
+   using URI Query String Serialization (Section 7.1.3.1).  If using the
+   HTTP POST method, the request parameters are serialized using Form
+   Serialization (Section 7.1.3.2).
+
+   Any entity may initiate the FastFed Handshake.  As a reference to
+   implementers, an Identity Provider can initiate the handshake by
+   sending a message to itself, using the "fastfed_handshake_start_uri"
+   that is already known to the Identity Provider.  Alternatively, an
+   Application Provider can initiate the handshake by asking an
+   Administrator for the FastFed URL of an Identity Provider and then
+   querying the URL to retrieve the Identity Provider Metadata
+   (Section 4.3.3) document which contains the
+   "fastfed_handshake_start_uri".
+
+   The following is a non-normative example of a handshake initiation
+   request using HTTP POST
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 33]
+
+                               FastFed 1.0                  October 2017
+
+
+ POST /fastfed/handshake/start
+ Host: idp.example.com
+ Content-Type: application/x-www-form-urlencoded
+
+ provider_metadata_uri=https%3A%2F%2Fapp.example.com%2Ffastfed%2Fprovider-metadata
+
+   The following is a non-normative example of a handshake initiation
+   request using HTTP GET.
+
+ GET /fastfed/handshake/start?provider_metadata_uri=https%3A%2F%2Fapp.example.com%2Ffastfed%2Fprovider-metadata HTTP/1.1
+ Host: idp.example.com
+
+7.2.1.2.  Identity Provider Authenticates Administrator
+
+   Upon receiving the handshake initiation request, the Identity
+   Provider MUST authenticate the Administrator and verify they are
+   authorized to initiate the FastFed Handshake with the Application.
+   The means of doing so are outside the scope of this specification.
+
+   If the Administrator cannot be authenticated, the FastFed Handshake
+   MUST be halted.
+
+7.2.1.3.  Identity Provider Reads Application Provider Metadata
+
+   Using the "provider_metadata_uri" sent as a parameter in the
+   handshake request, the Identity Provider queries the Application
+   Provider Metadata Endpoint (Section 5.1).
+
+   If the Application Provider Metadata cannot be downloaded or is
+   missing required elements, the FastFed Handshake MUST be halted.
+
+7.2.1.4.  Identity Provider Verifies Compatibility with Application
+          Provider
+
+   The Identity Provider MUST compare its Provider Metadata against the
+   Application Provider Metadata in order to verify compatibility, as
+   described in Section 6.
+
+   If the Providers are incompatible, the FastFed Handshake MUST be
+   halted.
+
+7.2.1.5.  Identity Provider Obtains Initial Consent from Administrator
+
+   The Identity Provider MUST obtain explicit consent from an
+   Administrator to share tenant information with the Application
+   Provider, unless the Administrator has previously consented or the
+   Identity Provider and Application Provider are hosted by the same
+   party.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 34]
+
+                               FastFed 1.0                  October 2017
+
+
+   As a reference to implementers, consent could include displaying a
+   confirmation page.  The Identity Provider may also alert the
+   Administrator of any potential risks with the Application Provider,
+   including but not limited to invalid TLS certificates detected when
+   querying Application Provider Endpoints, or matches against suspected
+   phishing sites.
+
+7.2.1.6.  Identity Provider Generates Instance Metadata
+
+   The Identity Provider generates, or makes available, an Instance
+   Metadata Endpoint containing the specific configuration and
+   preferences for establishing a federated relationship with the
+   Application Provider.
+
+   The chosen preferences MUST be valid Capabilities for both the
+   Identity Provider and Application Provider; e.g. if both Providers
+   support the "SAML" SSO protocol, then "SAML" is a valid choice for
+   SSO protocol.  On the other hand, if one or both Providers do not
+   support "SAML", it is not a valid choice.
+
+   It is possible for Providers to share multiple valid options for a
+   Capability; e.g. both Providers may support "SAML" and "OIDC" as SSO
+   protocols.  If this occurs, the Identity Provider MUST choose one of
+   the capabilities to use.  The manner of determining a choice is
+   considered an implementation detail and is outside the scope of the
+   specification.
+
+   One of the preferences that can be chosen by the Identity Provider is
+   the "provider_authz_schemes_supported".  When the Identity Provider
+   chooses an authorization scheme, it will be used for any interactions
+   between Providers which mandate authorization.  The chosen scheme is
+   communicated in two ways: within the Instance Metadata, and also as a
+   parameter in the handshake message to the Application Provider.  Both
+   values MUST be the same.  The authorization details depend upon the
+   chosen scheme and are described in Section 8
+
+   It is possible for an Instance Metadata document to already exist for
+   the given Application Provider, either because this is a duplicate
+   request or a previous handshake was halted or abandoned.  If this
+   occurs, the existing Instance Metadata MUST NOT be altered.  Doing so
+   could cause inadvertently cause an existing federation relationship
+   to be modified before the Administrator has consented to changes.
+   Instead, a new Instance Metadata Endpoint MUST be instantiated at a
+   new location.
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 35]
+
+                               FastFed 1.0                  October 2017
+
+
+7.2.1.7.  Identity Provider Response
+
+   *COMMENTS: *
+
+   If the preceding steps were successful, the Identity Provider
+   responds by issuing a redirect to the Application Provider containing
+   the following parameters:
+
+   provider_metadata_uri  REQUIRED.  The location of the Provider
+      Metadata for the Identity Provider
+
+   instance_metadata_uri  REQUIRED.  The location of the Instance
+      Metadata for the Identity Provider, created in the preceeding Step
+      7.2.1.6.
+
+   provider_authz_scheme  OPTIONAL.  The authorization scheme chosen by
+      the Identity Provider and required for any subsequent interactions
+      between the Providers which mandate authorization.  Depending upon
+      the chosen scheme, this request may contain additional parameters
+      necessary to enable authorization.  Details depend upon the chosen
+      scheme and are described in Section 8.
+
+   state  OPTIONAL.  Opaque value used to maintain state between the
+      request to the Application Provider and the callback to the
+      Identity Provider.  Typically, Cross-Site Request Forgery (CSRF,
+      XSRF) mitigation is done by cryptographically binding the value of
+      this parameter with a browser cookie.
+
+   The following is a non-normative example of a response (with line
+   wraps within values for display purposes only):
+
+ HTTP/1.1 302 Found
+ Location: https://app.example.com/fastfed/handshake/receive?
+   provider_metadata_uri=https%3A%2F%2Fidp.example.com%2Ffastfed%2Fprovider-metadata
+   &instance_metadata_uri=https%3A%2F%2Ftenant12345.example.com%2Ffastfed%2Finstance-metadata
+   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+
+7.2.2.  Handshake Receipt by Application Provider
+
+7.2.2.1.  Application Provider Authenticates Administrator
+
+   Upon receiving a handshake message from the Identity Provider as
+   specified in Step 7.2.1.7, the Application Provider MUST authenticate
+   the Administrator and verify they are authorized to setup federation
+   with the Identity Provider.
+
+   If the Administrator is a new customer without an existing account
+   with the Application Provider, the Application Provider MAY lead the
+
+
+
+McAdams                  Expires April 18, 2018                [Page 36]
+
+                               FastFed 1.0                  October 2017
+
+
+   administrator through a sign-up workflow to subscribe to the
+   Application.  The means of doing so are outside the scope of this
+   specification.
+
+   If the Administrator cannot be authenticated, the FastFed Handshake
+   MUST be halted.
+
+7.2.2.2.  Application Provider Reads Provider Metadata
+
+   Using the "provider_metadata_uri" sent as a parameter in the
+   handshake request, the Application Provider queries the Identity
+   Provider Metadata Endpoint (Section 5.1).
+
+   If the Identity Provider Metadata cannot be downloaded or is missing
+   required elements, the FastFed Handshake must be halted.
+
+7.2.2.3.  Application Provider Reads Instance Metadata
+
+   Using the "instance_metadata_uri" sent as a parameter in the
+   handshake request, the Application Provider queries the Identity
+   Provider's Instance Metadata Endpoint (Section 5.2).
+
+   If the handshake request contains a parameter for
+   "provider_authz_scheme", the Application Provider MUST use the
+   authorization scheme when retrieving the Instance Metadata.
+
+   If the Instance Metadata cannot be downloaded or is missing required
+   elements, the FastFed Handshake must be halted.
+
+7.2.2.4.  Application Provider Verifies Compatibility
+
+   The Instance Metadata provided by the Identity Provider will contain
+   configuration and preferences for establishing a federated
+   relationship with the Application Provider.
+
+   The Application Provider MUST verify that the choices within the
+   Instance Metadata are valid Capabilities for the Application
+   Provider; e.g. if the Application Provider supports "SAML" as an SSO
+   protocol, then "SAML" is a valid choice for SSO protocol.  On the
+   other hand, if the Application Provider does not support "SAML" as a
+   Capability, it is not a valid choice.
+
+   The FastFed Handshake must be halted if the Instance Metadata
+   contains unsupported Capabilities.
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 37]
+
+                               FastFed 1.0                  October 2017
+
+
+7.2.2.5.  Application Provider Generates Instance Metadata
+
+   The Application Provider generates, or makes available, an Instance
+   Metadata Endpoint containing the specific configuration and
+   preferences for establishing a federated relationship with the
+   Identity Provider.
+
+   The chosen Capabilities MUST match those received from the Identity
+   Provider, plus any additional properties specific to the Application
+   Provider; e.g. if the Identity Provider specified "SAML" as the SSO
+   protocol in its Instance Metadata, the Application Provider MUST also
+   specify "SAML", and will include any SAML-specific configurations
+   that are required of an Application Provider.  The details vary by
+   protocol and are described in Section 4.5.
+
+7.2.2.6.  Application Provider Obtains Consent from Administrator
+
+   The Application Provider MUST obtain explicit consent from an
+   Administrator to enable federation with the Identity Provider.  The
+   Application Provider MUST include CSRF protections when obtaining
+   consent.
+
+   If a federation relationship was previously configured between the
+   tenant of the Identity Provider and the txsenant of the Application
+   Provider, the Application Provider MUST alert the Administrator that
+   proceeding will modify an existing federation configuration.
+
+   The details of warning the Administrator are out of scope of the
+   specification.  Implementers SHOULD consider highlighting any changes
+   that may temporarily break end-users during the FastFed Handshake
+   flow; e.g. if the SSO protocol is being changed from SAML to OIDC,
+   incoming sign-in attempts may fail until the handshake completes and
+   the new configuration has been successfully applied by both Providers
+
+7.2.2.7.  Application Provider Enables Federation with the Identity
+          Provider
+
+   Upon receiving consent from the Administrator, the Application
+   Provider MUST take any actions necessary to enable federation with
+   the Identity Provider.  This is an implementation detail.  Actions
+   typically include updating internal datastore records to allow SSO
+   from the Identity Provider, performing any additional registration
+   activities required by the SSO protocol, and potentially opening up
+   endpoints for user provisioning.
+
+   If an authorization scheme is used, the Identity Provider MUST be
+   granted access to all operations on the Application Provider
+   necessary for the federated relationship to become active.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 38]
+
+                               FastFed 1.0                  October 2017
+
+
+7.2.2.8.  Application Provider Response
+
+   If the preceding steps were successful, the Application Provider
+   responds by issuing a redirect to the Identity Provider.
+
+   The location to send the response is specified by the
+   "fastfed_handshake_finish_uri" attribute within the Identity Provider
+   Metadata (Section 4.3.3).
+
+   The response contains the following parameters:
+
+   instance_metadata_uri  REQUIRED.  The location of the Instance
+      Metadata for the Application Provider, created in the preceeding
+      Step 7.2.2.5.
+
+   authz_scheme  REQUIRED if the handshake request from the Identity
+      Provider included the authz_scheme parameter.  Set to the value
+      received from the Identity Provider.
+
+   state  REQUIRED if the handshake request from the Identity Provider
+      included the "state" parameter.  Set to the value received from
+      the Identity Provider.
+
+   If an authorization scheme is used, the response may contain
+   additional authorization parameters.  The details vary by scheme and
+   are described in Section 8.
+
+   The following is a non-normative example of a response:
+
+ HTTP/1.1 302 Found
+ Location: https://idp.example.com/fastfed/handshake/finish?
+   instance_metadata_uri=https%3A%2F%2Ftenant67890.example.com%2Ffastfed%2Finstance-metadata
+   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2
+
+7.2.3.  Handshake Completion by Identity Provider
+
+7.2.3.1.  Identity Provider Authenticates State Paramater
+
+   If the Identity Provider included the "state" parameter when issuing
+   the handshake request to the Application Provider, the Identity
+   Provider MUST verify that the state parameter received in the
+   response is equal to the value sent in the request.
+
+7.2.3.2.  Identity Provider Reads Instance Metadata
+
+   Using the "instance_metadata_uri" received as a parameter in
+   handshake response, the Identity Provider queries the Application
+   Provider Metadata Endpoint, as per Section 5.1.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 39]
+
+                               FastFed 1.0                  October 2017
+
+
+   If the Identity Provider included the "authz_scheme" parameter in the
+   handshake request, the Identity Provider MUST use the authorization
+   scheme when retrieving the Instance Metadata from the Application
+   Provider.
+
+   If the Instance Metadata cannot be downloaded or is missing required
+   elements, the FastFed Handshake must be halted.
+
+7.2.3.3.  Identity Provider Verifies Compatibility with Instance
+          Metadata
+
+   The Identity Provider MUST verify that the chosen Capabilities in the
+   Instance Metadata vended by the Application Provider match those
+   chosen by the Identity Provider; e.g. if the Identity Provider
+   specified "SAML" as the SSO protocol in its Instance Metadata, the
+   Application Provider MUST also specify "SAML".
+
+7.2.3.4.  Identity Provider Obtains Final Consent from Administrator
+
+   The Identity Provider MUST obtain explicit consent from an
+   Administrator to enable federation with the Application Provider.
+
+   Obtaining consent MUST include displaying the user attributes that
+   will be released to the Application Provider, as specified in the
+   "desired_user_attributes" declared by the Application Provider in
+   their Instance Metadata (Section 4.4.3).  The user attributes SHOULD
+   be displayed to Administrators in a human-readable format that can be
+   easily understood.
+
+   The Identity Provider MUST include CSRF protections when obtaining
+   consent.
+
+   If a federation relationship was previously configured between the
+   tenant of the Identity Provider and the tenant of the Application
+   Provider, then completing the handshake SHOULD update the preexisting
+   federation configuration with the newly exchanged values.  The
+   Identity Provider SHOULD inform the Administrator of the changes that
+   will be made to the previously defined configuration.
+
+7.2.3.5.  Identity Provider Enables Federation
+
+   Upon receiving consent from the Administrator, the Identity Provider
+   MUST take any actions necessary to enable federation with the
+   Application Provider.  This is an implementation detail.  Actions
+   typically include updating internal datastore records to allow SSO to
+   the Application Provider, and potentially initiating user
+   provisioning.
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 40]
+
+                               FastFed 1.0                  October 2017
+
+
+   If a provider authorization scheme is used, the Application Provider
+   MUST now be granted access to all operations on the Identity Provider
+   necessary for the federated relationship to become active.
+
+8.  Provider Authorization
+
+   Provider Authorization enables an Identity Provider and Application
+   Provider to agree on an authorization scheme and use that scheme to
+   protect access to any endpoints shared with the other party.
+   Supported schemes are communicated via the
+   "provider_authz_schemes_supported" property within Provider Metadata
+   (Section 4.3.1).
+
+   This specification describes one authorization scheme using OAuth.
+
+8.1.  OAuth Scheme
+
+8.1.1.  FastFed Grant Type
+
+   FastFed defines an OAuth Extension Grant Type (Section 4.5 of RFC
+   6749 [RFC6749]) with URI "urn:ietf:params:oauth:grant-type:fastfed".
+
+   The FastFed grant type uses access codes exchanged by Providers
+   during the FastFed Handshake.  These initial access codes are
+   redeemed for an OAuth "access_token" and "refresh_token" using the
+   OAuth Extension Grant Flow (Section 4.5 of RFC 6749 [RFC6749]).  The
+   resulting OAuth tokens are Bearer Tokens [RFC6750] that are
+   subsequently used for accessing any FastFed endpoints which require
+   authorization.
+
+   The FastFed initial access codes are redeemed by making a request to
+   the token endpoint of an OAuth authorization server with the
+   following parameters:
+
+   grant_type  REQUIRED.  The value "urn:ietf:params:oauth:grant-
+      type:fastfed"
+
+   initial_access_code  REQUIRED.  The initial access code vended by one
+      Provider to another Provider during the FastFed Handshake.  The
+      access code MUST expire shortly after it is issued to mitigate the
+      risk of leaks.  A maximum authorization code lifetime of 10
+      minutes is RECOMMENDED.  The client MUST NOT use the access code
+      more than once.  If an access code is used more than once, the
+      OAuth authorization server MUST deny the request and SHOULD revoke
+      (when possible) all tokens previously issued based on that access
+      code.
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 41]
+
+                               FastFed 1.0                  October 2017
+
+
+   The following is a non-normative example of using the OAuth Extension
+   Grant with the FastFed "initial_access_code":
+
+    POST /token HTTP/1.1
+    Host: idp.example.com
+    Content-Type: application/x-www-form-urlencoded
+
+    grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3fastfed
+    &initial_access_code=PEFzc2VydGlvbiBJc3N1ZUluc3RhbnQ9IjIwMTEtMDUk2k2
+
+8.1.2.  OAuth Extensions to Provider Metadata
+
+   Support for OAuth is specified in FastFed by including the string
+   "OAuth" in the "provider_authz_schemes_supported" property in
+   Provider Metadata (Section 4.3.1).
+
+8.1.3.  OAuth Extensions to Instance Metadata
+
+   OAuth is selected as an authorization scheme by using the string
+   "OAuth" as the value of the "provider_authz_schemes_supported" in
+   Instance Metadata (Section 4.4.1).
+
+   When using OAuth, both Providers need to share the location of the
+   OAuth token endpoint.
+
+   To enable this, the Common Instance Metadata (Section 4.4.1)
+   structure is extended with the following attributes:
+
+   oauth_token_endpoint  REQUIRED when using OAuth.  Contains the URL of
+      the Provider's OAuth 2.0 Token Endpoint, as specified in
+      Section 3.2 of [RFC6749].
+
+   The following is a non-normative snippet of Instance Metadata showing
+   the use of OAuth:
+
+    {
+    "identity_provider_instance": {
+      "tenant_id": "k2lini4cj509ut09cj0jcjwee9gj0jeg",
+      ...
+      "provider_authz_scheme": "OAuth",
+      "oauth_token_endpoint": "https://tenant12345.example.com/token",
+      ...
+
+8.1.4.  OAuth Extensions to Handshake Flows
+
+   The use of the OAuth scheme extends the FastFed Handshake flows with
+   additional parameters and requirements.  These extensions are
+   described below.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 42]
+
+                               FastFed 1.0                  October 2017
+
+
+8.1.4.1.  Extension to Step 6.2.1.7 - Identity Provider Response
+
+   The request from the Identity Provider to the Application Provider is
+   extended with the following parameters:
+
+   initial_access_code  REQUIRED.  The initial code for use with the
+      FastFed OAuth Extension Grant Type (Section 8.1).
+
+   oauth_token_endpoint  REQUIRED.  URL of the Provider's OAuth 2.0
+      Token Endpoint, as specified in Section 3.2 of [RFC6749].
+
+      The following is a non-normative example showing the usage of
+      OAuth with the additional parameters:
+
+ HTTP/1.1 302 Found
+ Location: https://app.example.com/fastfed/handshake/receive?
+   provider_metadata_uri=https%3A%2F%2Fidp.example.com%2Ffastfed%2Fprovider-metadata
+   &instance_metadata_uri=https%3A%2F%2Ftenant12345.example.com%2Ffastfed%2Finstance-metadata
+   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &authz_scheme=OAuth
+   &oauth_token_endpoint=https%3A%2F%2Fidp.example.com%2Foauth%2Ftoken
+   &initial_access_code=p3kN2ko1Ho2439cmDs5
+
+   The Identity Provider MUST perform the following:
+
+   o  Generate an initial_access_code for the Application Provider
+
+   o  Populate the request to the Application Provider with the
+      "authz_scheme", "oauth_token_endpoint", and "initial_access_code".
+
+   The Application Provider MUST perform the following:
+
+   o  Capture the "authz_scheme", "oauth_token_endpoint", and
+      "initial_access_code" for use in subsequent steps.
+
+8.1.4.2.  Extension to Step 6.2.2.3 - Application Provider Reads
+          Instance Metadata
+
+   Prior to reading Instance Metadata, the Application Provider MUST
+   exchange the "initial_access_code" for an OAuth "access_token" and
+   "refresh_token".  This is accomplished by using the OAuth Extended
+   Grant flow with the "oauth_token_endpoint" and "initial_access_code"
+   supplied by the Identity Provider.
+
+   The resulting "access_token" MUST be presented as a Bearer Token
+   [RFC6750] when calling the Instance Metadata Endpoint on the Identity
+   Provider
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 43]
+
+                               FastFed 1.0                  October 2017
+
+
+   The following is a non-normative example of a request and response
+   using the OAuth Extension Grant with FastFed:
+
+    POST /token HTTP/1.1
+    Host: idp.example.com
+    Content-Type: application/x-www-form-urlencoded
+
+    grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3fastfed
+    &initial_access_code=PEFzc2VydGlvbiBJc3N1ZUluc3RhbnQ9IjIwMTEtMDUk2k2
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json;charset=UTF-8
+    Cache-Control: no-store
+    Pragma: no-cache
+
+    {
+      "access_token":"Lj2kj3ujwlkdnl2ip42i2o",
+      "token_type":"Bearer",
+      "expires_in":3600,
+      "refresh_token":"ztdyt86vgljyfJRq0vDJ676"
+    }
+
+   The following is a non-normative example of using the "access_token"
+   to query Instance Metadata:
+
+     GET /tenant12345/instance-metadata HTTP/1.1
+     Accept: application/json
+     Host: provider.example.com
+     Authorization: Bearer Lj2kj3ujwlkdnl2ip42i2o
+
+   The Identity Provider MUST perform the following for this step:
+
+   o  Operate an OAuth authorization server that supports the FastFed
+      Grant Type, as defined in Section 8.1.
+
+   o  Issue an "access_token" and "refresh_token" as a result of a valid
+      token request using the FastFed Grant.
+
+   o  Authorize calls to the Instance Metadata Endpoint using the
+      "access_token" presented as a Bearer Token [RFC6750].  The
+      "access_token" MUST give access to query the Instance Metadata
+      Endpoint and any resources referenced by the Instance Metadata.
+
+   The Application Provider MUST perform the following:
+
+   o  Call the Identity Provider's token endpoint to exchange the
+      FastFed "initial_access_code" for an OAuth "access_token" and
+      "refresh_token".
+
+
+
+McAdams                  Expires April 18, 2018                [Page 44]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  Capture the "access_token" and "refresh_token" for subsequent
+      steps
+
+   o  Present the "access_token" as a Bearer Token [RFC6750] when
+      querying the Instance Metadata Endpoint.
+
+8.1.4.3.  Extension to Step 6.2.2.8 - Application Provider Response
+
+   The response from the Application Provider to the Identity Provider
+   is extended with the following parameters:
+
+   initial_access_code  REQUIRED.  The initial code for use with the
+      FastFed OAuth Extension Grant Type, as per Section 8.1
+
+   oauth_token_endpoint  REQUIRED.  URL of the Provider's OAuth 2.0
+      Token Endpoint, as specified in Section 3.2 in [RFC6749].
+
+   The following is a non-normative example showing the usage of OAuth
+   with the additional parameters:
+
+ HTTP/1.1 302 Found
+ Location: https://ipd.example.com/fastfed/handshake/finish?
+   instance_metadata_uri=https%3A%2F%2Ftenant67890.example.com%2Ffastfed%2Finstance-metadata
+   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &authz_scheme=OAuth
+   &oauth_token_endpoint=https%3A%2F%2Fapp.example.com%2Foauth%2Ftoken
+   &initial_access_code=k6i49yjo93jPklqlsj
+
+   The Application Provider MUST perform the following:
+
+   o  Generate an "initial_access_code" for the Application Provider
+
+   o  Populate the response to the Identity Provider with the
+      "authz_scheme", "oauth_token_endpoint", and "initial_access_code".
+
+   The Identity Provider MUST perform the following for this step:
+
+   o  Capture the "authz_scheme", "oauth_token_endpoint", and
+      "initial_access_code" for use in subsequent steps.
+
+8.1.4.4.  Extension to Step 6.2.3.2 - Identity Provider Reads Instance
+          Metadata
+
+   This extension is similar to Step 8.1.4.2 with the roles of the
+   Identity Provider and Application Provider swapped.
+
+   Prior to querying the Instance Metadata from the Application
+   Provider, the Identity Provider MUST exchange the
+
+
+
+McAdams                  Expires April 18, 2018                [Page 45]
+
+                               FastFed 1.0                  October 2017
+
+
+   "initial_access_code" for an OAuth "access_token" and refresh_token.
+   This is accomplished by using the OAuth Extended Grant flow with the
+   token endpoint and "initial_access_code" supplied by the Application
+   Provider, as per Section 8.1
+
+   The resulting access_token MUST be presented as a Bearer Token
+   [RFC6750] when calling the Instance Metadata Endpoint on the
+   Application Provider.
+
+8.1.4.5.  Extension to Step 6.2.3.5 - Identity Provider Enables
+          Federations
+
+   When enabling federation and completing the handshake, the Identity
+   Provider MUST grant access to the Application Provider for all
+   operations necessary for the federated relationship to become active.
+   This MAY be accomplished by including the new permissions the next
+   time the Application Provider uses their "refresh_token" to fetch a
+   new "access_token".
+
+8.1.5.  Applicability to OIDC
+
+   If the Identity Provider supports OpenID Connect Dynamic Client
+   Registration 1.0 [OpenID.Registration] [OpenID.Registration], the
+   FastFed Application Provider MUST present the "access_token" as the
+   Initial Access Token when calling the Client Registration Endpoint.
+   The Identity Provider SHOULD authorize the caller using the presented
+   token.
+
+   In addition, the Application Provider MUST present the "access_token"
+   as a Bearer Token [RFC6750] when querying any OpenID Connect
+   endpoints hosted by the Identity Provider, including OpenID Provider
+   Configuration Requests as specified in OpenID Connect Dynamic Client
+   Registration 1.0 [OpenID.Registration] [OpenID.Registration].  The
+   Identity Provider SHOULD authorize the Application Provider using the
+   presented token.
+
+8.1.6.  Applicability to SAML
+
+   When reading SAML Metadata from an endpoint specified by a Provider,
+   the caller MUST present the "access_token" as a Bearer Token
+   [RFC6750] when querying the endpoint.  The endpoint owner SHOULD
+   authorize the caller using the presented token.
+
+8.1.7.  Applicability to SCIM
+
+   When calling a SCIM endpoint as part of user provisioning activities,
+   the caller MUST present the "access_token" as a Bearer Token
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 46]
+
+                               FastFed 1.0                  October 2017
+
+
+   [RFC6750].  The endpoint owner SHOULD authorize the caller using the
+   presented token.
+
+9.  User Schemas
+
+   FastFed requires that an Identity Provider and Application Provider
+   share a common user schema.  FastFed RECOMMENDS the use of the SCIM
+   specification for defining schemas [RFC7643].  Any schema specified
+   under the path "urn:ietf:params:scim:schemas" will be presumed to be
+   a SCIM schema definition for the purposes of this specification.
+
+   For each schema, the following properties must be specified:
+
+   o  Attribute Path Syntax
+
+   o  Attribute Mapping Syntax
+
+9.1.  Attribute Path
+
+   Attribute Path is a string whose contents reference a specific user
+   attribute within the schema.
+
+   Attribute Path Syntax describes the format of the string and varies
+   by schema type.  Section 9.3.1 describes the Attribute Path Syntax
+   for SCIM.
+
+9.2.  Attribute Mapping
+
+   Attribute Mapping is a structure containing the following elements:
+
+   mapping_syntax  REQUIRED.  A string which defines the Attribute
+      Mapping Syntax to use when interpreting the mapping rules.  A
+      mapping syntax is bound to a particular schema type and SSO
+      protocol.  See Section 9.3.2.1 for mapping SCIM-to-SAML and
+      Section 9.3.2.2 for mapping SCIM-to-OIDC.
+
+   mapping_rules  REQUIRED.  A structure containing a description of
+      mapping rules, expressed in the Attribute Mapping Syntax.
+
+   When performing an attribute mapping based upon the "mapping_rules",
+   Identity Providers MUST ignore and omit any attributes in the
+   "mapping_rules" which were not explicitly approved for release by the
+   Administrator in Step 7.2.3.4 of the FastFed Handshake.
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 47]
+
+                               FastFed 1.0                  October 2017
+
+
+9.3.  SCIM Specifications for FastFed
+
+9.3.1.  SCIM Attribute Path Syntax
+
+   FastFed uses the SCIM PATH specification as defined in section
+   Section 3.5.2 of the SCIM Core Specification [RFC7643] [RFC7643].
+
+   The following are non-normative examples of SCIM PATH definitions:
+
+    userName
+    name.familyName
+    addresses[primary eq true].formatted
+
+   When used with FastFed, a SCIM PATH expression MUST point to an
+   attribute with one of the following Data Types as defined in
+   Section 3 of the SCIM Core Specification [RFC7643] [RFC7643].
+
+   o  String
+
+   o  Boolean
+
+   o  Decimal
+
+   o  Integer
+
+   o  DateTime
+
+   o  Binary
+
+   o  Reference
+
+   The SCIM PATH expression MUST NOT point to an attribute with a
+   Complex Data Type.  If information is needed from a Complex
+   attribute, each piece of information should be referenced by
+   explicitly specifying unique paths to the members of a Complex
+   attribute.
+
+   The following is a non-normative example of an invalid path which
+   MUST NOT be used because it references a Complex attribute:
+
+  addresses[primary eq true]     # Invalid. Points to Complex attribute.
+
+   The SCIM PATH expression MAY match multiple attributes.  Each
+   matching attribute MUST be one of the supported Data Types.
+
+   The following are non-normative examples of paths which may match
+   multiple attributes:
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 48]
+
+                               FastFed 1.0                  October 2017
+
+
+ groups.displayName             # List of group displayNames
+ emails.value                   # List of email values
+ emails[value co ".com"].value  # List of email values containing ".com"
+
+9.3.2.  SCIM Attribute Mapping Syntax
+
+9.3.2.1.  Simple SCIM to SAML
+
+   This syntax maps between SCIM 2.0 schemas [RFC7643] and SAML 2.0
+   assertions [SAML.Assertions].
+
+   The syntax is referenced by specifying the string
+   "simple_scim_to_saml" as the value of the "mapping_syntax" attribute
+   in the Attribute Mapping (Section 9.2) structure.
+
+   This syntax defines a transformation based on simple string copying.
+   No formatting or alterations of the strings are supported.  Instead,
+   values are simply copied from the user schema and inserted into the
+   SSO protocol with the specified labels and properties.
+
+   The mapping rules are defined by a structure containing the following
+   attributes:
+
+   name_id  REQUIRED.  A structure which defines how to populate the
+      Subject NameID element in the SAML assertion.  It contains the
+      following attributes:
+
+      format  REQUIRED.  A string value to use as the NameID Format.
+
+      value  REQUIRED.  The SCIM Attribute Path pointing to a value to
+         be used as the SCIM NameID.  The Attribute Path MUST reference
+         a single value, not a list.
+
+   attributes  OPTIONAL.  A list of structures, where each structure
+      contains the following attributes:
+
+      name  REQUIRED.  A string value to use as the SAML Attribute Name
+
+      format  OPTIONAL.  A string value to use as the SAML Attribute
+         Format.  Defaults to "urn:oasis:names:tc:SAML:2.0:attrname-
+         format:unspecified"
+
+      value  REQUIRED.  The SCIM Attribute Path pointing to a value to
+         be used as the SAML Attribute Value.  The Attribute Path MAY
+         reference a single value or a list of values.  If an attribute
+         value is undefined or empty for an end-user, the Identity
+         Provider MUST omit the attribute when building the SAML
+         assertion.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 49]
+
+                               FastFed 1.0                  October 2017
+
+
+   The following non-normative example shows a SCIM User, a SCIM
+   Attribute Mapping definition, and the resulting SAML assertion.
+
+   Example SCIM User:
+
+    {
+      "schemas":
+        ["urn:ietf:params:scim:schemas:core:2.0:User"],
+      "id": "2819c223-7f76-453a-919d-413861904646",
+      "userName": "bjensen",
+      "name": {
+        "formatted": "Ms. Barbara J Jensen, III",
+      },
+      "displayName": "Babs Jensen",
+      "emails": [
+        {
+          "value": "bjensen@example.com",
+          "type": "work",
+          "primary": true
+        },
+        {
+          "value": "babs@jensen.org",
+          "type": "home"
+        }
+      ],
+      "groups": [
+        {
+          "displayName": "Employees"
+        },
+        {
+          "displayName": "US Employees"
+        }
+      ]
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 50]
+
+                               FastFed 1.0                  October 2017
+
+
+   Example Attribute Mapping:
+
+ "user_attribute_mapping": {
+     "mapping_syntax": "simple_scim_to_saml",
+     "mapping_rules": {
+         "name_id": {
+             "format": "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+             "value": "id",
+         },
+         "attributes": [
+             {"name": "name",
+              "value": "displayName"
+             },
+             {"name": "email",
+              "value": "email[primary eq true].value"
+             },
+             {"name": "groups",
+              "value": "groups.displayName"
+             }
+         ]
+     }
+ }
+
+   Example of Resulting SAML Document:
+
+    ...
+    <saml:Subject>
+      <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">2819c223-7f76-453a-919d-413861904646</saml:NameID>
+    </saml:Subject>
+    ...
+    <saml:AttributeStatement>
+      <saml:Attribute Name="name" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue">Babs Jenson</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue">bjenson@example.com</saml:AttributeValue>
+      </saml:Attribute>
+      <saml:Attribute Name="groups" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue">Employees</saml:AttributeValue>
+        <saml:AttributeValue">US Employees</saml:AttributeValue>
+      </saml:Attribute>
+    </saml:AttributeStatement>
+   ...
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 51]
+
+                               FastFed 1.0                  October 2017
+
+
+9.3.2.2.  Simple SCIM to OIDC
+
+   This syntax maps between SCIM schemas [RFC7643] and OpenID Connect
+   claims [OpenID.Core].
+
+   The syntax is used by specifying the string "simple_scim_to_oidc" as
+   the value of the "mapping_syntax" attribute in the Attribute Mapping
+   (Section 9.2) structure.
+
+   This syntax defines a transformation based on simple string copying.
+   No formatting or alterations of the strings are supported.  Instead,
+   values are simply copied from the user schema and inserted into the
+   SSO protocol with specified labels.
+
+   The mapping rules are defined by a structure containing key-value
+   pairs, where the key is the name of an OpenID Connect claim and the
+   value is a SCIM Attribute Path.
+
+   The following is a non-normative example of "simple_scim_to_oidc"
+   mapping rules:
+
+    "mapping_rules": {
+        "sub": "id",
+        "name": "displayName",
+        "email": "email[primary eq true].value",
+        "groups": "groups.displayName"
+    }
+
+   If an attribute value is undefined or empty for an end-user, the
+   Identity Provider MUST omit the claim from OIDC responses.
+
+   The following non-normative example shows a sample SCIM User, a SCIM
+   Attribute Mapping definition, and the resulting OIDC claims.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 52]
+
+                               FastFed 1.0                  October 2017
+
+
+   Example SCIM User:
+
+    {
+      "schemas":
+        ["urn:ietf:params:scim:schemas:core:2.0:User"],
+      "id": "2819c223-7f76-453a-919d-413861904646",
+      "userName": "bjensen",
+      "name": {
+        "formatted": "Ms. Barbara J Jensen, III",
+      },
+      "displayName": "Babs Jensen",
+      "emails": [
+        {
+          "value": "bjensen@example.com",
+          "type": "work",
+          "primary": true
+        },
+        {
+          "value": "babs@jensen.org",
+          "type": "home"
+        }
+      ],
+      "groups": [
+        {
+          "displayName": "Employees"
+        },
+        {
+          "displayName": "US Employees"
+        }
+      ]
+    }
+
+   Example Attribute Mapping:
+
+    "user_attribute_mapping": {
+        "mapping_syntax": "simple_scim_to_oidc",
+        "mapping_rules": {
+            "sub": "userName",
+            "name": "displayName",
+            "email": "email[primary eq true].value",
+            "groups": "groups.displayName"
+        }
+    }
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 53]
+
+                               FastFed 1.0                  October 2017
+
+
+   Example of Resulting OIDC Claims:
+
+    "sub": "bjensen",
+    "name": "Babs Jenson"
+    "email": "bjenson@example.com"
+    "groups": ["Employees", "US Employees"]
+
+10.  Recurring Activities
+
+   Recurring Activities are optional capabilities that continue after
+   the initial FastFed Handshake is completed.  Typically, they are used
+   to communicate changes in Metadata that are safe to share between
+   Providers automatically, without explicit consent from an
+   Administrator.
+
+   This specification defines recurring activities for key rotation and
+   icon image updates.
+
+10.1.  Recurring Activities Capabilities
+
+   Recurring Activities Capabilities is a structure containing the
+   following attributes:
+
+   icon_refresh  OPTIONAL.  A list of strings which describes the
+      Provider capabilities for refreshing icon images.  Valid values
+      are "publish" and "consume".  The value "publish" indicates the
+      Provider can publish icon updates as specified in Section 10.6.1.
+      The value "consume" indicates the Provider can consume icon
+      updates from others as specified as specified in Section 10.6.2.
+
+   saml_certificate_rotation  OPTIONAL.  A list of strings which
+      describes the Provider capabilities for rotating certificates used
+      by the SAML SSO protocol.  Valid values are "publish" and
+      "consume".  The value "publish" indicates the Provider can publish
+      new certificates as specified in Section 10.7.1.  The value
+      "consume" indicates the Provider can consume new certificates as
+      specified as specified in Section 10.7.2
+
+   oidc_key_rotation  OPTIONAL.  A list of strings which describes the
+      Provider capabilities for rotating keys and secrets used by the
+      OpenID Connect SSO protocol.  Valid values are "publish" and
+      "consume".  The value "publish" indicates the Provider can publish
+      new secrets as specified in Section 10.8.1.  The value "consume"
+      indicates the Provider can consume new secrets as specified as
+      specified in Section 10.8.2.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 54]
+
+                               FastFed 1.0                  October 2017
+
+
+10.2.  Extensions to Provider Metadata
+
+   The Common Provider Metadata structure defined in Section 4.3.2 is
+   extended with the following attribute:
+
+   recurring_activities_supported  OPTIONAL.  A structure containing the
+      Recurring Activities Capabilities supported by the Provider.
+
+   The following is a non-normative example of Provider Metadata
+   containing recurring activities:
+
+    "application_provider": {
+        ...
+        "recurring_activities_supported": {
+            "icon_refresh": ["publish","consume"],
+            "saml_certificate_rotation": ["consume"],
+            "oidc_key_rotation": ["consume"],
+        }
+        ...
+    }
+
+10.3.  Extensions to Instance Metadata
+
+   The Common Instance Metadata structure defined in Section 4.4.1 is
+   extended with the following attribute:
+
+   recurring_activities  OPTIONAL.  A structure containing the Recurring
+      Activities Capabilities that will be enabled for the specific
+      relationshp between an Identity Provider and Application Provider.
+
+    "application_provider_instance": {
+        ...
+        "recurring_activities": {
+            "icon_refresh": ["publish"],
+            "saml_certificate_rotation": ["consume"],
+        }
+        ...
+    }
+
+10.4.  Extensions to Provider Compatiblity Evaluation
+
+   There are no changes to the Provider Compatibility Evaluation defined
+   in Section 6.  This is because Recurring Activities are optional.  If
+   one Provider supports an activity, but the other doesn't, then the
+   activity will simply not be executed.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 55]
+
+                               FastFed 1.0                  October 2017
+
+
+10.5.  Extensions to Instance Metadata Validation
+
+   When constructing an Instance Metadata document, the following
+   process MUST be used to select the Recurring Activities Capabilities
+   that can be enabled for a specific federation.
+
+   o  If a Provider supports "publish", and the other Provider supports
+      "consume", then the Provider MUST include "publish" in their
+      Instance Metadata choices.
+
+   o  If a Provider supports "consume", and the other Provider supports
+      "publish", then the Provider MUST include "consume" in their
+      Instance Metadata choices.
+
+   In addition, during the FastFed Handshake, each Provider MUST
+   validate that the Instance Metadata vended by the other Provider
+   conforms to this selection process.
+
+   The following is a non-normative example showing the Provider
+   Metadata and resulting Instance Metadata for a federation between an
+   Identity Provider and Application Provider:
+
+   Example of Provider Metadata:
+
+    "identity_provider": {
+        ...
+        "recurring_activities": {
+            "icon_refresh": ["publish", "consume"],
+            "saml_certificate_rotation": ["publish"]
+            "oidc_key_rotation": ["publish"]
+        }
+        ...
+    }
+
+    "application_provider": {
+        ...
+        "recurring_activities": {
+            "icon_refresh": ["publish"],
+            "saml_certificate_rotation": ["consume"]
+        }
+        ...
+    }
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 56]
+
+                               FastFed 1.0                  October 2017
+
+
+   Example of resulting Instance Metadata:
+
+    "identity_provider_instance": {
+        ....
+        "recurring_activities": {
+            "icon_refresh": ["consume"],
+            "saml_certificate_rotation": ["publish"]
+        }
+        ...
+    }
+
+    "application_provider_instance": {
+        ...
+        "recurring_activities": {
+            "icon_refresh": ["publish"],
+            "saml_certificate_rotation": ["consume"]
+        }
+        ...
+    }
+
+10.6.  Requirements for Icon Refresh
+
+10.6.1.  Publication Requirements
+
+   To publish updated icon images, the following requirements apply to a
+   Provider:
+
+   o  MAY periodically alter the image files referenced by the icon URLs
+      defined in the Provider Metadata and Instance Metadata.
+
+   o  MAY return an HTTP 301 response code to indicate if the icon image
+      has moved to a new location.
+
+   o  MUST support the HTTP 1.1 ETag semantics [RFC2616] for all
+      requests to the icon URLs, including:
+
+      *  Returning an ETag response header
+
+      *  Accepting an If-None-Match request header, and returning an
+         HTTP 304 response if the icon image is unmodified.
+
+   If these requirements are met, the Provider SHOULD specify "publish"
+   as a value in their list of icon_refresh capabilities.
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 57]
+
+                               FastFed 1.0                  October 2017
+
+
+10.6.2.  Consumption Requirements
+
+   To consume updated icon images, the following requirements apply to a
+   Provider:
+
+   o  MUST capture a local copy of an image from the icon URLs defined
+      in the Provider Metadata and Instance Metadata.  Otherwise, there
+      is nothing to refresh and the icon refresh activity is
+      unnecessary.
+
+   o  MUST re-query the icon image urls at least once every 24 hours to
+      check if a new image is available to replace a local copy.
+
+   o  MUST include the If-None-Match header in the request to read the
+      icon, populated with the value of the ETag response header
+      received when initially downloading the image.
+
+   o  MUST handle an HTTP 304 response code which indicates that the
+      image is unchanged.
+
+   o  MUST handle an HTTP 301 response code and use the new location for
+      all future image downloads.
+
+   If these requirements are met, the Provider SHOULD specify "consume"
+   as a value in their list of icon_refresh capabilities.
+
+10.7.  Requirements for SAML Certificate Rotation
+
+   While the full SAML specification supports a variety of key usages,
+   the FastFed Interoperability Requirements (Section 11) restrict
+   Providers to only X509 Keys for signing SAML Assertions in Web
+   Browser SSO response messages from the Identity Provider.
+
+   As such, the following constraints apply to "saml_key_rotation"
+   specifications:
+
+   o  Identity Providers MAY include "publish" as a valid
+      "saml_key_rotation" capability if they meet the Publication
+      Requirements described in this section.  Any other values MUST be
+      ignored and SHOULD NOT be included.
+
+   o  Application Providers MAY include "consume" as a valid
+      "saml_key_rotation" capability if they meet the Consumption
+      Requirements described in this section.  Any other values MUST be
+      ignored and SHOULD NOT be included.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 58]
+
+                               FastFed 1.0                  October 2017
+
+
+10.7.1.  Publication Requirements
+
+   To rotate and publish new SAML signing certificates, the following
+   requirements apply to the Identity Provider:
+
+   o  MUST include new certificates in the response to queries against
+      the SAML Metadata URL.  This URL was specified in the Identity
+      Provider Instance Metadata during the FastFed Handshake.
+
+   o  MUST publish the new certificate in the SAML Metadata at least 14
+      days before the currently active certificate will expire or be
+      revoked, where the expiration date is specified by the "notAfter"
+      attribute within the X.509 certificate.
+
+   o  MUST include the new certificate in the SAML Metadata, alongside
+      the currently active certificate, using the recommended technique
+      for multiple certificates defined in the SAML Metadata
+      Interoperability Profile [SAML.Interoperability].  As a reference,
+      this Interopability Profile specifies that each certificate MUST
+      be placed within its own "<KeyDescriptor>" element.
+
+   o  SHOULD continue using the original key for signing SAML Assertions
+      for at least 7 days after publishing the new certificate, to give
+      consumers time to read the new certificate from the SAML Metadata
+      and be ready to receive the new key.
+
+   o  SHOULD begin signing assertions with the new key if less than 7
+      days remains until the old certificate expires.  MAY continue
+      using the old key if problems arise with the new key, to give time
+      for diagnosis of the problems.
+
+   o  SHOULD stop using the old key for signing assertions when less
+      than 1 day remains until the old certificate expires.
+
+   o  MUST support HTTP 1.1 ETag semantics [RFC2616] for all requests to
+      the SAML Metadata URL, including:
+
+      *  Returning an ETag response header
+
+      *  Accepting an If-None-Match request header, and returning an
+         HTTP 304 response if the SAML Metadata is unmodified.
+
+   o  MAY return an HTTP 301 response code to indicate the SAML Metadata
+      has moved to a new location.
+
+   If these requirements are met, the Identity Provider MAY specify
+   "publish" as a value in their list of "saml_key_rotation"
+   capabilities.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 59]
+
+                               FastFed 1.0                  October 2017
+
+
+10.7.2.  Consumption Requirements
+
+   To consume rotated SAML signing keys, the following requirements
+   apply to the Application Provider:
+
+   o  MUST re-query the Identity Provider's SAML Metadata URL to check
+      for new certificates at least once every 24 hours.  Because
+      certificates can be rotated at any time, the Application Provider
+      MUST NOT wait for the expiration date to check for updated
+      certificates.  for updates.
+
+   o  MUST include the If-None-Match header in the request to download
+      the SAML Metadata, populated with the value of the ETag response
+      header received when previously downloading the SAML Metadata.
+
+   o  MUST handle an HTTP 304 response code which indicates that the
+      SAML Metadata is unchanged.
+
+   o  MUST handle an HTTP 301 response code and use the new location for
+      all future downloads of the Identity Provider's SAML Metadata.
+
+   o  MUST support the consumption of multiple certificates using the
+      recommended techniques defined in the SAML Metadata
+      Interoperability Profile [SAML.Interoperability].  As a reference,
+      this Interopability Profile specifies that each certificate MUST
+      be placed within its own "<KeyDescriptor>" element.
+
+   o  MUST ignore any changes in the SAML Metadata except for
+      "<KeyDescriptor>" elements.
+
+   o  MUST accept SAML assertions signed using any of the valid
+      certificates specified within the "<KeyDescriptor>" elements of
+      the Identity Provider SAML Metadata.
+
+   o  SHOULD alert the Administrator if the Identity Provider has not
+      published a new certificate and less than 14 days remains until
+      expiration of the current certificate.  The alert mechanism is an
+      implementation detail that is outside the scope of the
+      specification.
+
+   If these requirements are met, the Application Provider MAY specify
+   "consume" as a value in their list of saml_key_rotation capabilities.
+
+10.8.  Requirements for OIDC Key Rotation
+
+   Open ID Connect describes a variety of keys and secrets that are
+   managed by both Identity Providers and Application Providers.  The
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 60]
+
+                               FastFed 1.0                  October 2017
+
+
+   FastFed Interoperability Requirements (Section 11) permit use of the
+   following:
+
+   o  Asymmetric Signing Keys as defined Section 10 of OpenID Connect
+      Core 1.0 [OpenID.Core] [OpenID.Core], consisting of the following:
+
+      *  A private key used by the Identity Provider to sign ID Tokens
+         issued to the Application Provider.
+
+      *  A public key used by the Application Provider to verify ID
+         Token signatures.  The Identity Provider publishes the public
+         keys in the location described by the "jwks_uri" in the
+         Identity Provider's OpenID Connect Discovery [OpenID.Discovery]
+         configuration.
+
+   o  Values for "client_secret" and "client_secret_expires_at" that are
+      vended from the Identity Provider to the Application Provider as
+      described in Section 3.2 of OpenID Connect Dynamic Client
+      Registration 1.0 [OpenID.Registration] [OpenID.Registration].
+      FastFed Interoperability requires that "client_secret" be of type
+      "client_secret_basic" as defined in the HTTP Basic Authentication
+      Scheme specified in Section 2.3.1 of OAuth 2.0 [RFC6749].
+
+   Since all permitted keys are generated and vended by the Identity
+   Provider, the following constraints apply to "oidc_key_rotation"
+   specifications:
+
+   o  Identity Providers MAY include "publish" as a valid
+      "oid_key_rotation" capability if they meet the Publication
+      Requirements described in this section.  Any other values MUST be
+      ignored and SHOULD NOT be included.
+
+   o  Application Providers MAY include "consume" as a valid
+      "oid_key_rotation" capability if they meet the Consumption
+      Requirements described in this section.  Any other values MUST be
+      ignored and SHOULD NOT be included.
+
+10.8.1.  Publication Requirements
+
+   If the Identity Provider meets all the requirements described below
+   in Publication of New Signing Keys and Publication of New Client
+   Secret, the Identity Provider SHOULD specify "publish" as a value in
+   their list of "oidc_key_rotation" capabilities.
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 61]
+
+                               FastFed 1.0                  October 2017
+
+
+10.8.1.1.  Publication of New Signing Keys
+
+   To publish new signing keys, the following requirements apply to the
+   Identity Provider:
+
+   o  MUST add a new key to the response value from the "jwks_uri" at
+      least 14 days before prior keys expire.
+
+   o  SHOULD wait at least 7 days after publishing a new key before
+      using it for signing ID Tokens, to give consumers time to read the
+      new key.  MAY continue using the previous key if problems arise
+      with the new key, to give time for diagnosis of the problems.
+
+   o  SHOULD stop using the older key for signing ID Tokens when less
+      than 1 day remains before the key expires.
+
+   o  MUST support HTTP 1.1 ETag semantics [RFC2616] for all requests to
+      the "jwks_uri", including:
+
+      *  Returning an ETag response header
+
+      *  Accepting an If-None-Match request header, and returning an
+         HTTP 304 response if the SAML Metadata is unmodified,
+
+   o  MAY return an HTTP 301 response code to indicate the "jwks_uri"
+      has moved to a new location.
+
+10.8.1.2.  Publication of New Client Secret
+
+   To publish a new client_secret, the following requirements apply to
+   the Identity Provider:
+
+   o  MUST return a new "client_secret" in the response to queries
+      against the "registration_client_uri", as defined in Section 4 of
+      OpenID Connect Dynamic Client Registration 1.0
+      [OpenID.Registration] [OpenID.Registration].
+
+   o  MUST make the new "client_secret" available for consumption at
+      least 14 days before the prior "client_secret" is scheduled to
+      expire.
+
+   o  MUST continue accepting the previous "client_secret" until the
+      expiration date.
+
+   o  SHOULD alert the Administrator if the previous client_secret
+      continues to be used and less than 7 days remains until
+      expiration.  The alert mechanism is an implementation detail that
+      is outside the scope of the specification.
+
+
+
+McAdams                  Expires April 18, 2018                [Page 62]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  MUST support HTTP 1.1 ETag semantics [RFC2616] for all requests to
+      the "registration_client_uri", including:
+
+      *  Returning an ETag response header
+
+      *  Accepting an If-None-Match request header, and returning an
+         HTTP 304 response if the SAML Metadata is unmodified,
+
+   o  MAY return an HTTP 301 response code to indicate the
+      "registration_client_uri" has moved to a new location.
+
+10.8.2.  Publication Requirements
+
+   If the Application Provider meets all the requirements described
+   below in Consumption of New Public Signing Keys and Consumption of
+   New Client Secret, the Application Provider SHOULD specify "consume"
+   as a value in their list of "oidc_key_rotation" capabilities.
+
+10.8.2.1.  Consumption of New Signing Keys
+
+   To consume new public signing keys, the following requirements apply
+   to the Application Provider:
+
+   o  MAY re-retrieve keys on demand by following the specifications
+      defined in Section 10.1.1 OpenID Connect Core 1.0 [OpenID.Core]
+      [OpenID.Core].
+
+   o  Alternatively, MAY preemptively re-retrieve keys by querying the
+      "jwks_uri" on a recurring basis to check for updates.  If this
+      approach is taken, the Application Provider MUST re-retrieve the
+      keys at least once every 24 hours.  Because keys can be rotated at
+      any time, the Application Provider MUST NOT wait for the
+      expiration date to check for updated keys.
+
+   At least one of the above methods MUST be used to re-retrieve keys
+   from the "jwks_uri".  Both methods MAY be used concurrently.  In
+   addition, the following requirements apply to the Application
+   Provider:
+
+   o  MUST include the If-None-Match header in the request to the
+      "jwks_uri", populated with the value of the ETag response header
+      received when previously querying the "jwks_uri".
+
+   o  MUST handle an HTTP 304 response code which indicates that the
+      content at the "jwks_uri" is unchanged.
+
+   o  MUST handle an HTTP 301 response code and use the new location for
+      all future queries against the "jwks_uri".
+
+
+
+McAdams                  Expires April 18, 2018                [Page 63]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  MUST accept OIDC ID Tokens signed using any of the valid keys
+      contained in the response from the "jwks_uri".
+
+10.8.2.2.  Consumption of New Client Secret
+
+   As background, when an Application Provider initially registers with
+   an Identity Provider using OpenID Connect Dynamic Client Registration
+   [OpenID.Registration], the registration response contains the
+   following attributes:
+
+   o  client_secret
+
+   o  client_secret_expires_at
+
+   o  registration_client_uri
+
+   To rotate the "client_secret", the Application Provider will
+   periodically re-query the Client Configuration Endpoint (located at
+   the "registration_client_uri") in order to re-read the current
+   configuration.  If a new "client_secret" has been issued, the new
+   "client_secret" will appear in the response.  The specifications for
+   querying the Client Configuration Endpoint are described in Section 4
+   of OpenID Connect Dynamic Client Registration 1.0
+   [OpenID.Registration] [OpenID.Registration].
+
+   To consume new values of "client_secret", the following requirements
+   apply to the Application Provider:
+
+   o  MUST re-retrieve the client_secret from the
+      "registration_client_uri" at least once every 24 hours.  Because
+      secrets can be rotated at any time, the Application Provider MUST
+      NOT wait for the expiration date to check for updated secrets.
+
+   o  MUST include the If-None-Match header in the request to the
+      "registration_client_uri", populated with the value of the ETag
+      response header received when previously querying the
+      "registration_client_uri".
+
+   o  MUST handle an HTTP 304 response code which indicates that the
+      content at the "registration_client_uri" is unchanged.
+
+   o  MUST handle an HTTP 301 response code and use the new location for
+      all future queries against the "registration_client_uri".
+
+   o  SHOULD use the new "client_secret" for OpenID Connect flows upon
+      receiving an updated value.  MAY temporarily revert to using the
+      prior "client_secret" if the prior secret has not expired and
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 64]
+
+                               FastFed 1.0                  October 2017
+
+
+      unexpected problems arise from the new "client_secret".  This
+      allows time for diagnosis of problems.
+
+11.  Interoperability Requirements
+
+   Each of the existing identity standards defines a set of optional
+   features to enable usage in a wide variety of circumstances.
+
+   However, a consequence of the flexibility is that two Providers may
+   find themselves incompabitible despite sharing the same protocols.
+   For example, if an Application Provider chooses to require signed
+   SAML Authentication requests, but the Identity Provider doesn't
+   support this feature of SAML, the Providers are incompatible even
+   though both use SAML.
+
+   To deliver the simplified Administrator experience that is the goal
+   of FastFed, it is important that two FastFed-enabled Providers have
+   confidence that they can interoperate when sharing the same
+   protocols.  To provide this confidence, this section describes the
+   interoperability requirements for different protocols that a Provider
+   must satisfy to be FastFed Compatible.
+
+11.1.  Interoperability for OIDC 1.0
+
+   A Provider who includes the value "OIDC" in the
+   "sso_protocols_supported" within their Metadata (Section 4.3.1) will
+   use the OpenID Connect authentication flows as defined in Section 3
+   of [OpenID.Core].
+
+   The following sections describe the subset of the OIDC specifications
+   that Providers MUST implement to be FastFed Combatible for the OIDC
+   SSO protocol.  Providers MAY support additional functionality, but
+   MUST NOT require the additional functionality when configuring
+   federation with another Provider using the FastFed specifications.
+
+11.1.1.  Identity Provider Requirements
+
+   o  MUST implement the required functionality of an OpenID Provider as
+      defined in the OpenID Connect Core 1.0 [OpenID.Core]
+      [OpenID.Core].
+
+   o  MUST support the following flows:
+
+      *  Authorization Code Flow (Section 3.1 of [OpenID.Core])
+
+      *  Implicit Flow (Section 3.2 of [OpenID.Core])
+
+      *  Hybrid Flow (Section 3.3 of [OpenID.Core]
+
+
+
+McAdams                  Expires April 18, 2018                [Page 65]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  MUST support returning OIDC Claims through the UserInfo Response
+      and the ID Token (Section 5 of [OpenID.Core]).
+
+   o  MUST support the OIDC Client Authentication method
+      "client_secret_basic" as defined in Section 9 of [OpenID.Core].
+
+   o  MUST support ID Token signing using Asymetric Signatures with an
+      "alg" value of "RS256", as defined in Section 10.1 of
+      [OpenID.Core].
+
+   o  MUST support Initiating Login from a Third Party, as defined in
+      Section 4 of [OpenID.Core].
+
+   o  MUST implement the required functionality of an OpenID Provider as
+      defined in OpenID Connect Dynamic Client Registration 1.0
+      [OpenID.Registration] [OpenID.Registration].
+
+   o  MUST implement the required functionality of an Open ID Provider
+      as defined in Section 3 and Section 4 of OpenID Connect Discovery
+      1.0 [OpenID.Discovery] [OpenID.Discovery]
+
+      *  The property "registration_endpoint" in the OpenID Provider
+         Metadata MUST contain the URL of the OP's Dynamic Client
+         Registration Endpoint [OpenID.Registration].
+
+      *  The property "token_endpoint_auth_methods_supported" in the
+         OpenID Provider Metadata must contain the value
+         "client_secret_basic".
+
+   o  MUST specify all values in the OpenID Provider Configuration
+      (Section 4 of [OpenID.Discovery] that are necessary to implement
+      the functionality described in this section.
+
+   o  MUST specify the Issuer location for the OpenID Provider
+      Configuration Information (as specified in Section 4 of
+      [OpenID.Discovery]) in the "oidc_configuration_uri" attribute in
+      the Identity Provider's Instance Metadata (Section 4.5.2).
+
+11.1.2.  Application Provider Requirements
+
+   o  MUST implement the required functionality of an OpenID Relying
+      Party as defined in the OpenID Connect Core 1.0 [OpenID.Core]
+      [OpenID.Core].
+
+   o  MAY use any of the following flows:
+
+      *  Authorization Code Flow (Section 3.1 of [OpenID.Core])
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 66]
+
+                               FastFed 1.0                  October 2017
+
+
+      *  Implicit Flow (Section 3.2 of [OpenID.Core])
+
+      *  Hybrid Flow (Section 3.3 of [OpenID.Core])
+
+   o  MAY retrieve Claims via the UserInfo Response or ID Token
+      (Section 5 of [OpenID.Core])
+
+   o  MUST support the OIDC Client Authentication method
+      "client_secret_basic" as defined in Section 9 of [OpenID.Core].
+
+   o  MUST support ID Token signing using Asymetric Signatures with an
+      "alg" value of "RS256", as defined in Section 10.1 of
+      [OpenID.Core].
+
+   o  MAY support Initiating Login from a Third Party, as defined in
+      Section 4 of [OpenID.Core].
+
+   o  MUST dynamically register with the Identity Provider when enabling
+      federation during the FastFed Handshake.  To do so, the entity
+      MUST implement the required functionality of an Open ID Client as
+      defined in Section 3 of [OpenID.Registration].
+
+   o  MUST support the OAuth scheme for Provider Authorization as
+      defined in 8.1, and MUST present the OAuth 2.0 Access Token as a
+      Bearer Token in the registration request, as defined in Section 3
+      of [OpenID.Discovery].
+
+   o  MUST read the OpenID Provider Configuration (Section 4 of
+      [OpenID.Discovery] using the provided in the
+      "oidc_configuration_uri" attribute in the Identity Provider's
+      Instance Metadata (Section 4.5.2).
+
+      *  MUST use the value of the "registration_endpoint" in the OpenID
+         Provider Configuration [OpenID.Discovery] when initiating
+         dynamic registration with the Identity Provider
+         [OpenID.Registration].
+
+      *  MAY use the information in the OpenID Provider Configuration
+         [OpenID.Discovery] to decide whether to use additional OpenID
+         capabilities, above and beyond the FastFed minimum
+         interoperablity requirements.  The additional capabilities must
+         be optional and the federation MUST still succeed if one
+         Provider does not support the additional capabilities.
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 67]
+
+                               FastFed 1.0                  October 2017
+
+
+11.2.  Interoperability for SAML 2.0
+
+   A Provider who includes the value "SAML" in the
+   "sso_protocols_supported" within their Metadata (Section 4.3.1) will
+   use the SAML 2.0 Web Browser SSO Profile as defined in Section 4.1 of
+   [SAML.Profiles].
+
+   The following sections describe the subset of the SAML specifications
+   that Providers MUST implement to be FastFed Compatible for the SAML
+   SSO protocol.  Providers MAY support additional functionality, but
+   MUST NOT require the additional functionality when configuring
+   federation with another Provider using the FastFed specifications.
+
+11.2.1.  Identity Provider Requirements
+
+   SAML Requirements for Identity Providers:
+
+   o  MUST implement the required functionality of a SAML Identity
+      Provider as defined in the SAML Web Browser SSO Profile
+      (Section 4.1 of [SAML.Profiles]).
+
+   o  MUST support the HTTP Redirect and HTTP POST bindings for the Web
+      Browswer SSO Profile.
+
+   o  MUST use X509 Certificates for the Signature element containined
+      within the Assertion element of the SAML Response object.  As
+      background, this response is returned from the SAML Identity
+      Provider to the SAML Service Provider as part of the SAML Web
+      Browser SSO Profile.
+
+   o  MUST host a SAML Metadata document at the location specified by
+      the "saml_metadata_uri" attribute within the Identity Provider
+      Instance Metadata (Section 4.5.1) document.
+
+   o  MUST include an IDPSSODescriptor element in the SAML Metadata
+      document as specified in [SAML.Metadata].
+
+   o  MUST populate the IDPSSODescriptor element with all values needed
+      by a SAML Service Provider to integrate with this SAML Identity
+      Provider using the capabilities described in this section.
+
+11.2.2.  Application Provider Requirements
+
+   SAML Requirements for Application Providers:
+
+   o  MUST implement the required functionality of a SAML Service
+      Provider as defined in the SAML Web Browser SSO Profile
+      (Section 4.1 of [SAML.Profiles]).
+
+
+
+McAdams                  Expires April 18, 2018                [Page 68]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  MUST use either the HTTP Redirect or HTTP POST binding for the Web
+      Browswer SSO Profile.
+
+   o  MUST accept X509 Certificates for the Signature element
+      containined within the Assertion element of the SAML Response
+      object.  As background, this response is returned from the SAML
+      Identity Provider to the SAML Service Provider as part of the SAML
+      Web Browser SSO Profile.
+
+   o  MUST host a SAML Metadata document at the location specified by
+      the "saml_metadata_uri" attribute within the Identity Provider
+      Instance Metadata (Section 4.5.1) document.
+
+   o  MUST include an SPSSODescriptor element in the SAML Metadata
+      document as specified in [SAML.Metadata].
+
+   o  MUST populate the SPSSODescriptor with all values needed by a SAML
+      Identity Provider to integrate with this SAML Service Provider
+      using the capabilities described in this section.
+
+   o  MAY use the information in the Identity Provider's corresponding
+      SAML Metadata document to decide whether to use additional SAML
+      capabilities, above and beyond the FastFed minimum interoperablity
+      requirements.  The additional capabilities must be optional and
+      the federation MUST still succeed if one Provider does not support
+      the additional capabilities.
+
+11.3.  Interoperability for SCIM 2.0
+
+   *SEE COMMENT: *
+
+   A Provider who includes the value "SCIM" in the
+   "user_provisioning_modes_supported" within their Provider Metadata
+   (Section 4.3.1) will use the SCIM Protocol as defined in [RFC7644].
+
+   The following sections describe the subset of the SCIM Protocol
+   specifications that Providers MUST implement to be FastFed Combatible
+   for SCIM provisioning.  Providers MAY support additional
+   functionality, but MUST NOT require the additional functionality when
+   configuring federation with another Provider using the FastFed
+   specifications.
+
+11.3.1.  Identity Provider Requirements
+
+   SCIM requirements for Identity Providers:
+
+   o  MUST implement the required functionality of a SCIM Client as
+      defined in [RFC7643] and [RFC7644].
+
+
+
+McAdams                  Expires April 18, 2018                [Page 69]
+
+                               FastFed 1.0                  October 2017
+
+
+   o  For each end-user that is authorized to access the Application:
+
+      *  MUST replicate end-user information to the Application Provider
+         within 60 minutes of an active end-user being created or
+         updated.
+
+         The Identity Provider MAY use any combination of the following
+         operations to provision user information:
+
+         +  Create account via _POST /Users_
+
+         +  Update account details via _PUT /Users/{id}_
+
+         +  Read list of accounts via _GET /Users_
+
+         +  Read account details via _GET /Users/{id}_
+
+         +  Filtering on _userName eq_
+
+      *  MUST replicate end-user deactivation to the Application within
+         5 minutes of the user being deactivated within the Identity
+         Provider.
+
+         The Identity Provider MAY use any combination of the following
+         operations to deactivate users in the Application:
+
+         +  Deactivate account via _PATCH /Users{id}_
+
+         +  Read list of accounts via _GET /Users_
+
+         +  Read account details via _GET /Users/{id}_
+
+         +  Filtering on _userName eq_
+
+11.3.2.  Application Provider Requirements
+
+   SCIM requirements for Application Providers:
+
+   o  MUST implement the required functionality of a SCIM Service
+      Provider as defined in [RFC7643] and [RFC7644].
+
+   o  MUST support the following operations:
+
+      *  Create account via _POST /Users_
+
+      *  Update account details via _PUT /Users/{id}_
+
+      *  Deactivate account via _PATCH /Users{id}_
+
+
+
+McAdams                  Expires April 18, 2018                [Page 70]
+
+                               FastFed 1.0                  October 2017
+
+
+      *  Read list of accounts via _GET /Users_
+
+      *  Read account details via _GET /Users/{id}_
+
+      *  Filtering on _userName eq_
+
+   o  SHOULD respond to account deactivation by revoking the ability for
+      the end-user to use the Application, even if that end-user has an
+      active session with an expiration date in the future.  The means
+      of revocation are an implementation detail and outside the scope
+      of this specification.  Revocation should occur within 5 minutes
+      of receiving the deactivation.
+
+12.  FastFed Compatibility Descriptions
+
+   A Provider who meets the requirements defined in this specification
+   MAY describe themselves as "FastFed Compatible".
+
+   Since FastFed allows Providers to pick-and-choose from a variety of
+   different protocols, Providers SHOULD include the supported protocols
+   when describing their compatibility.
+
+   The following is a non-normative example of a FastFed Compatibility
+   description for an Application Provider:
+
+ This application is FastFed Compatible with Identity Providers who support
+ the following:
+   * SSO Protocol: SAML
+   * User Schema: SCIM User
+   * Provisioning Mode: Just In Time (JIT) provisoning
+
+ In addition, this application supports automatic SAML certificate rotation if
+ enabled by the Identity Provider.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 71]
+
+                               FastFed 1.0                  October 2017
+
+
+   The following is a non-normative example of a FastFed Compatibility
+   description for an Identity Provider:
+
+ This Identity Provider is FastFed Compatible with the following:
+   * Any of the following SSO Protocols
+     - SAML
+     - OpenID Connect
+   * Any of the following User Schemas:
+     - SCIM User
+     - SCIM Enterprise User
+   * Any of the following User Provisioning Modes:
+     - SCIM provisioning
+     - Just In Time provisioning
+     - Custom provisioning
+     - No provisioning
+
+ In addition, if supported by an application, this Identity Provider will
+ automatically perform SAML certificate rotation and OIDC key rotation.
+
+13.  Security Considerations
+
+   TODO.  See comments in 7.2.1.7
+
+14.  IANA Considerations
+
+   TODO
+
+15.  Normative References
+
+   [OpenID.Core]
+              Sakimura, N., Bradley, J., Jones, M., de Medeiros, B., and
+              C. Mortimore, "OpenID Connect Core 1.0", November 2014,
+              <http://openid.net/specs/openid-connect-core-1_0.html>.
+
+   [OpenID.Discovery]
+              Sakimura, N., Bradley, J., Jones, M., and E. Jay, "OpenID
+              Connect Discovery 1.0", November 2014,
+              <http://openid.net/specs/
+              openid-connect-discovery-1_0.html>.
+
+   [OpenID.Registration]
+              Sakimura, N., Bradley, J., and M. Jones, "OpenID Connect
+              Dynamic Client Registration 1.0", November 2014,
+              <http://openid.net/specs/
+              openid-connect-registration-1_0.html>.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 72]
+
+                               FastFed 1.0                  October 2017
+
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
+              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
+              Transfer Protocol -- HTTP/1.1", RFC 2616,
+              DOI 10.17487/RFC2616, June 1999,
+              <https://www.rfc-editor.org/info/rfc2616>.
+
+   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
+              Resource Identifier (URI): Generic Syntax", STD 66,
+              RFC 3986, DOI 10.17487/RFC3986, January 2005,
+              <https://www.rfc-editor.org/info/rfc3986>.
+
+   [RFC4627]  Crockford, D., "The application/json Media Type for
+              JavaScript Object Notation (JSON)", RFC 4627,
+              DOI 10.17487/RFC4627, July 2006,
+              <https://www.rfc-editor.org/info/rfc4627>.
+
+   [RFC5646]  Phillips, A., Ed. and M. Davis, Ed., "Tags for Identifying
+              Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
+              September 2009, <https://www.rfc-editor.org/info/rfc5646>.
+
+   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
+              Verification of Domain-Based Application Service Identity
+              within Internet Public Key Infrastructure Using X.509
+              (PKIX) Certificates in the Context of Transport Layer
+              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
+              2011, <https://www.rfc-editor.org/info/rfc6125>.
+
+   [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
+              RFC 6749, DOI 10.17487/RFC6749, October 2012,
+              <https://www.rfc-editor.org/info/rfc6749>.
+
+   [RFC6750]  Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
+              Framework: Bearer Token Usage", RFC 6750,
+              DOI 10.17487/RFC6750, October 2012,
+              <https://www.rfc-editor.org/info/rfc6750>.
+
+   [RFC7643]  Hunt, P., Ed., Grizzle, K., Wahlstroem, E., and C.
+              Mortimore, "System for Cross-domain Identity Management:
+              Core Schema", RFC 7643, DOI 10.17487/RFC7643, September
+              2015, <https://www.rfc-editor.org/info/rfc7643>.
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 73]
+
+                               FastFed 1.0                  October 2017
+
+
+   [RFC7644]  Hunt, P., Ed., Grizzle, K., Ansari, M., Wahlstroem, E.,
+              and C. Mortimore, "System for Cross-domain Identity
+              Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
+              September 2015, <https://www.rfc-editor.org/info/rfc7644>.
+
+   [SAML.Assertions]
+              Cantor, S., Kemp, J., Philpott, R., and E. Maler,
+              "Assertions and Protocols for the OASIS Security Assertion
+              Markup Language (SAML) V2.0", March 2005,
+              <http://docs.oasis-open.org/security/saml/v2.0/
+              saml-core-2.0-os.pdf>.
+
+   [SAML.Interoperability]
+              Cantor, S., Kemp, J., Philpott, R., and E. Maler, "SAML
+              V2.0 Metadata Interoperability Profile Version 1.0",
+              August 2009, <https://www.oasis-
+              open.org/committees/download.php/36645/
+              draft-sstc-metadata-iop-2.0-01.pdf>.
+
+   [SAML.Metadata]
+              Cantor, S., Moreh, J., Philpott, R., and E. Maler,
+              "Metadata for the OASIS Security Assertion Markup Language
+              (SAML) V2.0", March 2005, <http://docs.oasis-
+              open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf>.
+
+   [SAML.Profiles]
+              Hughes, J., Cantor, S., Hodges, J., Hirsch, F., Mishra,
+              P., Philpott, R., and E. Maler, "Profiles for the OASIS
+              Security Assertion Markup Language (SAML) V2.0"", March
+              2005, <http://docs.oasis-open.org/security/saml/v2.0/
+              saml-profiles-2.0-os.pdf>.
+
+   [W3C.REC-html401-19991224]
+              Raggett, D., Hors, A., and I. Jacobs, "HTML 4.01
+              Specification", December 1999,
+              <https://www.w3.org/TR/1999/REC-html401-19991224>.
+
+Appendix A.  Acknowledgements
+
+   The OpenID Community would like to thank the following people for
+   their contributions to this specification:
+
+      TODO
+
+
+
+
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 74]
+
+                               FastFed 1.0                  October 2017
+
+
+Appendix B.  Notices
+
+   Copyright (c) 2017 The OpenID Foundation.
+
+   The OpenID Foundation (OIDF) grants to any Contributor, developer,
+   implementer, or other interested party a non-exclusive, royalty free,
+   worldwide copyright license to reproduce, prepare derivative works
+   from, distribute, perform and display, this Implementers Draft or
+   Final Specification solely for the purposes of (i) developing
+   specifications, and (ii) implementing Implementers Drafts and Final
+   Specifications based on such documents, provided that attribution be
+   made to the OIDF as the source of the material, but that such
+   attribution does not indicate an endorsement by the OIDF.
+
+   The technology described in this specification was made available
+   from contributions from various sources, including members of the
+   OpenID Foundation and others.  Although the OpenID Foundation has
+   taken steps to help ensure that the technology is available for
+   distribution, it takes no position regarding the validity or scope of
+   any intellectual property or other rights that might be claimed to
+   pertain to the implementation or use of the technology described in
+   this specification or the extent to which any license under such
+   rights might or might not be available; neither does it represent
+   that it has made any independent effort to identify any such rights.
+   The OpenID Foundation and the contributors to this specification make
+   no (and hereby expressly disclaim any) warranties (express, implied,
+   or otherwise), including implied warranties of merchantability, non-
+   infringement, fitness for a particular purpose, or title, related to
+   this specification, and the entire risk as to implementing this
+   specification is assumed by the implementer.  The OpenID Intellectual
+   Property Rights policy requires contributors to offer a patent
+   promise not to assert certain patent claims against other
+   contributors and against implementers.  The OpenID Foundation invites
+   any interested party to bring to its attention any copyrights,
+   patents, patent applications, or other proprietary rights that may
+   cover technology that may be required to practice this specification.
+
+Appendix C.  Document History
+
+   [[ To be removed from the final specification ]]
+
+Author's Address
+
+   Darin K. McAdams
+   Amazon
+
+   Email: darinm@amazon.com
+
+
+
+
+McAdams                  Expires April 18, 2018                [Page 75]
