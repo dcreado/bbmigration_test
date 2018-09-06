@@ -1,0 +1,869 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<?xml-stylesheet type='text/xsl' href='http://xml2rfc.tools.ietf.org/authoring/rfc2629.xslt' ?>
+<!DOCTYPE rfc PUBLIC "-//IETF//DTD RFC 2629//EN" "http://xml2rfc.tools.ietf.org/authoring/rfc2629.dtd">
+<!--
+  NOTE:  This XML file is input used to produce the authoritative copy of an
+  OpenID Foundation specification.  The authoritative copy is the HTML output.
+  This XML source file is not authoritative.  The statement ipr="none" is
+  present only to satisfy the document compilation tool and is not indicative
+  of the IPR status of this specification.  The IPR for this specification is
+  described in the "Notices" section.  This is a public OpenID Foundation
+  document and not a private document, as the private="..." declaration could
+  be taken to indicate.
+-->
+<rfc category="std" docName="fastfed-1_0" ipr="none">
+
+  <?rfc toc="yes" ?>
+  <?rfc tocdepth="5" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc strict="yes" ?>
+  <?rfc iprnotified="no" ?>
+  <?rfc private="Draft" ?>
+  
+  <front>
+    <title abbrev="FastFed Profile for SAML 2.0">FastFed Profile for SAML 2.0 - draft 01</title>
+
+    <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
+      <organization abbrev="Amazon">Amazon</organization>
+      <address>
+        <email>darinm@amazon.com</email>
+      </address>
+    </author>
+
+    <date day="18" month="June" year="2018" />
+
+    <workgroup>FastFed Working Group</workgroup>
+
+    <abstract>
+      <t>
+	This specification defines the requirements that an implementor must
+	satisfy to describe themselves as FastFed Compatibile for the SAML 2.0
+	protocol.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="Introduction" title="Introduction">
+
+      <t>
+	This specification defines the functionality which a provider
+	must satisfy to describe themselves as FastFed Compatible
+	for the SAML 2.0 protocol.
+      </t>
+      <t>
+	It consists of the following extensions to
+	the <xref target="FastFed.Core">FastFed Core</xref> specification:
+	<list style="symbols">
+	  <t>
+	    Additional metadata in the FastFed Handshake Flows
+	    in order to exchange SAML Metadata URLs.
+	  </t>
+	  <t>
+	    Mapping rules for generating SAML Attributes from
+	    a SCIM schema.
+	  </t>
+	  <t>
+	    An interoperability profile describing the subset of the SAML
+            specifications which must be implemented in order to be FastFed
+            Compatible.
+	  </t>
+	  <t>
+	    The mechanics of certifcate rotation for SAML.
+	  </t>
+	</list>
+      </t>
+      
+      <section anchor="rnc" title="Requirements Notation and Conventions">
+        <t>
+	  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+	  <xref target="RFC2119">RFC 2119</xref>.
+	</t>
+
+	<t>
+	  In the .txt version of this specification, values are quoted to
+	  indicate that they are to be taken literally.  When using these values
+	  in protocol messages, the quotes MUST NOT be used as part of the
+	  value.  In the HTML version of this specification, values to be taken
+	  literally are indicated by the use of
+	  <spanx style="verb">this fixed-width font</spanx>.
+	</t>
+      </section>
+
+      <section anchor="Terminology" title="Terminology">
+	<t>
+	  TODO
+	</t>
+      </section>
+    </section>
+
+    <section anchor="FastFedMetadata" title="FastFed Metadata">
+      <t>
+	This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> metadata (Section 3.3.1) with the following value
+        for <spanx style="verb">sso_protocols_supported</spanx>:
+	<list style="hanging">
+	  <t hangText="SAML">
+            A Provider who includes the value <spanx style="verb">SAML</spanx> in
+            the <spanx style="verb">sso_protocols_supported</spanx> indicates
+            they comply with the requirements described in this specification.
+	  </t>
+	</list>
+      </t>
+      <t>
+        The following is a non-normative example of Provider Metadata showing
+        the usage of the value:
+      </t>
+        <figure><artwork><![CDATA[
+ {
+   "identity_provider": {
+     "capabilities": {
+       "sso_protocols_supported": ["SAML"],
+   ...
+ }
+]]></artwork></figure> 
+    </section>
+    
+    <section anchor="FastFedHandshake" title="FastFed Handshake">
+
+      <t>
+	When using the SAML protocol, the FastFed
+        Identity Provider and Application Provider have various
+        responsibilities to comply with the protocol.
+      </t>
+      <t>
+        The Identity Provider fulfills the role of a SAML Identity Provider. It has
+        a responsibility to host a SAML Metadata file as described in
+        <xref target="SAMLInteroperabilityIdentityProviderReqs"/>.
+      </t>
+      <t>
+        The Application Provider fulfills the role of a SAML Application
+        Provider. It has a responsibility to host a SAML Metadata file as
+        described in
+        <xref target="SAMLInteroperabilityApplicationProviderReqs"/>
+      </t>
+      <t>
+        This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> handshake messages with the additional attributes necessary for
+        each party to fulfill their respective obligations under SAML.
+      </t>
+
+      <section anchor="FastFedHandshakeRegistrationRequest" title="FastFed Registration Request">
+	<t>
+	  This specification extends the JWT contents of the FastFed
+	  Registration Request (Section 6.2.3.1
+	  of <xref target="FastFed.Core">FastFed Core</xref>) with the following
+	  attributes:
+          <list style="hanging">
+            <t hangText="saml_metadata_uri">
+	      REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.
+            </t>
+          </list>
+	</t>
+	<t>
+	  If the SAML Metadata document is access controlled, the Identity
+	  Provider MAY also include a value
+	  for <spanx style="verb">oauth_token</spanx> as defined in Section
+	  6.2.3.1 of <xref target="FastFed.Core">FastFed Core</xref>. If this
+	  value is provided, the Application Provider MUST present the access_token
+	  as a Bearer Token when querying the SAML Metadata URL.
+	</t>
+	<t>
+          The following is a non-normative example of the contents of a
+          registration request message prior to serialization:
+	</t>
+        <figure><artwork><![CDATA[
+ {
+  "iss": "https://idp.example.com",
+  "sub": "tenant-12345",
+  "aud": "https://app.example.com",
+  "sso_protocol": "SAML",
+  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "user_provisioning_mode": "JIT",
+  "state": "liK9x2fUOWoi1P0",
+  "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  "oauth_token": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "token_type": "bearer",
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+    "expires_in": 3600 
+  }
+ }
+]]></artwork></figure>
+      </section>
+
+      <section anchor="FastFedHandshakeRegistrationResponse" 
+	       title="FastFed Registration Response">
+        <t>
+          This specification extends the contents of the FastFed
+          Registration Response (Section 6.2.3.3
+          of <xref target="FastFed.Core">FastFed Core</xref>) with the
+          following
+          attributes:
+          <list style="hanging">
+            <t hangText="saml_metadata_uri">
+              REQUIRED. Contains the URL of the Application Provider's
+              SAML Metadata document.
+            </t>
+          </list>
+        </t>
+        <t>
+          If the SAML Metadata document is access controlled, the Application
+          Provider MAY also include a value
+          for <spanx style="verb">oauth_token</spanx> as defined in Section
+          6.2.3.1 of <xref target="FastFed.Core">FastFed Core</xref>. If this
+          value is provided, the Identity Provider MUST present the access_token
+          as a Bearer Token when querying the SAML Metadata URL.
+        </t>
+        <t>
+          The following is a non-normative example of the contents of a
+          registration response message:
+        </t>
+        <figure><artwork><![CDATA[
+ {
+  "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+  "oauth_token": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "token_type": "bearer",
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+    "expires_in": 3600
+  }
+ }
+]]></artwork></figure>
+      </section>
+
+    </section> <!-- End of FastFed Handshake Extensions -->
+
+    <section anchor="SchemaBinding" title="Schema Binding">
+
+      <t>
+	FastFed recommmends SCIM for user schemas.
+      </t>
+      <t>
+	This specification defines how to be FastFed Compliant when using SCIM
+	schemas with the SAML 2.0 protocol.
+      </t>
+
+      <section anchor="SchemaBindingScimToSamlClaimMapping"
+	       title="SCIM-to-SAML Attribute Mapping">
+
+	<section anchor="SchemaBindingScimToSamlClaimMappingSAMLSubject"
+		 title="SAML Subject">
+	<t>
+	  A SAML document contains
+	  a <spanx style="verb">Subject</spanx> element which identifies the
+	  authenticated user. 
+	</t>
+	<t>
+	  The <spanx style="verb">Subject</spanx> element MUST contain
+	  a <spanx style="verb">NameID</spanx> with the following properties:
+	  <list style="symbols">
+	    <t>
+	      A <spanx style="verb">Format</spanx> set to
+	      <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"</spanx>
+	    </t>
+	    <t>
+              A value populated with the SCIM <spanx style="verb">id</spanx>.
+            </t>
+	  </list>
+	</t>
+	<t>
+	  The following is a non-normative example of a SAML Subject:
+	</t>
+	<figure><artwork><![CDATA[
+ <saml:Subject>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">2819c223-7f76-453a-919d-413861904646</saml:NameID>
+ </saml:Subject>
+]]></artwork></figure>
+	</section>
+
+	<section anchor="SchemaBindingScimToSamlClaimMappingSAMLAttributes"
+                 title="SAML Attributes">
+	<t>
+	  TO BE DETERMINED.
+	</t>
+	<t>
+	  Editors Note: A prior draft specification for binding SCIM to SAML is defined at
+	  http://www.simplecloud.info/specs/draft-scim-saml2-binding-02.html
+	</t>
+	</section>
+
+      </section>
+
+      <section anchor="SchemaBindingPrivacyConsiderations"
+               title="Privacy Considerations">
+        <t>
+          When exposing end-user information through SAML Attributes, FastFed
+          Identity Providers MUST not expose any attributes which were not in
+          the <spanx style="verb">desired_user_attributes</spanx> element of the
+          Application Provider Metadata (Section 3.3.4
+          of <xref target="FastFed.Core">FastFed Core</xref>).
+        </t>
+      </section>
+
+    </section> <!-- End of Schema Binding -->
+
+
+    <section anchor="Interoperability"
+	     title="Interoperability Requirements">
+     <t>
+       Each identity standard defines a set of optional features to enable usage
+       in a wide variety of circumstances.
+     </t>
+     <t>
+       However, a consequence of the flexibility is that two Providers may find
+       themselves incompabitible despite sharing the same protocols.
+     </t>
+     <t>
+       To deliver the simplified experience that is the goal of FastFed, it is
+       important that two FastFed-enabled Providers have confidence that they
+       can interoperate when sharing the same protocols.
+     </t>
+     <t>
+       The following sections describe the subset of the SAML
+       specifications that Providers MUST implement to be FastFed Combatible for
+       the <spanx style="verb">SAML</spanx> SSO protocol. Providers MAY support
+       additional functionality, but MUST NOT require the additional
+       functionality when configuring federation with another Provider using
+       FastFed specifications.
+     </t>
+
+     <section anchor="SAMLInteroperabilityIdentityProviderReqs"
+	      title="Identity Provider Requirements">
+
+       <t>                                                                                                                                                                
+         <list style="symbols">                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST implement the required functionality of a SAML Identity
+             Provider                                                                                        
+             as defined in the SAML Web Browser SSO Profile (Section 4.1 of                                                                                               
+             <xref target="SAML.Profiles"/>).                                                                                                                             
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST support the HTTP Redirect and HTTP POST bindings for the Web                                                                                            
+             Browswer SSO Profile.                                                                                                                                        
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST use X509 Certificates for the Signature element containined                                                                                             
+             within the Assertion element of the SAML Response object. As                                                                                                 
+             background, this response is returned from the SAML Identity                                                                                                 
+             Provider to the SAML Service Provider as part of the SAML Web                                                                                                
+             Browser SSO Profile.                                                                                                                                         
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST host a SAML Metadata document at the location specified by
+             the                                                                                          
+             <spanx style="verb">saml_metadata_uri</spanx> exchanged during the
+             FastFed Handshake.
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST include an IDPSSODescriptor element in the SAML Metadata                                                                                                
+             document as specified in <xref target="SAML.Metadata"/>.                                                                                                     
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST populate the IDPSSODescriptor element with all values needed                                                                                            
+             by a SAML Service Provider to integrate with this SAML Identity                                                                                              
+             Provider using the capabilities described in this section.                                                                                                   
+           </t>                                                                                                                                                           
+         </list>                                                                                                                                                          
+       </t>                                                                                                                                                               
+     </section>             
+     
+     <section anchor="SAMLInteroperabilityApplicationProviderReqs"
+	      title="Application Provider Requirements">
+       <t>                                                                                                                                                                
+         SAML Requirements for Application Providers:                                                                                                                     
+         <list style="symbols">                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST implement the required functionality of a SAML Service
+             Provider                                                                                         
+             as defined in the SAML Web Browser SSO Profile (Section 4.1 of                                                                                               
+             <xref target="SAML.Profiles"/>).                                                                                                                             
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST use either the HTTP Redirect or HTTP POST binding for                                                                                                   
+             the Web Browswer SSO Profile.                                                                                                                                
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST accept X509 Certificates for the Signature element
+             containined                                                                                          
+             within the Assertion element of the SAML Response object. As                                                                                                 
+             background, this response is returned from the SAML Identity                                                                                                 
+             Provider to the SAML Service Provider as part of the SAML Web                                                                                                
+             Browser SSO Profile.                                                                                                                                         
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST host a SAML Metadata document at the location specified by
+             the                                                                                          
+             <spanx style="verb">saml_metadata_uri</spanx> exchanged during the
+             FastFed Handshake.
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST include an SPSSODescriptor element in the SAML Metadata                                                                                                 
+             document as specified in <xref target="SAML.Metadata"/>.                                                                                                     
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST populate the SPSSODescriptor with all values needed by a                                                                                                
+             SAML Identity Provider to integrate with this SAML Service                                                                                                   
+             Provider using the capabilities described in this section.                                                                                                   
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MAY use the information in the Identity Provider's corresponding                                                                                             
+             SAML Metadata document to decide whether to use additional SAML                                                                                              
+             capabilities, above and beyond the FastFed minimum                                                                                                           
+             interoperablity requirements. The additional capabilities must be                                                                                            
+             optional and the federation MUST still succeed if one Provider                                                                                               
+             does not support the additional capabilities.                                                                                                                
+           </t>                                                                                                                                                           
+         </list>                                                                                                                                                          
+       </t>                                                                                                                                                               
+     </section>         
+
+     <section anchor="SAMLCertificateRotationRequirements"
+              title="Certificate Rotation">
+
+       <t> 
+	 While the full SAML specification supports a variety of key usages,
+         the FastFed Profile defined herein restricts Providers to only X509
+         Keys for signing SAML Assertions in Web Browser SSO response messages
+         from the Identity Provider.
+       </t>                                                                                                                                                                 
+       <t> 
+	 FastFed Providers MUST implement automatic rotation of the X509
+         Certificates. This section describes the
+         interoperability requirements for certificate rotation.
+       </t>  
+
+       <section anchor="SAMLKeyPublicationRequirements"
+                title="Certificate Rotation Requirements for an Identity Provider">
+
+	 <t> 
+	   To rotate and publish new SAML signing certificates, the following
+	   requirements apply to the Identity Provider:
+           <list style="symbols">
+             <t>
+	       MUST include new certificates in the response to queries against
+               the SAML Metadata URL that was exchanged during the FastFed
+               Handshake.
+             </t>
+             <t>
+	       MUST publish the new certificate in the SAML Metadata at least 14
+               days before the currently active certificate will expire or be
+               revoked, where the expiration date is specified by the
+               <spanx style="verb">notAfter</spanx> attribute within the X.509
+               certificate.
+             </t>
+             <t>
+	       MUST include the new certificate in the SAML Metadata, alongside
+               the currently active certificate, using the recommended technique
+               for multiple certificates defined in the
+               <xref target="SAML.Interoperability">SAML Metadata
+               Interoperability Profile</xref>. As a reference, this
+               Interopability Profile specifies that each certificate MUST be
+               placed within its own
+               <spanx style="verb">&lt;KeyDescriptor&gt;</spanx> element.
+             </t>
+             <t>
+	       SHOULD continue using the original key for signing SAML
+               Assertions for at least 7 days after publishing the new
+               certificate, to give consumers time to read the new certificate
+               from the SAML Metadata and be ready to receive the new key.
+             </t>
+             <t>
+	       SHOULD begin signing assertions with the new key if less than 7
+               days remains until the old certificate expires. MAY continue
+               using the old key if problems arise with the new key, to give
+               time for diagnosis of the problems.
+             </t>
+             <t>
+	       SHOULD stop using the old key for signing assertions when less
+               than 1 day remains until the old certificate expires.
+             </t>
+             <t>
+	       MUST support HTTP 1.1 ETag semantics <xref target="RFC2616"/> for
+               all requests to the SAML Metadata URL, including:
+               <list style="symbols">
+                 <t>
+		   Returning an ETag response header
+                 </t>
+                 <t>
+		   Accepting an If-None-Match request header, and returning an
+                   HTTP 304 response if the SAML Metadata is unmodified.
+                 </t>
+               </list>
+             </t>
+             <t> 
+	       MAY return an HTTP 301 response code to indicate the SAML
+	       Metadata has moved to a new location.
+             </t>
+           </list>
+         </t>
+       </section> <!-- End of SAML Key Publication Requirements -->
+
+       <section anchor="SAMLKeyConsumptionRequirements"
+                title="Certificate Rotation Requirements for an Application
+                Provider">
+
+         <t>
+	   To consume rotated SAML signing keys, the following requirements
+           apply to the Application Provider:
+           <list style="symbols">
+             <t>
+	       MUST re-query the Identity Provider's SAML Metadata URL to check
+	       for new certificates at least once every 24 hours. Because
+	       certificates can be rotated at any time, the Application Provider
+	       MUST NOT wait for the expiration date to check for updated
+	       certificates.
+             </t>
+             <t>
+	       MUST include the If-None-Match header in the request to download
+	       the SAML Metadata, populated with the value of the ETag response
+	       header received when previously downloading the SAML Metadata.
+             </t>
+             <t>
+	       MUST handle an HTTP 304 response code which indicates that the
+	       SAML Metadata is unchanged.
+             </t>
+             <t>
+	       MUST handle an HTTP 301 response code and use the new location
+	       for all future downloads of the Identity Provider's SAML
+	       Metadata.
+             </t>
+             <t>
+	       MUST support the consumption of multiple certificates using the
+	       recommended techniques defined in the
+               <xref target="SAML.Interoperability">SAML Metadata
+               Interoperability Profile</xref>. As a reference, this
+               Interopability Profile specifies that each certificate MUST be
+               placed within its own
+               <spanx style="verb">&lt;KeyDescriptor&gt;</spanx> element.
+             </t>
+             <t> 
+	       MUST ignore any changes in the SAML Metadata except for
+               <spanx style="verb">&lt;KeyDescriptor&gt;</spanx> elements.
+             </t>
+             <t>
+	       MUST accept SAML assertions signed using any of the valid
+	       certificates specified within the
+               <spanx style="verb">&lt;KeyDescriptor&gt;</spanx> elements of
+               the Identity Provider SAML Metadata.
+             </t>                                                                                                                                                         
+             <t> 
+	       SHOULD alert the Administrator if the Identity Provider has not
+	       published a new certificate and less than 14 days remains until
+	       expiration of the current certificate. The alert mechanism is an
+	       implementation detail that is outside the scope of the
+	       specification.
+             </t>
+           </list>
+         </t>
+       </section>
+       
+     </section> <!-- End of SAML Certificate Rotation -->    
+    </section> <!-- End of Interoperability -->
+    
+  <section anchor="Security" title="Security Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+  
+  <section anchor="IANA" title="IANA Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4627"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5646"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6750"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?>
+
+      <reference anchor="FastFed.Core" target="http://example.com">
+        <front>
+          <title>FastFed Core</title>
+          <author fullname="Darin" initials="K." surname="McAdams">                         
+            <organization abbrev="Amazon">Amazon</organization>               
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="FastFedProfile.SCIM" target="http://example.com">
+        <front>
+          <title>FastFed Profile for SCIM</title>
+	    <author fullname="Darin" initials="K." surname="McAdams">
+            <organization abbrev="Amazon">Amazon</organization>
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Core" target="http://openid.net/specs/openid-connect-core-1_0.html">
+        <front>
+          <title>OpenID Connect Core 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
+            <organization abbrev="Google">Google</organization>
+          </author>
+
+	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
+	    <organization abbrev="Salesforce">Salesforce</organization>
+	  </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Discovery" target="http://openid.net/specs/openid-connect-discovery-1_0.html">
+        <front>
+          <title>OpenID Connect Discovery 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Edmund Jay" initials="E." surname="Jay">
+            <organization abbrev="Illumila">Illumila</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Registration" target="http://openid.net/specs/openid-connect-registration-1_0.html">
+        <front>
+          <title>OpenID Connect Dynamic Client Registration 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.SCIMProfile"
+      target="http://openid.net/specs/openid-connect-scim-profile-1_0.html">
+        <front>
+          <title>OpenID Connect Profile for SCIM Services [DRAFT]</title>
+
+          <author fullname="Phil Hunt" initials="P" surname="Hunt">
+            <organization abbrev="Oracle">Oracle</organization>
+          </author>
+          <author fullname="Chuck Mortimore" initials="C" surname="Mortimore">
+            <organization abbrev="Salesforce">Salesforce</organization>
+          </author>
+
+          <date day="15" month="June" year="2016"/>
+        </front>
+      </reference> 
+
+      <reference anchor="SAML.Assertions" target="http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">
+	<front>
+	  <title>Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="John Kemp" initials="J" surname="Kemp">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Interoperability" target="https://www.oasis-open.org/committees/download.php/36645/draft-sstc-metadata-iop-2.0-01.pdf">
+	<front>
+	  <title>SAML V2.0 Metadata Interoperability Profile Version 1.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="John Kemp" initials="J" surname="Kemp">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="4" month="August" year="2009"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Metadata" target="http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf">
+	<front>
+	  <title>Metadata for the OASIS Security Assertion Markup Language (SAML) V2.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="Jahan Moreh" initials="J" surname="Moreh">
+	    <organization abbrev="Sigaba">Sigaba</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Profiles" target="http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf">
+	<front>
+	  <title>Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0"</title>
+
+	  <author fullname="John Hughes" initials="J" surname="Hughes">
+	    <organization abbrev="Atos Origin">Atos Origin</organization>
+	  </author>
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="Jeff Hodges" initials="J" surname="Hodges">
+	    <organization abbrev="Neustar">Neustar</organization>
+	  </author>
+	  <author fullname="Frederick Hirsch" initials="F" surname="Hirsch">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Prateek Mishra" initials="P" surname="Mishra">
+	    <organization abbrev="Principal Identity">Principal Identity</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+      
+      <reference anchor="W3C.REC-html401-19991224" target="https://www.w3.org/TR/1999/REC-html401-19991224">
+	<front>
+	  <title>HTML 4.01 Specification</title>
+
+	  <author fullname="Dave Raggett" initials="D" surname="Raggett">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Arnaud Le Hors" initials="A" surname="Hors">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Ian" initials="I" surname="Jacobs">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+
+	  <date day="24" month="December" year="1999"/>
+	</front>
+      </reference>
+    </references>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>
+	The OpenID Community would like to thank the following people for
+	their contributions to this specification:
+      </t>
+      <t>
+        <list style="empty">
+          <t>TODO</t>
+        </list>
+      </t>
+    </section>
+
+    <section anchor="Notices" title="Notices">
+      <t>Copyright (c) 2017 The OpenID Foundation.</t>
+
+      <t>The OpenID Foundation (OIDF) grants to any Contributor, developer,
+      implementer, or other interested party a non-exclusive, royalty free,
+      worldwide copyright license to reproduce, prepare derivative works from,
+      distribute, perform and display, this Implementers Draft or Final
+      Specification solely for the purposes of (i) developing specifications,
+      and (ii) implementing Implementers Drafts and Final Specifications based
+      on such documents, provided that attribution be made to the OIDF as the
+      source of the material, but that such attribution does not indicate an
+      endorsement by the OIDF.</t>
+
+      <t>The technology described in this specification was made available
+      from contributions from various sources, including members of the OpenID
+      Foundation and others. Although the OpenID Foundation has taken steps to
+      help ensure that the technology is available for distribution, it takes
+      no position regarding the validity or scope of any intellectual property
+      or other rights that might be claimed to pertain to the implementation
+      or use of the technology described in this specification or the extent
+      to which any license under such rights might or might not be available;
+      neither does it represent that it has made any independent effort to
+      identify any such rights. The OpenID Foundation and the contributors to
+      this specification make no (and hereby expressly disclaim any)
+      warranties (express, implied, or otherwise), including implied
+      warranties of merchantability, non-infringement, fitness for a
+      particular purpose, or title, related to this specification, and the
+      entire risk as to implementing this specification is assumed by the
+      implementer. The OpenID Intellectual Property Rights policy requires
+      contributors to offer a patent promise not to assert certain patent
+      claims against other contributors and against implementers. The OpenID
+      Foundation invites any interested party to bring to its attention any
+      copyrights, patents, patent applications, or other proprietary rights
+      that may cover technology that may be required to practice this
+      specification.</t>
+    </section>
+
+    <section anchor="History" title="Document History">
+      <t>[[ To be removed from the final specification ]]</t>
+    </section>
+    
+  </back>
+</rfc>

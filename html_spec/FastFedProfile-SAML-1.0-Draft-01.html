@@ -1,0 +1,885 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>FastFed Profile for SAML 2.0 - draft 01</title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents">
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction">
+<link href="#rfc.section.1.1" rel="Chapter" title="1.1 Requirements Notation and Conventions">
+<link href="#rfc.section.1.2" rel="Chapter" title="1.2 Terminology">
+<link href="#rfc.section.2" rel="Chapter" title="2 FastFed Metadata">
+<link href="#rfc.section.3" rel="Chapter" title="3 FastFed Handshake">
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 FastFed Registration Request">
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 FastFed Registration Response">
+<link href="#rfc.section.4" rel="Chapter" title="4 Schema Binding">
+<link href="#rfc.section.4.1" rel="Chapter" title="4.1 SCIM-to-SAML Attribute Mapping">
+<link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 SAML Subject">
+<link href="#rfc.section.4.1.2" rel="Chapter" title="4.1.2 SAML Attributes">
+<link href="#rfc.section.4.2" rel="Chapter" title="4.2 Privacy Considerations">
+<link href="#rfc.section.5" rel="Chapter" title="5 Interoperability Requirements">
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Identity Provider Requirements">
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Application Provider Requirements">
+<link href="#rfc.section.5.3" rel="Chapter" title="5.3 Certificate Rotation">
+<link href="#rfc.section.5.3.1" rel="Chapter" title="5.3.1 Certificate Rotation Requirements for an Identity Provider">
+<link href="#rfc.section.5.3.2" rel="Chapter" title="5.3.2 Certificate Rotation Requirements for an Application                 Provider">
+<link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations">
+<link href="#rfc.section.7" rel="Chapter" title="7 IANA Considerations">
+<link href="#rfc.references" rel="Chapter" title="8 Normative References">
+<link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements">
+<link href="#rfc.appendix.B" rel="Chapter" title="B Notices">
+<link href="#rfc.appendix.C" rel="Chapter" title="C Document History">
+<link href="#rfc.authors" rel="Chapter">
+
+
+  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="McAdams, D." />
+  <meta name="dct.identifier" content="urn:ietf:id:fastfed-1_0" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-6-18" />
+  <meta name="dct.abstract" content="This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  " />
+  <meta name="description" content="This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+<td class="left"></td>
+<td class="right">D. McAdams</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">Amazon</td>
+</tr>
+<tr>
+<td class="left"></td>
+<td class="right">June 18, 2018</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">FastFed Profile for SAML 2.0 - draft 01<br />
+  <span class="filename">fastfed-1_0</span></p>
+  
+  <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
+<p>This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  </p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a>
+</li>
+<ul><li>1.1.   <a href="#rfc.section.1.1">Requirements Notation and Conventions</a>
+</li>
+<li>1.2.   <a href="#rfc.section.1.2">Terminology</a>
+</li>
+</ul><li>2.   <a href="#rfc.section.2">FastFed Metadata</a>
+</li>
+<li>3.   <a href="#rfc.section.3">FastFed Handshake</a>
+</li>
+<ul><li>3.1.   <a href="#rfc.section.3.1">FastFed Registration Request</a>
+</li>
+<li>3.2.   <a href="#rfc.section.3.2">FastFed Registration Response</a>
+</li>
+</ul><li>4.   <a href="#rfc.section.4">Schema Binding</a>
+</li>
+<ul><li>4.1.   <a href="#rfc.section.4.1">SCIM-to-SAML Attribute Mapping</a>
+</li>
+<ul><li>4.1.1.   <a href="#rfc.section.4.1.1">SAML Subject</a>
+</li>
+<li>4.1.2.   <a href="#rfc.section.4.1.2">SAML Attributes</a>
+</li>
+</ul><li>4.2.   <a href="#rfc.section.4.2">Privacy Considerations</a>
+</li>
+</ul><li>5.   <a href="#rfc.section.5">Interoperability Requirements</a>
+</li>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Identity Provider Requirements</a>
+</li>
+<li>5.2.   <a href="#rfc.section.5.2">Application Provider Requirements</a>
+</li>
+<li>5.3.   <a href="#rfc.section.5.3">Certificate Rotation</a>
+</li>
+<ul><li>5.3.1.   <a href="#rfc.section.5.3.1">Certificate Rotation Requirements for an Identity Provider</a>
+</li>
+<li>5.3.2.   <a href="#rfc.section.5.3.2">Certificate Rotation Requirements for an Application                 Provider</a>
+</li>
+</ul></ul><li>6.   <a href="#rfc.section.6">Security Considerations</a>
+</li>
+<li>7.   <a href="#rfc.section.7">IANA Considerations</a>
+</li>
+<li>8.   <a href="#rfc.references">Normative References</a>
+</li>
+<li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a>
+</li>
+<li>Appendix B.   <a href="#rfc.appendix.B">Notices</a>
+</li>
+<li>Appendix C.   <a href="#rfc.appendix.C">Document History</a>
+</li>
+<li><a href="#rfc.authors">Author's Address</a>
+</li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1">
+<a href="#rfc.section.1">1.</a> <a href="#Introduction" id="Introduction">Introduction</a>
+</h1>
+<p id="rfc.section.1.p.1">This specification defines the functionality which a provider must satisfy to describe themselves as FastFed Compatible for the SAML 2.0 protocol.  </p>
+<p id="rfc.section.1.p.2">It consists of the following extensions to the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification: </p>
+
+<ul>
+<li>Additional metadata in the FastFed Handshake Flows in order to exchange SAML Metadata URLs.  </li>
+<li>Mapping rules for generating SAML Attributes from a SCIM schema.  </li>
+<li>An interoperability profile describing the subset of the SAML specifications which must be implemented in order to be FastFed Compatible.  </li>
+<li>The mechanics of certifcate rotation for SAML.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.1.1">
+<a href="#rfc.section.1.1">1.1.</a> <a href="#rnc" id="rnc">Requirements Notation and Conventions</a>
+</h1>
+<p id="rfc.section.1.1.p.1">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119" class="xref">RFC 2119</a>.  </p>
+<p id="rfc.section.1.1.p.2">In the .txt version of this specification, values are quoted to indicate that they are to be taken literally.  When using these values in protocol messages, the quotes MUST NOT be used as part of the value.  In the HTML version of this specification, values to be taken literally are indicated by the use of <samp>this fixed-width font</samp>.  </p>
+<h1 id="rfc.section.1.2">
+<a href="#rfc.section.1.2">1.2.</a> <a href="#Terminology" id="Terminology">Terminology</a>
+</h1>
+<p id="rfc.section.1.2.p.1">TODO </p>
+<h1 id="rfc.section.2">
+<a href="#rfc.section.2">2.</a> <a href="#FastFedMetadata" id="FastFedMetadata">FastFed Metadata</a>
+</h1>
+<p id="rfc.section.2.p.1">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> metadata (Section 3.3.1) with the following value for <samp>sso_protocols_supported</samp>: </p>
+
+<dl>
+<dt>SAML</dt>
+<dd style="margin-left: 8">A Provider who includes the value <samp>SAML</samp> in the <samp>sso_protocols_supported</samp> indicates they comply with the requirements described in this specification.  </dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.2.p.2">The following is a non-normative example of Provider Metadata showing the usage of the value: </p>
+<pre>
+ {
+   "identity_provider": {
+     "capabilities": {
+       "sso_protocols_supported": ["SAML"],
+   ...
+ }
+</pre>
+<h1 id="rfc.section.3">
+<a href="#rfc.section.3">3.</a> <a href="#FastFedHandshake" id="FastFedHandshake">FastFed Handshake</a>
+</h1>
+<p id="rfc.section.3.p.1">When using the SAML protocol, the FastFed Identity Provider and Application Provider have various responsibilities to comply with the protocol.  </p>
+<p id="rfc.section.3.p.2">The Identity Provider fulfills the role of a SAML Identity Provider. It has a responsibility to host a SAML Metadata file as described in <a href="#SAMLInteroperabilityIdentityProviderReqs" class="xref">Section 5.1</a>.  </p>
+<p id="rfc.section.3.p.3">The Application Provider fulfills the role of a SAML Application Provider. It has a responsibility to host a SAML Metadata file as described in <a href="#SAMLInteroperabilityApplicationProviderReqs" class="xref">Section 5.2</a> </p>
+<p id="rfc.section.3.p.4">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> handshake messages with the additional attributes necessary for each party to fulfill their respective obligations under SAML.  </p>
+<h1 id="rfc.section.3.1">
+<a href="#rfc.section.3.1">3.1.</a> <a href="#FastFedHandshakeRegistrationRequest" id="FastFedHandshakeRegistrationRequest">FastFed Registration Request</a>
+</h1>
+<p id="rfc.section.3.1.p.1">This specification extends the JWT contents of the FastFed Registration Request (Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with the following attributes: </p>
+
+<dl>
+<dt>saml_metadata_uri</dt>
+<dd style="margin-left: 8">REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.  </dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.3.1.p.2">If the SAML Metadata document is access controlled, the Identity Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Application Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
+<p id="rfc.section.3.1.p.3">The following is a non-normative example of the contents of a registration request message prior to serialization: </p>
+<pre>
+ {
+  "iss": "https://idp.example.com",
+  "sub": "tenant-12345",
+  "aud": "https://app.example.com",
+  "sso_protocol": "SAML",
+  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "user_provisioning_mode": "JIT",
+  "state": "liK9x2fUOWoi1P0",
+  "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  "oauth_token": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "token_type": "bearer",
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+    "expires_in": 3600 
+  }
+ }
+</pre>
+<h1 id="rfc.section.3.2">
+<a href="#rfc.section.3.2">3.2.</a> <a href="#FastFedHandshakeRegistrationResponse" id="FastFedHandshakeRegistrationResponse">FastFed Registration Response</a>
+</h1>
+<p id="rfc.section.3.2.p.1">This specification extends the contents of the FastFed Registration Response (Section 6.2.3.3 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with the following attributes: </p>
+
+<dl>
+<dt>saml_metadata_uri</dt>
+<dd style="margin-left: 8">REQUIRED. Contains the URL of the Application Provider's SAML Metadata document.  </dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.3.2.p.2">If the SAML Metadata document is access controlled, the Application Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Identity Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
+<p id="rfc.section.3.2.p.3">The following is a non-normative example of the contents of a registration response message: </p>
+<pre>
+ {
+  "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+  "oauth_token": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "token_type": "bearer",
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+    "expires_in": 3600
+  }
+ }
+</pre>
+<h1 id="rfc.section.4">
+<a href="#rfc.section.4">4.</a> <a href="#SchemaBinding" id="SchemaBinding">Schema Binding</a>
+</h1>
+<p id="rfc.section.4.p.1">FastFed recommmends SCIM for user schemas.  </p>
+<p id="rfc.section.4.p.2">This specification defines how to be FastFed Compliant when using SCIM schemas with the SAML 2.0 protocol.  </p>
+<h1 id="rfc.section.4.1">
+<a href="#rfc.section.4.1">4.1.</a> <a href="#SchemaBindingScimToSamlClaimMapping" id="SchemaBindingScimToSamlClaimMapping">SCIM-to-SAML Attribute Mapping</a>
+</h1>
+<h1 id="rfc.section.4.1.1">
+<a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#SchemaBindingScimToSamlClaimMappingSAMLSubject" id="SchemaBindingScimToSamlClaimMappingSAMLSubject">SAML Subject</a>
+</h1>
+<p id="rfc.section.4.1.1.p.1">A SAML document contains a <samp>Subject</samp> element which identifies the authenticated user.  </p>
+<p id="rfc.section.4.1.1.p.2">The <samp>Subject</samp> element MUST contain a <samp>NameID</samp> with the following properties: </p>
+
+<ul>
+<li>A <samp>Format</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"</samp> </li>
+<li>A value populated with the SCIM <samp>id</samp>.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.4.1.1.p.3">The following is a non-normative example of a SAML Subject: </p>
+<pre>
+ &lt;saml:Subject&gt;
+   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"&gt;2819c223-7f76-453a-919d-413861904646&lt;/saml:NameID&gt;
+ &lt;/saml:Subject&gt;
+</pre>
+<h1 id="rfc.section.4.1.2">
+<a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlClaimMappingSAMLAttributes" id="SchemaBindingScimToSamlClaimMappingSAMLAttributes">SAML Attributes</a>
+</h1>
+<p id="rfc.section.4.1.2.p.1">TO BE DETERMINED.  </p>
+<p id="rfc.section.4.1.2.p.2">Editors Note: A prior draft specification for binding SCIM to SAML is defined at http://www.simplecloud.info/specs/draft-scim-saml2-binding-02.html </p>
+<h1 id="rfc.section.4.2">
+<a href="#rfc.section.4.2">4.2.</a> <a href="#SchemaBindingPrivacyConsiderations" id="SchemaBindingPrivacyConsiderations">Privacy Considerations</a>
+</h1>
+<p id="rfc.section.4.2.p.1">When exposing end-user information through SAML Attributes, FastFed Identity Providers MUST not expose any attributes which were not in the <samp>desired_user_attributes</samp> element of the Application Provider Metadata (Section 3.3.4 of <a href="#FastFed.Core" class="xref">FastFed Core</a>).  </p>
+<h1 id="rfc.section.5">
+<a href="#rfc.section.5">5.</a> <a href="#Interoperability" id="Interoperability">Interoperability Requirements</a>
+</h1>
+<p id="rfc.section.5.p.1">Each identity standard defines a set of optional features to enable usage in a wide variety of circumstances.  </p>
+<p id="rfc.section.5.p.2">However, a consequence of the flexibility is that two Providers may find themselves incompabitible despite sharing the same protocols.  </p>
+<p id="rfc.section.5.p.3">To deliver the simplified experience that is the goal of FastFed, it is important that two FastFed-enabled Providers have confidence that they can interoperate when sharing the same protocols.  </p>
+<p id="rfc.section.5.p.4">The following sections describe the subset of the SAML specifications that Providers MUST implement to be FastFed Combatible for the <samp>SAML</samp> SSO protocol. Providers MAY support additional functionality, but MUST NOT require the additional functionality when configuring federation with another Provider using FastFed specifications.  </p>
+<h1 id="rfc.section.5.1">
+<a href="#rfc.section.5.1">5.1.</a> <a href="#SAMLInteroperabilityIdentityProviderReqs" id="SAMLInteroperabilityIdentityProviderReqs">Identity Provider Requirements</a>
+</h1>
+<p></p>
+
+<ul>
+<li>MUST implement the required functionality of a SAML Identity Provider as defined in the SAML Web Browser SSO Profile (Section 4.1 of <a href="#SAML.Profiles" class="xref">[SAML.Profiles]</a>).  </li>
+<li>MUST support the HTTP Redirect and HTTP POST bindings for the Web Browswer SSO Profile.  </li>
+<li>MUST use X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object. As background, this response is returned from the SAML Identity Provider to the SAML Service Provider as part of the SAML Web Browser SSO Profile.  </li>
+<li>MUST host a SAML Metadata document at the location specified by the <samp>saml_metadata_uri</samp> exchanged during the FastFed Handshake.  </li>
+<li>MUST include an IDPSSODescriptor element in the SAML Metadata document as specified in <a href="#SAML.Metadata" class="xref">[SAML.Metadata]</a>.  </li>
+<li>MUST populate the IDPSSODescriptor element with all values needed by a SAML Service Provider to integrate with this SAML Identity Provider using the capabilities described in this section.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.5.2">
+<a href="#rfc.section.5.2">5.2.</a> <a href="#SAMLInteroperabilityApplicationProviderReqs" id="SAMLInteroperabilityApplicationProviderReqs">Application Provider Requirements</a>
+</h1>
+<p id="rfc.section.5.2.p.1">SAML Requirements for Application Providers: </p>
+
+<ul>
+<li>MUST implement the required functionality of a SAML Service Provider as defined in the SAML Web Browser SSO Profile (Section 4.1 of <a href="#SAML.Profiles" class="xref">[SAML.Profiles]</a>).  </li>
+<li>MUST use either the HTTP Redirect or HTTP POST binding for the Web Browswer SSO Profile.  </li>
+<li>MUST accept X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object. As background, this response is returned from the SAML Identity Provider to the SAML Service Provider as part of the SAML Web Browser SSO Profile.  </li>
+<li>MUST host a SAML Metadata document at the location specified by the <samp>saml_metadata_uri</samp> exchanged during the FastFed Handshake.  </li>
+<li>MUST include an SPSSODescriptor element in the SAML Metadata document as specified in <a href="#SAML.Metadata" class="xref">[SAML.Metadata]</a>.  </li>
+<li>MUST populate the SPSSODescriptor with all values needed by a SAML Identity Provider to integrate with this SAML Service Provider using the capabilities described in this section.  </li>
+<li>MAY use the information in the Identity Provider's corresponding SAML Metadata document to decide whether to use additional SAML capabilities, above and beyond the FastFed minimum interoperablity requirements. The additional capabilities must be optional and the federation MUST still succeed if one Provider does not support the additional capabilities.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.5.3">
+<a href="#rfc.section.5.3">5.3.</a> <a href="#SAMLCertificateRotationRequirements" id="SAMLCertificateRotationRequirements">Certificate Rotation</a>
+</h1>
+<p id="rfc.section.5.3.p.1">While the full SAML specification supports a variety of key usages, the FastFed Profile defined herein restricts Providers to only X509 Keys for signing SAML Assertions in Web Browser SSO response messages from the Identity Provider.  </p>
+<p id="rfc.section.5.3.p.2">FastFed Providers MUST implement automatic rotation of the X509 Certificates. This section describes the interoperability requirements for certificate rotation.  </p>
+<h1 id="rfc.section.5.3.1">
+<a href="#rfc.section.5.3.1">5.3.1.</a> <a href="#SAMLKeyPublicationRequirements" id="SAMLKeyPublicationRequirements">Certificate Rotation Requirements for an Identity Provider</a>
+</h1>
+<p id="rfc.section.5.3.1.p.1">To rotate and publish new SAML signing certificates, the following requirements apply to the Identity Provider: </p>
+
+<ul>
+<li>MUST include new certificates in the response to queries against the SAML Metadata URL that was exchanged during the FastFed Handshake.  </li>
+<li>MUST publish the new certificate in the SAML Metadata at least 14 days before the currently active certificate will expire or be revoked, where the expiration date is specified by the <samp>notAfter</samp> attribute within the X.509 certificate.  </li>
+<li>MUST include the new certificate in the SAML Metadata, alongside the currently active certificate, using the recommended technique for multiple certificates defined in the <a href="#SAML.Interoperability" class="xref">SAML Metadata Interoperability Profile</a>. As a reference, this Interopability Profile specifies that each certificate MUST be placed within its own <samp>&lt;KeyDescriptor&gt;</samp> element.  </li>
+<li>SHOULD continue using the original key for signing SAML Assertions for at least 7 days after publishing the new certificate, to give consumers time to read the new certificate from the SAML Metadata and be ready to receive the new key.  </li>
+<li>SHOULD begin signing assertions with the new key if less than 7 days remains until the old certificate expires. MAY continue using the old key if problems arise with the new key, to give time for diagnosis of the problems.  </li>
+<li>SHOULD stop using the old key for signing assertions when less than 1 day remains until the old certificate expires.  </li>
+<li>MUST support HTTP 1.1 ETag semantics <a href="#RFC2616" class="xref">[RFC2616]</a> for all requests to the SAML Metadata URL, including: <ul>
+<li>Returning an ETag response header </li>
+<li>Accepting an If-None-Match request header, and returning an HTTP 304 response if the SAML Metadata is unmodified.  </li>
+</ul>
+<p> </p>
+</li>
+<li>MAY return an HTTP 301 response code to indicate the SAML Metadata has moved to a new location.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.5.3.2">
+<a href="#rfc.section.5.3.2">5.3.2.</a> <a href="#SAMLKeyConsumptionRequirements" id="SAMLKeyConsumptionRequirements">Certificate Rotation Requirements for an Application                 Provider</a>
+</h1>
+<p id="rfc.section.5.3.2.p.1">To consume rotated SAML signing keys, the following requirements apply to the Application Provider: </p>
+
+<ul>
+<li>MUST re-query the Identity Provider's SAML Metadata URL to check for new certificates at least once every 24 hours. Because certificates can be rotated at any time, the Application Provider MUST NOT wait for the expiration date to check for updated certificates.  </li>
+<li>MUST include the If-None-Match header in the request to download the SAML Metadata, populated with the value of the ETag response header received when previously downloading the SAML Metadata.  </li>
+<li>MUST handle an HTTP 304 response code which indicates that the SAML Metadata is unchanged.  </li>
+<li>MUST handle an HTTP 301 response code and use the new location for all future downloads of the Identity Provider's SAML Metadata.  </li>
+<li>MUST support the consumption of multiple certificates using the recommended techniques defined in the <a href="#SAML.Interoperability" class="xref">SAML Metadata Interoperability Profile</a>. As a reference, this Interopability Profile specifies that each certificate MUST be placed within its own <samp>&lt;KeyDescriptor&gt;</samp> element.  </li>
+<li>MUST ignore any changes in the SAML Metadata except for <samp>&lt;KeyDescriptor&gt;</samp> elements.  </li>
+<li>MUST accept SAML assertions signed using any of the valid certificates specified within the <samp>&lt;KeyDescriptor&gt;</samp> elements of the Identity Provider SAML Metadata.  </li>
+<li>SHOULD alert the Administrator if the Identity Provider has not published a new certificate and less than 14 days remains until expiration of the current certificate. The alert mechanism is an implementation detail that is outside the scope of the specification.  </li>
+</ul>
+
+<p> </p>
+<h1 id="rfc.section.6">
+<a href="#rfc.section.6">6.</a> <a href="#Security" id="Security">Security Considerations</a>
+</h1>
+<p id="rfc.section.6.p.1">TODO </p>
+<h1 id="rfc.section.7">
+<a href="#rfc.section.7">7.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
+</h1>
+<p id="rfc.section.7.p.1">TODO </p>
+<h1 id="rfc.references">
+<a href="#rfc.references">8.</a> Normative References</h1>
+<table><tbody>
+<tr>
+<td class="reference"><b id="FastFed.Core">[FastFed.Core]</b></td>
+<td class="top">
+<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Core</a>", June 2018.</td>
+</tr>
+<tr>
+<td class="reference"><b id="FastFedProfile.SCIM">[FastFedProfile.SCIM]</b></td>
+<td class="top">
+<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Profile for SCIM</a>", June 2018.</td>
+</tr>
+<tr>
+<td class="reference"><b id="OpenID.Core">[OpenID.Core]</b></td>
+<td class="top">
+<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a>, <a title="Microsoft">Jones, M.</a>, <a title="Google">de Medeiros, B.</a> and <a title="Salesforce">C. Mortimore</a>, "<a href="http://openid.net/specs/openid-connect-core-1_0.html">OpenID Connect Core 1.0</a>", November 2014.</td>
+</tr>
+<tr>
+<td class="reference"><b id="OpenID.Discovery">[OpenID.Discovery]</b></td>
+<td class="top">
+<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a>, <a title="Microsoft">Jones, M.</a> and <a title="Illumila">E. Jay</a>, "<a href="http://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect Discovery 1.0</a>", November 2014.</td>
+</tr>
+<tr>
+<td class="reference"><b id="OpenID.Registration">[OpenID.Registration]</b></td>
+<td class="top">
+<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a> and <a title="Microsoft">M. Jones</a>, "<a href="http://openid.net/specs/openid-connect-registration-1_0.html">OpenID Connect Dynamic Client Registration 1.0</a>", November 2014.</td>
+</tr>
+<tr>
+<td class="reference"><b id="OpenID.SCIMProfile">[OpenID.SCIMProfile]</b></td>
+<td class="top">
+<a title="Oracle">Hunt, P.</a> and <a title="Salesforce">C. Mortimore</a>, "<a href="http://openid.net/specs/openid-connect-scim-profile-1_0.html">OpenID Connect Profile for SCIM Services [DRAFT]</a>", June 2016.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC2119">[RFC2119]</b></td>
+<td class="top">
+<a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC2616">[RFC2616]</b></td>
+<td class="top">
+<a>Fielding, R.</a>, <a>Gettys, J.</a>, <a>Mogul, J.</a>, <a>Frystyk, H.</a>, <a>Masinter, L.</a>, <a>Leach, P.</a> and <a>T. Berners-Lee</a>, "<a href="https://tools.ietf.org/html/rfc2616">Hypertext Transfer Protocol -- HTTP/1.1</a>", RFC 2616, DOI 10.17487/RFC2616, June 1999.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC3986">[RFC3986]</b></td>
+<td class="top">
+<a>Berners-Lee, T.</a>, <a>Fielding, R.</a> and <a>L. Masinter</a>, "<a href="https://tools.ietf.org/html/rfc3986">Uniform Resource Identifier (URI): Generic Syntax</a>", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC4627">[RFC4627]</b></td>
+<td class="top">
+<a>Crockford, D.</a>, "<a href="https://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>", RFC 4627, DOI 10.17487/RFC4627, July 2006.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC5646">[RFC5646]</b></td>
+<td class="top">
+<a>Phillips, A.</a> and <a>M. Davis</a>, "<a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a>", BCP 47, RFC 5646, DOI 10.17487/RFC5646, September 2009.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6125">[RFC6125]</b></td>
+<td class="top">
+<a>Saint-Andre, P.</a> and <a>J. Hodges</a>, "<a href="https://tools.ietf.org/html/rfc6125">Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)</a>", RFC 6125, DOI 10.17487/RFC6125, March 2011.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6749">[RFC6749]</b></td>
+<td class="top">
+<a>Hardt, D.</a>, "<a href="https://tools.ietf.org/html/rfc6749">The OAuth 2.0 Authorization Framework</a>", RFC 6749, DOI 10.17487/RFC6749, October 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC6750">[RFC6750]</b></td>
+<td class="top">
+<a>Jones, M.</a> and <a>D. Hardt</a>, "<a href="https://tools.ietf.org/html/rfc6750">The OAuth 2.0 Authorization Framework: Bearer Token Usage</a>", RFC 6750, DOI 10.17487/RFC6750, October 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7643">[RFC7643]</b></td>
+<td class="top">
+<a>Hunt, P.</a>, <a>Grizzle, K.</a>, <a>Wahlstroem, E.</a> and <a>C. Mortimore</a>, "<a href="https://tools.ietf.org/html/rfc7643">System for Cross-domain Identity Management: Core Schema</a>", RFC 7643, DOI 10.17487/RFC7643, September 2015.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7644">[RFC7644]</b></td>
+<td class="top">
+<a>Hunt, P.</a>, <a>Grizzle, K.</a>, <a>Ansari, M.</a>, <a>Wahlstroem, E.</a> and <a>C. Mortimore</a>, "<a href="https://tools.ietf.org/html/rfc7644">System for Cross-domain Identity Management: Protocol</a>", RFC 7644, DOI 10.17487/RFC7644, September 2015.</td>
+</tr>
+<tr>
+<td class="reference"><b id="SAML.Assertions">[SAML.Assertions]</b></td>
+<td class="top">
+<a title="Internet2">Cantor, S.</a>, <a title="Nokia">Kemp, J.</a>, <a title="RSA Security">Philpott, R.</a> and <a title="Sun Microsystems">E. Maler</a>, "<a href="http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0</a>", March 2005.</td>
+</tr>
+<tr>
+<td class="reference"><b id="SAML.Interoperability">[SAML.Interoperability]</b></td>
+<td class="top">
+<a title="Internet2">Cantor, S.</a>, <a title="Nokia">Kemp, J.</a>, <a title="RSA Security">Philpott, R.</a> and <a title="Sun Microsystems">E. Maler</a>, "<a href="https://www.oasis-open.org/committees/download.php/36645/draft-sstc-metadata-iop-2.0-01.pdf">SAML V2.0 Metadata Interoperability Profile Version 1.0</a>", August 2009.</td>
+</tr>
+<tr>
+<td class="reference"><b id="SAML.Metadata">[SAML.Metadata]</b></td>
+<td class="top">
+<a title="Internet2">Cantor, S.</a>, <a title="Sigaba">Moreh, J.</a>, <a title="RSA Security">Philpott, R.</a> and <a title="Sun Microsystems">E. Maler</a>, "<a href="http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf">Metadata for the OASIS Security Assertion Markup Language (SAML) V2.0</a>", March 2005.</td>
+</tr>
+<tr>
+<td class="reference"><b id="SAML.Profiles">[SAML.Profiles]</b></td>
+<td class="top">
+<a title="Atos Origin">Hughes, J.</a>, <a title="Internet2">Cantor, S.</a>, <a title="Neustar">Hodges, J.</a>, <a title="Nokia">Hirsch, F.</a>, <a title="Principal Identity">Mishra, P.</a>, <a title="RSA Security">Philpott, R.</a> and <a title="Sun Microsystems">E. Maler</a>, "<a href="http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf">Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0"</a>", March 2005.</td>
+</tr>
+<tr>
+<td class="reference"><b id="W3C.REC-html401-19991224">[W3C.REC-html401-19991224]</b></td>
+<td class="top">
+<a title="W3C">Raggett, D.</a>, <a title="W3C">Hors, A.</a> and <a title="W3C">I. Jacobs</a>, "<a href="https://www.w3.org/TR/1999/REC-html401-19991224">HTML 4.01 Specification</a>", December 1999.</td>
+</tr>
+</tbody></table>
+<h1 id="rfc.appendix.A">
+<a href="#rfc.appendix.A">Appendix A.</a> <a href="#Acknowledgements" id="Acknowledgements">Acknowledgements</a>
+</h1>
+<p id="rfc.section.A.p.1">The OpenID Community would like to thank the following people for their contributions to this specification: </p>
+<p></p>
+
+<ul class="empty"><li>TODO</li></ul>
+
+<p> </p>
+<h1 id="rfc.appendix.B">
+<a href="#rfc.appendix.B">Appendix B.</a> <a href="#Notices" id="Notices">Notices</a>
+</h1>
+<p id="rfc.section.B.p.1">Copyright (c) 2017 The OpenID Foundation.</p>
+<p id="rfc.section.B.p.2">The OpenID Foundation (OIDF) grants to any Contributor, developer, implementer, or other interested party a non-exclusive, royalty free, worldwide copyright license to reproduce, prepare derivative works from, distribute, perform and display, this Implementers Draft or Final Specification solely for the purposes of (i) developing specifications, and (ii) implementing Implementers Drafts and Final Specifications based on such documents, provided that attribution be made to the OIDF as the source of the material, but that such attribution does not indicate an endorsement by the OIDF.</p>
+<p id="rfc.section.B.p.3">The technology described in this specification was made available from contributions from various sources, including members of the OpenID Foundation and others. Although the OpenID Foundation has taken steps to help ensure that the technology is available for distribution, it takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the implementation or use of the technology described in this specification or the extent to which any license under such rights might or might not be available; neither does it represent that it has made any independent effort to identify any such rights. The OpenID Foundation and the contributors to this specification make no (and hereby expressly disclaim any) warranties (express, implied, or otherwise), including implied warranties of merchantability, non-infringement, fitness for a particular purpose, or title, related to this specification, and the entire risk as to implementing this specification is assumed by the implementer. The OpenID Intellectual Property Rights policy requires contributors to offer a patent promise not to assert certain patent claims against other contributors and against implementers. The OpenID Foundation invites any interested party to bring to its attention any copyrights, patents, patent applications, or other proprietary rights that may cover technology that may be required to practice this specification.</p>
+<h1 id="rfc.appendix.C">
+<a href="#rfc.appendix.C">Appendix C.</a> <a href="#History" id="History">Document History</a>
+</h1>
+<p id="rfc.section.C.p.1">[[ To be removed from the final specification ]]</p>
+<h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Darin K. McAdams</span> 
+	  <span class="n hidden">
+		<span class="family-name">McAdams</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Amazon</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:darinm@amazon.com">darinm@amazon.com</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>

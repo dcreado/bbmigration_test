@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<?xml-stylesheet type='text/xsl' href='http://xml2rfc.tools.ietf.org/authoring/rfc2629.xslt' ?>
+<!DOCTYPE rfc PUBLIC "-//IETF//DTD RFC 2629//EN" "http://xml2rfc.tools.ietf.org/authoring/rfc2629.dtd">
+<!--
+  NOTE:  This XML file is input used to produce the authoritative copy of an
+  OpenID Foundation specification.  The authoritative copy is the HTML output.
+  This XML source file is not authoritative.  The statement ipr="none" is
+  present only to satisfy the document compilation tool and is not indicative
+  of the IPR status of this specification.  The IPR for this specification is
+  described in the "Notices" section.  This is a public OpenID Foundation
+  document and not a private document, as the private="..." declaration could
+  be taken to indicate.
+-->
+<rfc category="std" docName="fastfed-1_0" ipr="none">
+
+  <?rfc toc="yes" ?>
+  <?rfc tocdepth="5" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc strict="yes" ?>
+  <?rfc iprnotified="no" ?>
+  <?rfc private="Draft" ?>
+  
+  <front>
+    <title abbrev="FastFed Profile for SCIM Provisioning">FastFed Profile for
+    SCIM Provisioning - draft 01</title>
+
+    <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
+      <organization abbrev="Amazon">Amazon</organization>
+      <address>
+        <email>darinm@amazon.com</email>
+      </address>
+    </author>
+
+    <date day="18" month="June" year="2018" />
+
+    <workgroup>FastFed Working Group</workgroup>
+
+    <abstract>
+      <t>
+	This specification defines the requirements that an implementor must
+	satisfy to describe themselves as FastFed Compatibile with SCIM user
+	provisioning.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="Introduction" title="Introduction">
+
+      <t>
+	This specification defines the functionality which a provider
+	must satisfy to describe themselves as FastFed Compatible with SCIM
+	user provisioning.
+      </t>
+      <t>
+	It consists of the following extensions to
+	the <xref target="FastFed.Core">FastFed Core</xref> specification:
+	<list style="symbols">
+	  <t>
+	    Additional metadata in the FastFed Handshake Flows in order to
+	    exchange SCIM provisioning endpoints.
+	  </t>
+	  <t>
+	    An interoperability profile describing the subset of the SCIM
+            specifications which must be implemented in order to be FastFed
+            Compatible for SCIM provisioning.
+	  </t>
+	</list>
+      </t>
+      
+      <section anchor="rnc" title="Requirements Notation and Conventions">
+        <t>
+	  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+	  <xref target="RFC2119">RFC 2119</xref>.
+	</t>
+
+	<t>
+	  In the .txt version of this specification, values are quoted to
+	  indicate that they are to be taken literally.  When using these values
+	  in protocol messages, the quotes MUST NOT be used as part of the
+	  value.  In the HTML version of this specification, values to be taken
+	  literally are indicated by the use of
+	  <spanx style="verb">this fixed-width font</spanx>.
+	</t>
+      </section>
+
+      <section anchor="Terminology" title="Terminology">
+	<t>
+	  TODO
+	</t>
+      </section>
+    </section>
+    
+    <section anchor="FastFedMetadata" title="FastFed Metadata">
+      <t>
+	Section 3.3.1 of the <xref target="FastFed.Core">FastFed Core</xref>
+	specification defines the value <spanx style="verb">"SCIM"</spanx>
+	as a valid provisioning mode.
+      </t>
+      <t>
+	A Provider who includes <spanx style="verb">"SCIM"</spanx> as a supported
+	mode MUST comply with the requirements of this
+	specification.
+      </t>
+    </section>
+    
+    <section anchor="FastFedHandshake" title="FastFed Handshake">
+
+      <t>
+	When using the SCIM provisioning protocol, the FastFed
+        Identity Provider and Application Provider have various
+        responsibilities to comply with the protocol.
+      </t>
+      <t>
+        The Identity Provider fulfills the role of a SCIM Client. It has
+        a responsibility to provision user information into the Application
+        Provider as described in 
+        <xref target="SCIMInteroperabilityIdentityProviderReqs"/>.
+      </t>
+      <t>
+        The Application Provider fulfills the role of a SCIM Service.
+        It has a responsibility to host a SCIM Endpoint and handle provisioning
+        messages from the Identity Provider as described in
+        described in
+        <xref target="SCIMInteroperabilityApplicationProviderReqs"/>
+      </t>
+      <t>
+        This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> handshake messages with the additional attributes necessary for
+        each party to fulfill their respective obligations under SCIM.
+      </t>
+
+      <section anchor="FastFedHandshakeRegistrationResponse" 
+	       title="FastFed Registration Response">
+        <t>
+          This specification extends the contents of the FastFed
+          Registration Response (Section 6.2.3.3
+          of <xref target="FastFed.Core">FastFord Core</xref>) with the
+          following
+          attributes:
+          <list style="hanging">
+            <t hangText="scim_service_uri">
+              REQUIRED. Contains the URL of the Application Provider's
+              SCIM Endpoint.
+            </t>
+          </list>
+        </t>
+        <t>
+          If the SCIM Endpoint is access controlled, the Application Provider
+          MAY also include a value for <spanx style="verb">oauth_token</spanx>
+          as defined in Section 6.2.3.1 of <xref target="FastFed.Core">FastFord
+          Core</xref>. If this value is provided, the Identity Provider MUST
+          present the access_token as a Bearer Token when invoking the SCIM
+          Endpoint, as specified in Section 2 of
+          the <xref target="RFC7644">SCIM Protocol Specification</xref>
+        </t>
+        <t>
+          The following is a non-normative example of the contents of a
+          registration response message:
+        </t>
+        <figure><artwork><![CDATA[
+ {
+  "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+  "oauth_token": {
+    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
+    "token_type": "bearer",
+    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
+    "expires_in": 3600
+  }
+ }
+]]></artwork></figure>
+      </section>
+
+    </section> <!-- End of FastFed Handshake Extensions -->
+
+    <section anchor="Interoperability"
+	     title="Interoperability Requirements">
+     <t>
+       Each identity standard defines a set of optional features to enable usage
+       in a wide variety of circumstances.
+     </t>
+     <t>
+       However, a consequence of the flexibility is that two Providers may find
+       themselves incompabitible despite sharing the same protocols.
+     </t>
+     <t>
+       To deliver the simplified experience that is the goal of FastFed, it is
+       important that two FastFed-enabled Providers have confidence that they
+       can interoperate when sharing the same protocols.
+     </t>
+     <t>                                                                                                                                                                  
+       The following sections describe the subset of the SCIM Protocol                                                                                                    
+       specifications that Providers MUST implement to be FastFed Combatible                                                                                              
+       for SCIM provisioning. Providers MAY support additional functionality,                                                                                             
+       but MUST NOT require the additional functionality when configuring                                                                                                 
+       federation with another Provider using the FastFed specifications.                                                                                                 
+     </t>
+     <section anchor="SCIMInteroperabilityIdentityProviderReqs"
+	      title="Identity Provider Requirements">
+
+       <t>                                                                                                                                                                
+         SCIM requirements for Identity Providers:                                                                                                                        
+         <list style="symbols">                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST implement the required functionality of a SCIM Client as                                                                                                
+             defined in <xref target="RFC7643"/> and
+             <xref target="RFC7644"/>.                                                                                            
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             For each end-user that is authorized to access the Application:                                                                                              
+             <list style="symbols">                                                                                                                                       
+               <t>                                                                                                                                                        
+                 SHOULD replicate end-user information to the Application                                                                                                   
+                 Provider within 60 minutes of an active end-user                                                                                                         
+                 being created or updated.                                                                                                                                
+                 <vspace/><vspace/>                                                                                                                                       
+                 The Identity Provider MAY use any combination of the                                                                                                     
+                 following operations to provision user information:                                                                                                      
+                 <list style="symbols">                                                                                                                                   
+                   <t>Create account via <spanx style="verbose">POST
+                       /Users</spanx></t>                                                                                   
+                   <t>Update account details via <spanx style="verbose">PUT
+                       /Users/{id}</spanx></t>                                                                       
+                   <t>Read list of accounts via <spanx style="verbose">GET
+                       /Users</spanx></t>                                                                             
+                   <t>Read account details via <spanx style="verbose">GET
+                       /Users/{id}</spanx></t>                                                                         
+                   <t>Filtering based on <spanx style="verbose">"userName
+                       eq"</spanx></t>                                                                                         
+                 </list>                                                                                                                                                  
+               </t>                                                                                                                                                       
+               <t>                                                                                                                                                        
+                 SHOULD replicate end-user deactivation to the Application                                                                                                  
+                 within 15 minutes of the user being deactivated within the                                                                                                
+                 Identity Provider.                                                                                                                                       
+                 <vspace/><vspace/>                                                                                                                                       
+                 The Identity Provider MAY use any combination of the                                                                                                     
+                 following operations to deactivate users in the Application:                                                                                             
+                 <list style="symbols">                                                                                                                                   
+                   <t>Deactivate account via <spanx style="verbose">PATCH
+                       /Users{id}</spanx></t>                                                                          
+                   <t>Read list of accounts via <spanx style="verbose">GET
+                       /Users</spanx></t>                                                                             
+                   <t>Read account details via <spanx style="verbose">GET
+                       /Users/{id}</spanx></t>                                                                         
+                   <t>Filtering based on <spanx style="verbose">"userName
+                       eq"</spanx></t>                                                                                         
+                 </list>                                                                                                                                                  
+               </t>                                                                                                                                                       
+             </list>                                                                                                                                                      
+           </t>                                                                                                                                                           
+         </list>                                                                                                                                                          
+       </t>                                                                                                                                                               
+     </section> 
+     
+     <section anchor="SCIMInteroperabilityApplicationProviderReqs"
+	      title="Application Provider Requirements">
+       <t>                                                                                                                                                                
+         SCIM requirements for Application Providers:                                                                                                                     
+         <list style="symbols">                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST implement the required functionality of a SCIM Service                                                                                                  
+             Provider as defined in <xref target="RFC7643"/> and
+             <xref                                                                                                    
+		target="RFC7644"/>.                                                                                                                                          
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             MUST support the following operations:                                                                                                                       
+             <list style="symbols">                                                                                                                                       
+               <t>Create account via <spanx style="verbose">POST
+                   /Users</spanx></t>                                                                                       
+               <t>Update account details via <spanx style="verbose">PUT
+                   /Users/{id}</spanx></t>                                                                           
+               <t>Deactivate account via <spanx style="verbose">PATCH
+                   /Users{id}</spanx></t>                                                                              
+               <t>Read list of accounts via <spanx style="verbose">GET
+                   /Users</spanx></t>                                                                                 
+               <t>Read account details via <spanx style="verbose">GET
+                   /Users/{id}</spanx></t>                                                                             
+               <t>Filtering based on <spanx style="verbose">"userName eq"</spanx></t>                                                                                             
+             </list>                                                                                                                                                      
+           </t>                                                                                                                                                           
+           <t>                                                                                                                                                            
+             SHOULD respond to account deactivation by revoking the ability                                                                                               
+             for the end-user to use the Application, even if that end-user                                                                                               
+             has an active session with an expiration date in the future. The                                                                                             
+             revocation mechanism is an implementation detail and outside the                                                                                             
+             scope of this specification. Revocation should occur within 15                                                                                                
+             minutes of receiving the deactivation.                                                                                                                       
+           </t>                                                                                                                                                           
+         </list>                                                                                                                                                          
+       </t>                                                                                                                                                               
+     </section>                                                                                                                                                            
+    </section> <!-- End of Interoperability -->  
+        
+  <section anchor="Security" title="Security Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+  
+  <section anchor="IANA" title="IANA Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4627"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5646"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6750"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?>
+
+      <reference anchor="FastFed.Core" target="http://example.com">
+        <front>
+          <title>FastFed Core</title>
+          <author fullname="Darin" initials="K." surname="McAdams">                         
+            <organization abbrev="Amazon">Amazon</organization>               
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="FastFedProfile.SCIM" target="http://example.com">
+        <front>
+          <title>FastFed Profile for SCIM</title>
+	    <author fullname="Darin" initials="K." surname="McAdams">
+            <organization abbrev="Amazon">Amazon</organization>
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Core" target="http://openid.net/specs/openid-connect-core-1_0.html">
+        <front>
+          <title>OpenID Connect Core 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
+            <organization abbrev="Google">Google</organization>
+          </author>
+
+	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
+	    <organization abbrev="Salesforce">Salesforce</organization>
+	  </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Discovery" target="http://openid.net/specs/openid-connect-discovery-1_0.html">
+        <front>
+          <title>OpenID Connect Discovery 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Edmund Jay" initials="E." surname="Jay">
+            <organization abbrev="Illumila">Illumila</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Registration" target="http://openid.net/specs/openid-connect-registration-1_0.html">
+        <front>
+          <title>OpenID Connect Dynamic Client Registration 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.SCIMProfile"
+      target="http://openid.net/specs/openid-connect-scim-profile-1_0.html">
+        <front>
+          <title>OpenID Connect Profile for SCIM Services [DRAFT]</title>
+
+          <author fullname="Phil Hunt" initials="P" surname="Hunt">
+            <organization abbrev="Oracle">Oracle</organization>
+          </author>
+          <author fullname="Chuck Mortimore" initials="C" surname="Mortimore">
+            <organization abbrev="Salesforce">Salesforce</organization>
+          </author>
+
+          <date day="15" month="June" year="2016"/>
+        </front>
+      </reference> 
+
+      
+      <reference anchor="W3C.REC-html401-19991224" target="https://www.w3.org/TR/1999/REC-html401-19991224">
+	<front>
+	  <title>HTML 4.01 Specification</title>
+
+	  <author fullname="Dave Raggett" initials="D" surname="Raggett">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Arnaud Le Hors" initials="A" surname="Hors">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Ian" initials="I" surname="Jacobs">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+
+	  <date day="24" month="December" year="1999"/>
+	</front>
+      </reference>
+    </references>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>
+	The OpenID Community would like to thank the following people for
+	their contributions to this specification:
+      </t>
+      <t>
+        <list style="empty">
+          <t>TODO</t>
+        </list>
+      </t>
+    </section>
+
+    <section anchor="Notices" title="Notices">
+      <t>Copyright (c) 2017 The OpenID Foundation.</t>
+
+      <t>The OpenID Foundation (OIDF) grants to any Contributor, developer,
+      implementer, or other interested party a non-exclusive, royalty free,
+      worldwide copyright license to reproduce, prepare derivative works from,
+      distribute, perform and display, this Implementers Draft or Final
+      Specification solely for the purposes of (i) developing specifications,
+      and (ii) implementing Implementers Drafts and Final Specifications based
+      on such documents, provided that attribution be made to the OIDF as the
+      source of the material, but that such attribution does not indicate an
+      endorsement by the OIDF.</t>
+
+      <t>The technology described in this specification was made available
+      from contributions from various sources, including members of the OpenID
+      Foundation and others. Although the OpenID Foundation has taken steps to
+      help ensure that the technology is available for distribution, it takes
+      no position regarding the validity or scope of any intellectual property
+      or other rights that might be claimed to pertain to the implementation
+      or use of the technology described in this specification or the extent
+      to which any license under such rights might or might not be available;
+      neither does it represent that it has made any independent effort to
+      identify any such rights. The OpenID Foundation and the contributors to
+      this specification make no (and hereby expressly disclaim any)
+      warranties (express, implied, or otherwise), including implied
+      warranties of merchantability, non-infringement, fitness for a
+      particular purpose, or title, related to this specification, and the
+      entire risk as to implementing this specification is assumed by the
+      implementer. The OpenID Intellectual Property Rights policy requires
+      contributors to offer a patent promise not to assert certain patent
+      claims against other contributors and against implementers. The OpenID
+      Foundation invites any interested party to bring to its attention any
+      copyrights, patents, patent applications, or other proprietary rights
+      that may cover technology that may be required to practice this
+      specification.</t>
+    </section>
+
+    <section anchor="History" title="Document History">
+      <t>[[ To be removed from the final specification ]]</t>
+    </section>
+    
+  </back>
+</rfc>

@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<?xml-stylesheet type='text/xsl' href='http://xml2rfc.tools.ietf.org/authoring/rfc2629.xslt' ?>
+<!DOCTYPE rfc PUBLIC "-//IETF//DTD RFC 2629//EN" "http://xml2rfc.tools.ietf.org/authoring/rfc2629.dtd">
+<!--
+  NOTE:  This XML file is input used to produce the authoritative copy of an
+  OpenID Foundation specification.  The authoritative copy is the HTML output.
+  This XML source file is not authoritative.  The statement ipr="none" is
+  present only to satisfy the document compilation tool and is not indicative
+  of the IPR status of this specification.  The IPR for this specification is
+  described in the "Notices" section.  This is a public OpenID Foundation
+  document and not a private document, as the private="..." declaration could
+  be taken to indicate.
+-->
+<rfc category="std" docName="fastfed-1_0" ipr="none">
+
+  <?rfc toc="yes" ?>
+  <?rfc tocdepth="5" ?>
+  <?rfc symrefs="yes" ?>
+  <?rfc sortrefs="yes"?>
+  <?rfc strict="yes" ?>
+  <?rfc iprnotified="no" ?>
+  <?rfc private="Draft" ?>
+  
+  <front>
+    <title abbrev="FastFed Profile for OpenID Connect 1.0">FastFed Profile for OpenID Connect 1.0 - draft 01</title>
+
+    <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
+      <organization abbrev="Amazon">Amazon</organization>
+      <address>
+        <email>darinm@amazon.com</email>
+      </address>
+    </author>
+
+    <date day="6" month="June" year="2018" />
+
+    <workgroup>FastFed Working Group</workgroup>
+
+    <abstract>
+      <t>
+	This specification defines the requirements that an implementor must
+	satisfy to describe themselves as FastFed Compatibile for the OpenID
+	Connect 1.0 protocol.
+      </t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="Introduction" title="Introduction">
+
+      <t>
+	This specification defines the functionality which a provider
+	must satisfy to describe themselves as FastFed Compatible
+	for the OpenID Connect protocol.
+      </t>
+      <t>
+	It consists of the following extensions to
+	the <xref target="FastFed.Core">FastFed Core</xref> specification:
+	<list style="symbols">
+	  <t>
+	    Additional metadata in the FastFed Handshake Flows in order to
+	    exchange OpenID Connect Discovery Endpoints.
+	    tokens.
+	  </t>
+	  <t>
+	    Mapping rules for populating OpenID Connect claims from
+	    a SCIM schema.
+	  </t>
+	  <t>
+	    An interoperability profile describing the subset of the OpenID
+            Connect specifications which must be implemented in order to be
+            FastFed Compatible.
+	  </t>
+	  <t>
+	    The mechanics of key rotation for OpenID Connect.
+	  </t>
+	</list>
+      </t>
+      
+      <section anchor="rnc" title="Requirements Notation and Conventions">
+        <t>
+	  The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+          "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+          "OPTIONAL" in this document are to be interpreted as described in
+	  <xref target="RFC2119">RFC 2119</xref>.
+	</t>
+
+	<t>
+	  In the .txt version of this specification, values are quoted to
+	  indicate that they are to be taken literally.  When using these values
+	  in protocol messages, the quotes MUST NOT be used as part of the
+	  value.  In the HTML version of this specification, values to be taken
+	  literally are indicated by the use of
+	  <spanx style="verb">this fixed-width font</spanx>.
+	</t>
+      </section>
+
+      <section anchor="Terminology" title="Terminology">
+	<t>
+	  TODO
+	</t>
+      </section>
+    </section>
+
+    <section anchor="FastFedMetadata" title="FastFed Metadata">
+      <t>
+	This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> metadata (Section 3.3.1) with the following value
+        for <spanx style="verb">sso_protocols_supported</spanx>:
+	<list style="hanging">
+	  <t hangText="OIDC">
+            A Provider who includes the value <spanx style="verb">OIDC</spanx> in
+            the  <spanx style="verb">sso_protocols_supported</spanx> indicates
+            they comply with the requirements described in this specification.
+	  </t>
+	</list>
+      </t>
+      <t>
+        The following is a non-normative example of Provider Metadata showing
+        the usage of the value:
+      </t>
+        <figure><artwork><![CDATA[
+ {
+   "identity_provider": {
+     "capabilities": {
+       "sso_protocols_supported": ["OIDC"],
+   ...
+ }
+]]></artwork></figure> 
+    </section>
+    
+    <section anchor="FastFedHandshake" title="FastFed Handshake">
+
+      <t>
+	When using the OpenID Connect protocol, the FastFed
+        Identity Provider and Application Provider have various
+        responsibilities to comply with the protocol.
+      </t>
+      <t>
+        The Identity Provider fulfills the role of an OpenID Provider. It has
+        a responsibility to support OpenID Connect Discovery and Dynamic
+        Client Registration as described in
+        <xref target="OIDCInteroperabilityIdentityProviderReqs"/>.
+      </t>
+      <t>
+        The Application Provider fulfills the role of an OpenID Relying
+        Party. It has a responsibility to perform Dynamic Registration with the
+        provider, as described in
+        <xref target="OIDCInteroperabilityApplicationProviderReqs"/>
+      </t>
+      <t>
+        This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> handshake messages with additional attributes necessary for
+        each party to fulfill their respective obligations under OpenID Connect.
+      </t>
+
+      <section anchor="FastFedHandshakeRegistrationRequest" title="FastFed Registration Request">
+	<t>
+	  This specification extends the JWT contents of the FastFed
+	  Registration Request (Section 6.2.3.1
+	  of <xref target="FastFed.Core">FastFord Core</xref>) with the following
+	  attributes:
+          <list style="hanging">
+            <t hangText="oidc_configuration_uri">
+	      Specifies the Issuer <spanx style="verb">location</spanx> for
+	      OpenID Provider Configuration Information, as defined in
+	      Section 4 of <xref target="OpenID.Discovery">OpenID Connect
+	      Discovery 1.0</xref>.
+            </t>
+	    <t hangText="oidc_initial_access_token">
+	      Specifies the <spanx style="verb">Initial Access Token</spanx>
+	      for a Client Registration Endpoint, as defined in Section 3 of
+	      <xref target="OpenID.Registration">OpenID Connect Dynamic
+		Client Registration 1.0</xref>.
+            </t>
+          </list>
+	</t>
+	<t>
+          The following is a non-normative example of the contents of a
+          registration request message prior to serialization:
+	</t>
+        <figure><artwork><![CDATA[
+ {
+  "iss": "https://idp.example.com",
+  "sub": "tenant-12345",
+  "aud": "https://app.example.com",
+  "sso_protocol": "OIDC",
+  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "user_provisioning_mode": "JIT",
+  "state": "liK9x2fUOWoi1P0",
+  "oidc_configuration_uri=": "https://tenant-12345.idp.example.com/.well-known/openid-configuration",
+  "oidc_initial_access_token": "dXNFAMwfF9pCQZI"
+ }
+]]></artwork></figure>
+      </section>
+
+    </section> <!-- End of FastFed Handshake Extensions -->
+
+    <section anchor="SchemaBinding" title="Schema Binding">
+
+      <t>
+	FastFed recommmends SCIM for user schemas.
+      </t>
+      <t>
+	This specification defines how to be FastFed Compliant when using SCIM
+	schemas and endpoints with the OpenID Connect protocol.
+      </t>
+
+      <section anchor="SchemaBindingScimToOidcClaimMapping"
+	       title="SCIM-to-OIDC Claim Mapping">
+
+	<t>
+	  OpenID Relying Parties MAY request the OpenID Connect Standard
+	  Claims as defined in Section 5.1 of <xref target="OpenID.Core">OpenID
+	  Connect Core 1.0</xref>.
+	</t>
+	<t>
+	  OpenID Providers MUST return values for the requested claims if a
+	  reasonable translation exists between the SCIM attribute and the
+	  OpenID Claim. OpenID Providers SHOULD use the following translation
+	  table for this purpose.
+	</t>
+	<t>
+	  Note: SCIM attributes below refer to the "User" Resource
+	  Schema defined in Section 4.1 of the <xref target="RFC7643">SCIM Core
+	  Specification</xref>. Individual members of a JSON structure are
+	  referenced in the table using the JSON path syntax defined in Section
+	  3.5.2 of the <xref target="RFC7644">SCIM Protocol</xref>.
+	</t>
+	<texttable>
+	  <ttcol>OpenID Claim</ttcol>
+	  <ttcol>SCIM Attribute</ttcol>
+	  
+	  <c>sub</c>
+	  <c>id</c>
+	  
+          <c>name</c>
+          <c>name.formatted</c>
+	  
+          <c>given_name</c>
+          <c>name.givenName</c>
+	  
+          <c>family_name</c>
+          <c>name.familyName</c>
+	  
+          <c>middle_name</c>
+          <c>name.middleName</c>
+	  
+          <c>nickname</c>
+          <c>nickName</c>
+	  
+          <c>preferred_username</c>
+          <c>userName</c>
+	  
+          <c>profile</c>
+          <c>profileUrl</c>
+	  
+	  <c>picture</c>
+          <c>photos[type eq "photo"].value</c>
+	  
+          <c>email</c>
+          <c>emails[primary eq true].value</c>
+	  
+          <c>zoneinfo</c>
+          <c>timezone</c>
+	  
+          <c>locale</c>
+          <c>locale</c>
+	  
+          <c>phone_number</c>
+          <c>phoneNumbers[primary eq true].value</c>
+	  
+          <c>address.formatted</c>
+          <c>addresses[primary eq true].formatted</c>
+	  
+          <c>address.street_address</c>
+          <c>addresses[primary eq true].streetAddress</c>
+	  
+          <c>address.locality</c>
+          <c>addresses[primary eq true].locality</c>
+	  
+          <c>address.region</c>
+          <c>addresses[primary eq true].region</c>
+	  
+          <c>address.postal_code</c>
+          <c>addresses[primary eq true].postalCode</c>
+	  
+          <c>address.country</c>
+          <c>addresses[primary eq true].country</c>
+	</texttable>
+	<t>The following is a non-normative example demonstrating a
+	transformation from a SCIM User to OpenID Claims.
+	</t>
+        <figure>
+          <preamble>Example SCIM User:</preamble>
+          <artwork><![CDATA[
+ {
+   "schemas":
+     ["urn:ietf:params:scim:schemas:core:2.0:User"],
+   "id": "2819c223-7f76-453a-919d-413861904646",
+   "userName": "bjensen",
+   "name": {
+     "formatted": "Ms. Barbara J Jensen, III",
+     "familyName": "Jensen",
+     "givenName": "Barbara",
+     "middleName": "Jane",
+     "honorificPrefix": "Ms.",
+     "honorificSuffix": "III"
+   },
+   "displayName": "Babs Jensen",
+   "emails": [
+     {
+       "value": "bjensen@example.com",
+       "type": "work",
+       "primary": true
+     },
+     {
+       "value": "babs@jensen.org",
+       "type": "home"
+     }
+   ],
+   "addresses": [
+    {
+      "streetAddress": "100 Universal City Plaza",
+      "locality": "Hollywood",
+      "region": "CA",
+      "postalCode": "91608",
+      "country": "USA",
+      "formatted": "100 Universal City Plaza\nHollywood, CA 91608 USA",
+      "type": "work",
+      "primary": true
+    }
+  ],
+  "photos": [
+    {
+      "value":
+        "https://photos.example.com/profilephoto/72930000000Ccne/F",
+      "type": "photo"
+    },
+    {
+      "value":
+        "https://photos.example.com/profilephoto/72930000000Ccne/T",
+      "type": "thumbnail"
+    }
+  ]
+ }
+]]></artwork></figure>
+ <figure>
+   <preamble>Example of resulting OIDC Claims:</preamble>
+   <artwork><![CDATA[
+{
+ "sub": "2819c223-7f76-453a-919d-413861904646",
+ "name": "Ms. Barbara J Jensen, III",
+ "given_name": "Barbara",
+ "family_name": "Jensen",
+ "middle_name": "Jane",
+ "preferred_username": "bjenson",
+ "picture": "https://photos.example.com/profilephoto/72930000000Ccne/F",
+ "email": "bjenson@example.com",
+ "address": {
+   "formatted": "100 Universal City Plaza\nHollywood, CA 91608 USA",
+   "street_address": "100 Universal City Plaza"
+   "locality": "Hollywood",
+   "region": "CA",
+   "postal_code": "91608",
+   "country": "USA"
+ }
+}
+]]></artwork></figure>
+
+      </section>
+
+      <section anchor="SchemaBindingSCIMUserInfoEndpoint"
+	       title="SCIM Endpoints">
+	<t>
+	  If the FastFed Identity Provider supports additional SCIM attributes
+	  beyond those mappable to OpenID Claims as per the table
+	  above, then the FastFed Identity Provider MUST implement the
+	  <xref target="OpenID.SCIMProfile">OpenID
+	    Connect SCIM Profile 1.0 [DRAFT]</xref>.
+	</t>
+	<t>
+	  FastFed Application Providers MAY use the SCIM profile to access the
+	  full set of user information available. Alternatively, they MAY use
+	  the OpenID Standard Claims to access only a subset of the available
+	  information.
+	</t>
+      </section>
+
+      <section anchor="SchemaBindingPrivacyConsiderations"
+               title="Privacy Considerations">
+        <t>
+          When exposing end-user information through OpenID Claims or SCIM
+          endpoints, FastFed Identity Providers MUST not expose any attributes
+          which were not in
+          the <spanx style="verb">desired_user_attributes</spanx> element of the
+          Application Provider Metadata (Section 3.3.4
+          of <xref target="FastFed.Core">FastFed Core</xref>).
+        </t>
+      </section>
+
+    </section> <!-- End of Schema Binding -->
+
+
+    <section anchor="Interoperability"
+	     title="Interoperability Requirements">
+     <t>
+       Each identity standard defines a set of optional features to enable usage
+       in a wide variety of circumstances.
+     </t>
+     <t>
+       However, a consequence of the flexibility is that two Providers may find
+       themselves incompabitible despite sharing the same protocols. For
+       example, if an Application Provider requires enrypted OpenID Connect ID
+       Tokens, but the Identity Provider doesn't support this feature of OpenID
+       Connect, the Providers are incompatible even though both use OpenID
+       Connect.
+     </t>
+     <t>
+       To deliver the simplified experience that is the goal of FastFed, it is
+       important that two FastFed-enabled Providers have confidence that they
+       can interoperate when sharing the same protocols.
+     </t>
+     <t>
+       The following sections describe the subset of the OpenID Connect
+       specifications that Providers MUST implement to be FastFed Combatible for
+       the <spanx style="verb">OIDC</spanx> SSO protocol. Providers MAY support
+       additional functionality, but MUST NOT require the additional
+       functionality when configuring federation with another Provider using
+       FastFed specifications.
+     </t>
+     <section anchor="OIDCInteroperabilityIdentityProviderReqs"
+	      title="Identity Provider Requirements">
+       <t>
+	 <list style="symbols">
+	   <t>
+	     MUST implement the required functionality of an OpenID Provider
+	     as defined in the <xref target="OpenID.Core">OpenID Connect Core
+	       1.0</xref> [OpenID.Core].
+	   </t>
+	   <t>
+	     MUST support the following flows:
+	     <list style="symbols">
+	       <t>Authorization Code Flow (Section 3.1 of <xref target="OpenID.Core"/>)</t>
+	       <t>Implicit Flow (Section 3.2 of <xref target="OpenID.Core"/>)</t>
+	       <t>Hybrid Flow (Section 3.3 of <xref target="OpenID.Core"/></t>
+	     </list>
+	   </t>
+	   <t>
+	     MUST support returning OIDC Claims through the UserInfo Response
+	     and the ID Token (Section 5 of <xref target="OpenID.Core"/>).
+	   </t>
+	   <t>
+	     MUST support the OIDC Client Authentication
+	     method <spanx style="verb">client_secret_basic</spanx> as defined
+	     in Section 9 of <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MUST support ID Token signing using Asymetric Signatures with an
+	     <spanx style="verb">alg</spanx> value
+	     of <spanx style="verb">RS256</spanx>, as defined in Section 10.1 of
+	     <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MUST support Initiating Login from a Third Party, as defined in
+	     Section 4 of <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MUST implement the required functionality of an OpenID Provider
+	     as defined in <xref target="OpenID.Registration">OpenID Connect
+	       Dynamic Client Registration 1.0</xref>
+	     [OpenID.Registration].
+	   </t>
+	   <t>
+	     MUST implement the required functionality of an Open ID Provider as
+	     defined in Section 3 and Section 4
+	     of <xref target="OpenID.Discovery">OpenID Connect Discovery
+	     1.0</xref> [OpenID.Discovery]
+	     <list style="symbols">
+	       <t>
+		 The property <spanx style="verb">registration_endpoint</spanx>
+		 in the OpenID Provider Metadata MUST contain the URL of the
+		 OP's Dynamic Client Registration Endpoint
+		 <xref target="OpenID.Registration"/>.
+	       </t>
+	       <t>
+		 The
+		 property <spanx style="verb">token_endpoint_auth_methods_supported</spanx>
+		 in the OpenID Provider Metadata must contain
+		 the value
+		 <spanx style="verb">client_secret_basic</spanx>.
+	       </t>
+	     </list>
+	   </t>
+	   <t>
+	     MUST specify all values in the OpenID Provider
+	     Configuration (Section 4 of <xref target="OpenID.Discovery"/>
+	     that are necessary to implement the functionality described
+	     in this section.
+	   </t>
+	 </list>
+       </t>
+     </section>
+     
+     <section anchor="OIDCInteroperabilityApplicationProviderReqs"
+	      title="Application Provider Requirements">
+       <t>
+	 <list style="symbols">
+	   <t>
+	     MUST implement the required functionality of an OpenID Relying Party
+	     as defined in the <xref target="OpenID.Core">OpenID Connect Core
+	       1.0</xref> [OpenID.Core].
+	   </t>
+	   <t>
+	     MAY use any of the following flows:
+	     <list style="symbols">
+	       <t>Authorization Code Flow (Section 3.1 of <xref target="OpenID.Core"/>)</t>
+	       <t>Implicit Flow (Section 3.2 of <xref target="OpenID.Core"/>)</t>
+	       <t>Hybrid Flow (Section 3.3 of <xref target="OpenID.Core"/>)</t>
+	     </list>
+	   </t>
+	   <t>
+	     MAY retrieve Claims via the UserInfo Response or ID Token
+	     (Section 5 of <xref target="OpenID.Core"/>)
+	   </t>
+	   <t>
+	     MUST support the OIDC Client Authentication
+	     method <spanx style="verb">client_secret_basic</spanx> as defined
+	     in Section 9 of <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MUST support ID Token signing using Asymetric Signatures with an
+             <spanx style="verb">alg</spanx> value
+	     of <spanx style="verb">RS256</spanx>, as defined in Section 10.1 of
+	     <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MAY support Initiating Login from a Third Party, as defined in
+	     Section 4 of <xref target="OpenID.Core"/>.
+	   </t>
+	   <t>
+	     MUST dynamically register with the Identity Provider when enabling
+	     federation during the FastFed Handshake. To do so, the entity MUST
+	     implement the required functionality of an Open ID Client as
+	     defined in Section 3 of <xref target="OpenID.Registration"/>.
+	   </t>
+	   <t>
+	     MAY use the information in the OpenID Provider
+	     Configuration <xref target="OpenID.Discovery"/> to decide
+	     whether to use additional OpenID capabilities, above and
+	     beyond the FastFed minimum interoperablity
+	     requirements. The additional capabilities must be optional
+	     and the federation MUST still succeed if one Provider does
+	     not support the additional capabilities.
+	   </t>
+	 </list>
+       </t>
+     </section>
+
+     <section anchor="OIDCKeyRotationRequirements"
+              title="Key Rotation">
+
+       <t>
+         Open ID Connect describes a variety of keys and secrets that are
+         managed by both Identity Providers and Application Providers. For
+         reference, the FastFed Interoperability Requirements defined in this
+         specification permit use of the following:
+         <list style="symbols">
+           <t>
+             Asymmetric Signing Keys as defined Section 10 of <xref
+             target="OpenID.Core">OpenID Connect Core 1.0</xref> [OpenID.Core],
+             consisting of the following:
+             <list style="symbols">
+               <t>
+                 A private key used by the Identity Provider to sign ID Tokens
+                 issued to the Application Provider.
+               </t>
+               <t>
+                 A public key used by the Application Provider to verify ID
+                 Token signatures. The Identity Provider publishes the public
+                 keys in the location described by the <spanx
+                 style="verb">jwks_uri</spanx> in the Identity Provider's <xref
+                 target="OpenID.Discovery">OpenID Connect Discovery</xref>
+                 configuration.
+               </t>
+             </list>
+           </t>
+           <t>
+             Values for <spanx style="verb">client_secret</spanx> and <spanx
+             style="verb">client_secret_expires_at</spanx> that are vended from
+             the Identity Provider to the Application Provider as described in
+             Section 3.2 of <xref target="OpenID.Registration">OpenID Connect
+             Dynamic Client Registration 1.0</xref>
+             [OpenID.Registration]. FastFed Interoperability requires that
+             <spanx style="verb">client_secret</spanx> be of type <spanx
+             style="verb">client_secret_basic</spanx> as defined in the HTTP
+             Basic Authentication Scheme specified in Section 2.3.1 of OAuth 2.0
+             <xref target="RFC6749"/>.
+           </t>
+         </list>
+       </t>
+       <t>
+	 FastFed Providers MUST implement automatic key rotation. This section
+	 describes the interoperability requirements for OpenID Connect key
+	 rotation.
+       </t>
+
+       <section anchor="OIDCKeyPublicationRequirements"
+                title="Key Rotation Requirements for an Identity Provider">
+                   
+         <section anchor="OIDCSigningKeyPublicationRequirements"
+                  title="Publication of New Signing Keys">
+
+           <t>
+             To publish new signing keys, the following requirements apply
+             to the Identity Provider:
+             <list style="symbols">
+               <t>
+                 MUST add a new key to the response value from the <spanx
+                 style="verb">jwks_uri</spanx> at least 14 days before prior
+                 keys expire.
+               </t>
+               <t>
+                 SHOULD wait at least 7 days after publishing a new key before
+                 using it for signing ID Tokens, to give consumers time to read
+                 the new key. MAY continue using the previous key if problems
+                 arise with the new key, to give time for diagnosis of the
+                 problems.
+               </t>
+               <t>
+                 SHOULD stop using the older key for signing ID Tokens when less
+                 than 1 day remains before the key expires.
+               </t>
+               <t>
+                 MUST support HTTP 1.1 ETag semantics <xref target="RFC2616"/>
+                 for all requests to the <spanx style="verb">jwks_uri</spanx>,
+                 including:
+                 <list style="symbols">
+                   <t>
+                     Returning an ETag response header
+                   </t>
+                   <t>
+                     Accepting an If-None-Match request header, and returning
+                     an HTTP 304 response if the SAML Metadata is unmodified,
+                   </t>
+                 </list>
+               </t>
+               <t>
+                 MAY return an HTTP 301 response code to indicate the <spanx
+                 style="verb">jwks_uri</spanx> has moved to a new location.
+               </t>
+             </list>
+           </t>
+         </section>
+
+         <section anchor="OIDCClientSecretPublicationRequirements"
+                  title="Publication of New Client Secret">
+           <t>
+             To publish a new client_secret, the following requirements apply to
+             the Identity Provider:
+             <list style="symbols">
+               <t>
+                 MUST return a new <spanx style="verb">client_secret</spanx> in
+                 the response to queries against the <spanx
+                 style="verb">registration_client_uri</spanx>, as defined in
+                 Section 4 of <xref target="OpenID.Registration">OpenID Connect
+                 Dynamic Client Registration 1.0</xref> [OpenID.Registration].
+               </t>
+               <t>
+                 MUST make the new <spanx style="verb">client_secret</spanx>
+                 available for consumption at least 14 days before the prior
+                 <spanx style="verb">client_secret</spanx> is scheduled to
+                 expire.
+               </t>
+               <t>
+                 MUST continue accepting the previous <spanx
+                 style="verb">client_secret</spanx> until the expiration date.
+               </t>
+               <t>
+                 SHOULD alert the Administrator if the previous client_secret
+                 continues to be used and less than 7 days remains until
+                 expiration. The alert mechanism is an implementation detail
+                 that is outside the scope of the specification.
+               </t>
+               <t>
+                 MUST support HTTP 1.1 ETag semantics <xref target="RFC2616"/>
+                 for all requests to the "registration_client_uri", including:
+                 <list style="symbols">
+                   <t>
+                     Returning an ETag response header
+                   </t>
+                   <t>
+                     Accepting an If-None-Match request header, and returning
+                     an HTTP 304 response if the SAML Metadata is unmodified,
+                   </t>
+                 </list>
+               </t>
+               <t>
+                 MAY return an HTTP 301 response code to indicate the <spanx
+                 style="verb">registration_client_uri</spanx> has moved to a new
+                 location.
+               </t>
+             </list>
+           </t>
+         </section>
+       </section> <!-- End of OIDC Key Publication Requirements -->
+
+       <section anchor="OIDCKeyConsumptionRequirements"
+                title="Key Rotation Requirements for an Application Provider">
+         
+         <section anchor="OIDCSigningKeyConsumptionRequirements"
+                  title="Consumption of New Signing Keys">
+           <t>
+             To consume new public signing keys, the following requirements
+             apply to the Application Provider:
+             <list style="symbols">
+               <t>
+                 MAY re-retrieve keys on demand by following the specifications
+                 defined in Section 10.1.1 <xref target="OpenID.Core">OpenID
+                 Connect Core 1.0</xref> [OpenID.Core].
+               </t>
+               <t>
+                 Alternatively, MAY preemptively re-retrieve keys by querying
+                 the <spanx style="verb">jwks_uri</spanx> on a recurring basis
+                 to check for updates. If this approach is taken, the
+                 Application Provider MUST re-retrieve the keys at least once
+                 every 24 hours. Because keys can be rotated at any time, the
+                 Application Provider MUST NOT wait for the expiration date to
+                 check for updated keys.
+               </t>
+             </list>
+           </t>
+           <t>
+             At least one of the above methods MUST be used to re-retrieve keys
+             from the <spanx style="verb">jwks_uri</spanx>. Both methods MAY be
+             used concurrently. In addition, the following requirements apply to
+             the Application Provider:
+             <list style="symbols">
+               <t>
+                 MUST include the If-None-Match header in the request to the
+                 <spanx style="verb">jwks_uri</spanx>, populated with the value
+                 of the ETag response header received when previously querying
+                 the <spanx style="verb">jwks_uri</spanx>.
+               </t>
+               <t>
+                 MUST handle an HTTP 304 response code which indicates that the
+                 content at the <spanx style="verb">jwks_uri</spanx> is
+                 unchanged.
+               </t>
+               <t>
+                 MUST handle an HTTP 301 response code and use the new location
+                 for all future queries against the <spanx
+                 style="verb">jwks_uri</spanx>.
+               </t>
+               <t>
+                 MUST accept OIDC ID Tokens signed using any of the valid keys
+                 contained in the response from the <spanx
+                 style="verb">jwks_uri</spanx>.
+               </t>
+             </list>
+           </t>
+         </section>
+
+         <section anchor="OIDCClientSecretConsumptionRequirements"
+                  title="Consumption of New Client Secret">
+           <t>
+             As background, when an Application Provider initially registers
+             with an Identity Provider using OpenID Connect Dynamic Client
+             Registration <xref target="OpenID.Registration"/>, the registration
+             response contains the following attributes:
+             <list style="symbols">
+               <t>
+                 client_secret
+               </t>
+               <t>
+                 client_secret_expires_at
+               </t>
+               <t>
+                 registration_client_uri
+               </t>
+             </list>
+           </t>
+           <t>
+             To rotate the <spanx style="verb">client_secret</spanx>, the
+             Application Provider will periodically re-query the Client
+             Configuration Endpoint (located at the <spanx
+             style="verb">registration_client_uri</spanx>) in order to re-read
+             the current configuration. If a new <spanx
+             style="verb">client_secret</spanx> has been issued, the new <spanx
+             style="verb">client_secret</spanx> will appear in the response. The
+             specifications for querying the Client Configuration Endpoint are
+             described in Section 4 of <xref target="OpenID.Registration">OpenID
+             Connect Dynamic Client Registration 1.0</xref>
+             [OpenID.Registration].
+           </t>
+           <t>
+             To consume new values of <spanx style="verb">client_secret</spanx>,
+             the following requirements apply to the Application Provider:
+             <list style="symbols">
+               <t>
+                 MUST re-retrieve the client_secret from the <spanx
+                 style="verb">registration_client_uri</spanx> at least once
+                 every 24 hours.  Because secrets can be rotated at any time,
+                 the
+                 Application Provider MUST NOT wait for the expiration date to
+                 check for updated secrets.
+               </t>
+               <t>
+                 MUST include the If-None-Match header in the request to the
+                 <spanx style="verb">registration_client_uri</spanx>, populated
+                 with the value of the ETag response header received when
+                 previously querying the <spanx
+                 style="verb">registration_client_uri</spanx>.
+               </t>
+               <t>
+                 MUST handle an HTTP 304 response code which indicates that the
+                 content at the <spanx
+                 style="verb">registration_client_uri</spanx> is unchanged.
+               </t>
+               <t>
+                 MUST handle an HTTP 301 response code and use the new location
+                 for all future queries against the <spanx
+                 style="verb">registration_client_uri</spanx>.
+               </t>
+               <t>
+                 SHOULD use the new <spanx style="verb">client_secret</spanx>
+                 for OpenID Connect flows upon receiving an updated value. MAY
+                 temporarily revert to using the prior <spanx
+                 style="verb">client_secret</spanx> if the prior secret has not
+                 expired and unexpected problems arise from the new <spanx
+                 style="verb">client_secret</spanx>. This allows time for
+                 diagnosis of problems.
+               </t>
+             </list>
+           </t>
+         </section>
+         
+       </section> <!-- End of OIDC Key Consumption Requirements -->
+       
+     </section> <!-- End of OIDC Key Rotation -->
+
+    </section> <!-- End of Interoperability -->
+    
+  <section anchor="Security" title="Security Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+  
+  <section anchor="IANA" title="IANA Considerations">
+    <t>
+      TODO
+    </t>
+  </section>
+
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4627"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5646"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6750"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?>
+
+      <reference anchor="FastFed.Core" target="http://example.com">
+        <front>
+          <title>FastFed Core</title>
+          <author fullname="Darin" initials="K." surname="McAdams">                         
+            <organization abbrev="Amazon">Amazon</organization>               
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="FastFedProfile.SCIM" target="http://example.com">
+        <front>
+          <title>FastFed Profile for SCIM</title>
+	    <author fullname="Darin" initials="K." surname="McAdams">
+            <organization abbrev="Amazon">Amazon</organization>
+          </author>
+          <date day="6" month="June" year="2018"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Core" target="http://openid.net/specs/openid-connect-core-1_0.html">
+        <front>
+          <title>OpenID Connect Core 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
+            <organization abbrev="Google">Google</organization>
+          </author>
+
+	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
+	    <organization abbrev="Salesforce">Salesforce</organization>
+	  </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Discovery" target="http://openid.net/specs/openid-connect-discovery-1_0.html">
+        <front>
+          <title>OpenID Connect Discovery 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <author fullname="Edmund Jay" initials="E." surname="Jay">
+            <organization abbrev="Illumila">Illumila</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.Registration" target="http://openid.net/specs/openid-connect-registration-1_0.html">
+        <front>
+          <title>OpenID Connect Dynamic Client Registration 1.0</title>
+
+          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
+            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
+          </author>
+
+          <author fullname="John Bradley" initials="J." surname="Bradley">
+            <organization abbrev="Ping Identity">Ping Identity</organization>
+          </author>
+
+          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
+            <organization abbrev="Microsoft">Microsoft</organization>
+          </author>
+
+          <date day="8" month="November" year="2014"/>
+        </front>
+      </reference>
+
+      <reference anchor="OpenID.SCIMProfile"
+      target="http://openid.net/specs/openid-connect-scim-profile-1_0.html">
+        <front>
+          <title>OpenID Connect Profile for SCIM Services [DRAFT]</title>
+
+          <author fullname="Phil Hunt" initials="P" surname="Hunt">
+            <organization abbrev="Oracle">Oracle</organization>
+          </author>
+          <author fullname="Chuck Mortimore" initials="C" surname="Mortimore">
+            <organization abbrev="Salesforce">Salesforce</organization>
+          </author>
+
+          <date day="15" month="June" year="2016"/>
+        </front>
+      </reference> 
+
+      <reference anchor="SAML.Assertions" target="http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">
+	<front>
+	  <title>Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="John Kemp" initials="J" surname="Kemp">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Interoperability" target="https://www.oasis-open.org/committees/download.php/36645/draft-sstc-metadata-iop-2.0-01.pdf">
+	<front>
+	  <title>SAML V2.0 Metadata Interoperability Profile Version 1.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="John Kemp" initials="J" surname="Kemp">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="4" month="August" year="2009"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Metadata" target="http://docs.oasis-open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf">
+	<front>
+	  <title>Metadata for the OASIS Security Assertion Markup Language (SAML) V2.0</title>
+
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="Jahan Moreh" initials="J" surname="Moreh">
+	    <organization abbrev="Sigaba">Sigaba</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+
+      <reference anchor="SAML.Profiles" target="http://docs.oasis-open.org/security/saml/v2.0/saml-profiles-2.0-os.pdf">
+	<front>
+	  <title>Profiles for the OASIS Security Assertion Markup Language (SAML) V2.0"</title>
+
+	  <author fullname="John Hughes" initials="J" surname="Hughes">
+	    <organization abbrev="Atos Origin">Atos Origin</organization>
+	  </author>
+	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
+	    <organization abbrev="Internet2">Internet2</organization>
+	  </author>
+	  <author fullname="Jeff Hodges" initials="J" surname="Hodges">
+	    <organization abbrev="Neustar">Neustar</organization>
+	  </author>
+	  <author fullname="Frederick Hirsch" initials="F" surname="Hirsch">
+	    <organization abbrev="Nokia">Nokia</organization>
+	  </author>
+	  <author fullname="Prateek Mishra" initials="P" surname="Mishra">
+	    <organization abbrev="Principal Identity">Principal Identity</organization>
+	  </author>
+	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
+	    <organization abbrev="RSA Security">RSA Security</organization>
+	  </author>
+	  <author fullname="Eve Maler" initials="E" surname="Maler">
+	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
+	  </author>
+
+          <date day="15" month="March" year="2005"/>
+	</front>
+      </reference>
+      
+      <reference anchor="W3C.REC-html401-19991224" target="https://www.w3.org/TR/1999/REC-html401-19991224">
+	<front>
+	  <title>HTML 4.01 Specification</title>
+
+	  <author fullname="Dave Raggett" initials="D" surname="Raggett">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Arnaud Le Hors" initials="A" surname="Hors">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+	  <author fullname="Ian" initials="I" surname="Jacobs">
+	    <organization abbrev="W3C">W3C</organization>
+	  </author>
+
+	  <date day="24" month="December" year="1999"/>
+	</front>
+      </reference>
+    </references>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>
+	The OpenID Community would like to thank the following people for
+	their contributions to this specification:
+      </t>
+      <t>
+        <list style="empty">
+          <t>TODO</t>
+        </list>
+      </t>
+    </section>
+
+    <section anchor="Notices" title="Notices">
+      <t>Copyright (c) 2017 The OpenID Foundation.</t>
+
+      <t>The OpenID Foundation (OIDF) grants to any Contributor, developer,
+      implementer, or other interested party a non-exclusive, royalty free,
+      worldwide copyright license to reproduce, prepare derivative works from,
+      distribute, perform and display, this Implementers Draft or Final
+      Specification solely for the purposes of (i) developing specifications,
+      and (ii) implementing Implementers Drafts and Final Specifications based
+      on such documents, provided that attribution be made to the OIDF as the
+      source of the material, but that such attribution does not indicate an
+      endorsement by the OIDF.</t>
+
+      <t>The technology described in this specification was made available
+      from contributions from various sources, including members of the OpenID
+      Foundation and others. Although the OpenID Foundation has taken steps to
+      help ensure that the technology is available for distribution, it takes
+      no position regarding the validity or scope of any intellectual property
+      or other rights that might be claimed to pertain to the implementation
+      or use of the technology described in this specification or the extent
+      to which any license under such rights might or might not be available;
+      neither does it represent that it has made any independent effort to
+      identify any such rights. The OpenID Foundation and the contributors to
+      this specification make no (and hereby expressly disclaim any)
+      warranties (express, implied, or otherwise), including implied
+      warranties of merchantability, non-infringement, fitness for a
+      particular purpose, or title, related to this specification, and the
+      entire risk as to implementing this specification is assumed by the
+      implementer. The OpenID Intellectual Property Rights policy requires
+      contributors to offer a patent promise not to assert certain patent
+      claims against other contributors and against implementers. The OpenID
+      Foundation invites any interested party to bring to its attention any
+      copyrights, patents, patent applications, or other proprietary rights
+      that may cover technology that may be required to practice this
+      specification.</t>
+    </section>
+
+    <section anchor="History" title="Document History">
+      <t>[[ To be removed from the final specification ]]</t>
+    </section>
+    
+  </back>
+</rfc>
