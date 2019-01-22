@@ -401,14 +401,14 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.8.2 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.15.4 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="McAdams, D." />
-  <meta name="dct.identifier" content="urn:ietf:id:fastfed-1_0" />
-  <meta name="dct.issued" scheme="ISO8601" content="2018-6-18" />
-  <meta name="dct.abstract" content="This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  " />
-  <meta name="description" content="This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  " />
+  <meta name="dct.identifier" content="urn:ietf:id:fastfed-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2018-01-03" />
+  <meta name="dct.abstract" content="This specification defines the requirements to implement the FastFed Basic SAML Profile.  " />
+  <meta name="description" content="This specification defines the requirements to implement the FastFed Basic SAML Profile.  " />
 
 </head>
 
@@ -427,7 +427,7 @@
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">June 18, 2018</td>
+<td class="right">January 3, 2018</td>
 </tr>
 
     	
@@ -435,10 +435,10 @@
   </table>
 
   <p class="title">FastFed Profile for SAML 2.0 - draft 01<br />
-  <span class="filename">fastfed-1_0</span></p>
+  <span class="filename">fastfed-01</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
-<p>This specification defines the requirements that an implementor must satisfy to describe themselves as FastFed Compatibile for the SAML 2.0 protocol.  </p>
+<p>This specification defines the requirements to implement the FastFed Basic SAML Profile.  </p>
 
   
   <hr class="noprint" />
@@ -502,7 +502,7 @@
   <h1 id="rfc.section.1">
 <a href="#rfc.section.1">1.</a> <a href="#Introduction" id="Introduction">Introduction</a>
 </h1>
-<p id="rfc.section.1.p.1">This specification defines the functionality which a provider must satisfy to describe themselves as FastFed Compatible for the SAML 2.0 protocol.  </p>
+<p id="rfc.section.1.p.1">This specification defines the functionality which a provider must implement to satisfy the Basic SAML Profile for FastFed.  </p>
 <p id="rfc.section.1.p.2">It consists of the following extensions to the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification: </p>
 
 <ul>
@@ -525,11 +525,11 @@
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#FastFedMetadata" id="FastFedMetadata">FastFed Metadata</a>
 </h1>
-<p id="rfc.section.2.p.1">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> metadata (Section 3.3.1) with the following value for <samp>sso_protocols_supported</samp>: </p>
+<p id="rfc.section.2.p.1">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> metadata (Section 3.3.1) with the following value for <samp>authentication_profiles</samp>: </p>
 
 <dl>
-<dt>SAML</dt>
-<dd style="margin-left: 8">A Provider who includes the value <samp>SAML</samp> in the <samp>sso_protocols_supported</samp> indicates they comply with the requirements described in this specification.  </dd>
+<dt>urn:ietf:params:fastfed:1.0:authentication:SAML:Basic</dt>
+<dd style="margin-left: 8">A Provider who includes this URN in their list of capabilities MUST comply with the requirements described in this specification.  </dd>
 </dl>
 
 <p> </p>
@@ -538,7 +538,7 @@
  {
    "identity_provider": {
      "capabilities": {
-       "sso_protocols_supported": ["SAML"],
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
    ...
  }
 </pre>
@@ -552,26 +552,33 @@
 <h1 id="rfc.section.3.1">
 <a href="#rfc.section.3.1">3.1.</a> <a href="#FastFedHandshakeRegistrationRequest" id="FastFedHandshakeRegistrationRequest">FastFed Registration Request</a>
 </h1>
-<p id="rfc.section.3.1.p.1">This specification extends the JWT contents of the FastFed Registration Request (Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with the following attributes: </p>
+<p id="rfc.section.3.1.p.1">This specification extends the JWT contents of the FastFed Registration Request (Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>""urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</samp>.  </p>
+<p id="rfc.section.3.1.p.2">The structure contains the following attributes: </p>
 
 <dl>
 <dt>saml_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.  </dd>
+<dt>saml_attributes_enabled</dt>
+<dd style="margin-left: 8">OPTIONAL. Boolean value indicating whether a SAML AttributeStatement should be included in sign-in responses, populated with user attributes. If not specified, only the SAML Subject is provided. (See <a href="#SchemaBindingScimToSamlClaimMappingSAMLAttributes" class="xref">Section 4.1.2</a> for details about attribute binding into SAML assertions.) </dd>
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.1.p.2">If the SAML Metadata document is access controlled, the Identity Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Application Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
-<p id="rfc.section.3.1.p.3">The following is a non-normative example of the contents of a registration request message prior to serialization: </p>
+<p id="rfc.section.3.1.p.3">If the SAML Metadata document is access controlled, the Identity Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Application Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
+<p id="rfc.section.3.1.p.4">The following is a non-normative example of the contents of a registration request message prior to serialization: </p>
 <pre>
  {
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "sso_protocol": "SAML",
-  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "user_provisioning_mode": "JIT",
   "state": "liK9x2fUOWoi1P0",
-  "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "authentication_profiles": [
+    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+  ],
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
+    "saml_attributes_enabled": true
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -583,7 +590,8 @@
 <h1 id="rfc.section.3.2">
 <a href="#rfc.section.3.2">3.2.</a> <a href="#FastFedHandshakeRegistrationResponse" id="FastFedHandshakeRegistrationResponse">FastFed Registration Response</a>
 </h1>
-<p id="rfc.section.3.2.p.1">This specification extends the contents of the FastFed Registration Response (Section 6.2.3.3 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with the following attributes: </p>
+<p id="rfc.section.3.2.p.1">This specification extends the contents of the FastFed Registration Response (Section 6.2.3.3 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</samp>.  </p>
+<p id="rfc.section.3.2.p.2">The structure contains the following attributes: </p>
 
 <dl>
 <dt>saml_metadata_uri</dt>
@@ -591,11 +599,13 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.2.p.2">If the SAML Metadata document is access controlled, the Application Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Identity Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
-<p id="rfc.section.3.2.p.3">The following is a non-normative example of the contents of a registration response message: </p>
+<p id="rfc.section.3.2.p.3">If the SAML Metadata document is access controlled, the Application Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Identity Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
+<p id="rfc.section.3.2.p.4">The following is a non-normative example of the contents of a registration response message: </p>
 <pre>
  {
-  "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -633,19 +643,56 @@
 <h1 id="rfc.section.4.1.2">
 <a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlClaimMappingSAMLAttributes" id="SchemaBindingScimToSamlClaimMappingSAMLAttributes">SAML Attributes</a>
 </h1>
-<p id="rfc.section.4.1.2.p.1">TO BE DETERMINED.  </p>
-<p id="rfc.section.4.1.2.p.2">Editors Note: A prior draft specification for binding SCIM to SAML is defined at http://www.simplecloud.info/specs/draft-scim-saml2-binding-02.html </p>
+<p id="rfc.section.4.1.2.p.1">When users have been pre-provisioned into the Application through mechanisms like SCIM, the SAML Subject alone can be sufficient to correlate the incoming SAML message with the appropriate pre-existing user. However, there can be circumstances when user attributes are also necessary.  </p>
+<p id="rfc.section.4.1.2.p.2">One such situation occurs when an application is using Just-In-Time provisioning instead of pre-provisioning. In this mode of behavior, the incoming user attributes are used to auto-instantiate a user in the Application.  </p>
+<p id="rfc.section.4.1.2.p.3">Another situation occurs when users were previously created in the Application through a mechanism that doesn't provide the SCIM User ID. For example, this may happen when users are created manually by the adminstrator through a UI flow that only gathers simple attributes such as name and email address. Later, the administator may decide to convert to single sign-in. In this situation, it is necessary to match the incoming SAML message to an existing user via alternative attributes such as email. (The actual matching rules can vary by Application and are outside the scope of this specification.) </p>
+<p id="rfc.section.4.1.2.p.4">To support these scenarios, <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a> of this specification described how user attributes can be requested for inclusion in the SAML assertion.  </p>
+<p id="rfc.section.4.1.2.p.5">When attributes are requested, the Identity Provider MUST include a SAML Attribute element with the following properties: </p>
+
+<ul>
+<li>
+<samp>Name</samp> set to <samp>"SCIM.User"</samp>.  </li>
+<li>
+<samp>NameFormat</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"</samp>.  </li>
+<li>
+<samp>AttributeValue</samp> element with <samp>xsi:type="xs:string"</samp> and the value set to the SCIM object in JSON Representation.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.4.1.2.p.6">The following is a non-normative example of a SAML AttributeStatement which conveys the user's displayName and primary email.  </p>
+<pre>
+ &lt;saml:AttributeStatement&gt;
+   &lt;saml:Attribute Name="SCIM.User"
+		   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;
+          {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+            "id": "2819c223-7f76-453a-919d-413861904646",
+	    "userName": "bjensen",
+            "displayName: "Babs Jensen",
+            "emails": [
+              {
+                "value": "bjensen@example.com",
+                "primary": true
+              }
+            ]
+          }
+        &lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+ &lt;/saml:AttributeStatement&gt;
+
+</pre>
 <h1 id="rfc.section.4.2">
 <a href="#rfc.section.4.2">4.2.</a> <a href="#SchemaBindingPrivacyConsiderations" id="SchemaBindingPrivacyConsiderations">Privacy Considerations</a>
 </h1>
-<p id="rfc.section.4.2.p.1">When exposing end-user information through SAML Attributes, FastFed Identity Providers MUST not expose any attributes which were not in the <samp>desired_user_attributes</samp> element of the Application Provider Metadata (Section 3.3.4 of <a href="#FastFed.Core" class="xref">FastFed Core</a>).  </p>
+<p id="rfc.section.4.2.p.1">When exposing user information through SAML Attributes, FastFed Identity Providers MUST not expose any attributes which were not in the <samp>desired_user_attributes</samp> element of the Application Provider Metadata (Section 3.3.4 of <a href="#FastFed.Core" class="xref">FastFed Core</a>).  </p>
 <h1 id="rfc.section.5">
 <a href="#rfc.section.5">5.</a> <a href="#Interoperability" id="Interoperability">Interoperability Requirements</a>
 </h1>
 <p id="rfc.section.5.p.1">Each identity standard defines a set of optional features to enable usage in a wide variety of circumstances.  </p>
 <p id="rfc.section.5.p.2">However, a consequence of the flexibility is that two Providers may find themselves incompabitible despite sharing the same protocols.  </p>
 <p id="rfc.section.5.p.3">To deliver the simplified experience that is the goal of FastFed, it is important that two FastFed-enabled Providers have confidence that they can interoperate when sharing the same protocols.  </p>
-<p id="rfc.section.5.p.4">The following sections describe the subset of the SAML specifications that Providers MUST implement to be FastFed Combatible for the <samp>SAML</samp> SSO protocol. Providers MAY support additional functionality, but MUST NOT require the additional functionality when configuring federation with another Provider using FastFed specifications.  </p>
+<p id="rfc.section.5.p.4">The following sections describe the subset of the SAML specifications that Providers MUST implement to be compatible with this profile.  Providers MAY support additional functionality, but MUST NOT require the additional functionality when configuring federation with another Provider using FastFed specifications.  </p>
 <h1 id="rfc.section.5.1">
 <a href="#rfc.section.5.1">5.1.</a> <a href="#SAMLInteroperabilityIdentityProviderReqs" id="SAMLInteroperabilityIdentityProviderReqs">Identity Provider Requirements</a>
 </h1>

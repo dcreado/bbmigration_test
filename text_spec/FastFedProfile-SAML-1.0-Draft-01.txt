@@ -4,21 +4,20 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                           June 18, 2018
+                                                         January 3, 2018
 
 
                 FastFed Profile for SAML 2.0 - draft 01
-                              fastfed-1_0
+                               fastfed-01
 
 Abstract
 
-   This specification defines the requirements that an implementor must
-   satisfy to describe themselves as FastFed Compatibile for the SAML
-   2.0 protocol.
+   This specification defines the requirements to implement the FastFed
+   Basic SAML Profile.
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   1
      1.1.  Requirements Notation and Conventions . . . . . . . . . .   2
      1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  FastFed Metadata  . . . . . . . . . . . . . . . . . . . . . .   2
@@ -29,40 +28,35 @@ Table of Contents
      4.1.  SCIM-to-SAML Attribute Mapping  . . . . . . . . . . . . .   5
        4.1.1.  SAML Subject  . . . . . . . . . . . . . . . . . . . .   5
        4.1.2.  SAML Attributes . . . . . . . . . . . . . . . . . . .   5
-     4.2.  Privacy Considerations  . . . . . . . . . . . . . . . . .   5
-   5.  Interoperability Requirements . . . . . . . . . . . . . . . .   5
-     5.1.  Identity Provider Requirements  . . . . . . . . . . . . .   6
-     5.2.  Application Provider Requirements . . . . . . . . . . . .   6
-     5.3.  Certificate Rotation  . . . . . . . . . . . . . . . . . .   7
+     4.2.  Privacy Considerations  . . . . . . . . . . . . . . . . .   7
+   5.  Interoperability Requirements . . . . . . . . . . . . . . . .   7
+     5.1.  Identity Provider Requirements  . . . . . . . . . . . . .   8
+     5.2.  Application Provider Requirements . . . . . . . . . . . .   8
+     5.3.  Certificate Rotation  . . . . . . . . . . . . . . . . . .   9
        5.3.1.  Certificate Rotation Requirements for an Identity
-               Provider  . . . . . . . . . . . . . . . . . . . . . .   7
+               Provider  . . . . . . . . . . . . . . . . . . . . . .   9
        5.3.2.  Certificate Rotation Requirements for an Application
-               Provider  . . . . . . . . . . . . . . . . . . . . . .   8
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   8.  Normative References  . . . . . . . . . . . . . . . . . . . .   9
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  12
-   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  12
-   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  13
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  13
-
-
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 1]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
+               Provider  . . . . . . . . . . . . . . . . . . . . . .  10
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
+   8.  Normative References  . . . . . . . . . . . . . . . . . . . .  11
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  13
+   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  14
+   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  14
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  14
 
 1.  Introduction
 
    This specification defines the functionality which a provider must
-   satisfy to describe themselves as FastFed Compatible for the SAML 2.0
-   protocol.
+   implement to satisfy the Basic SAML Profile for FastFed.
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 1]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    It consists of the following extensions to the FastFed Core
    [FastFed.Core] specification:
@@ -99,30 +93,33 @@ McAdams                 Expires December 20, 2018               [Page 1]
 
    This specification extends the FastFed Core [FastFed.Core] metadata
    (Section 3.3.1) with the following value for
-   "sso_protocols_supported":
+   "authentication_profiles":
 
-   SAML  A Provider who includes the value "SAML" in the
-      "sso_protocols_supported" indicates they comply with the
-      requirements described in this specification.
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 2]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
+   urn:ietf:params:fastfed:1.0:authentication:SAML:Basic  A Provider who
+      includes this URN in their list of capabilities MUST comply with
+      the requirements described in this specification.
 
    The following is a non-normative example of Provider Metadata showing
    the usage of the value:
 
-    {
-      "identity_provider": {
-        "capabilities": {
-          "sso_protocols_supported": ["SAML"],
-      ...
-    }
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 2]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
+
+ {
+   "identity_provider": {
+     "capabilities": {
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
+   ...
+ }
 
 3.  FastFed Handshake
 
@@ -146,10 +143,19 @@ McAdams                 Expires December 20, 2018               [Page 2]
 
    This specification extends the JWT contents of the FastFed
    Registration Request (Section 6.2.3.1 of FastFed Core [FastFed.Core])
-   with the following attributes:
+   with a structure sharing the same name as the profile:
+   """urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"".
+
+   The structure contains the following attributes:
 
    saml_metadata_uri  REQUIRED.  Contains the URL of the Identity
       Provider's SAML Metadata document.
+
+   saml_attributes_enabled  OPTIONAL.  Boolean value indicating whether
+      a SAML AttributeStatement should be included in sign-in responses,
+      populated with user attributes.  If not specified, only the SAML
+      Subject is provided.  (See Section 4.1.2 for details about
+      attribute binding into SAML assertions.)
 
    If the SAML Metadata document is access controlled, the Identity
    Provider MAY also include a value for "oauth_token" as defined in
@@ -157,28 +163,29 @@ McAdams                 Expires December 20, 2018               [Page 2]
    provided, the Application Provider MUST present the access_token as a
    Bearer Token when querying the SAML Metadata URL.
 
+
+
+McAdams                   Expires July 7, 2018                  [Page 3]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
+
    The following is a non-normative example of the contents of a
    registration request message prior to serialization:
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 3]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
 
  {
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "sso_protocol": "SAML",
-  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "user_provisioning_mode": "JIT",
   "state": "liK9x2fUOWoi1P0",
-  "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "authentication_profiles": [
+    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+  ],
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
+    "saml_attributes_enabled": true
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -190,8 +197,11 @@ McAdams                 Expires December 20, 2018               [Page 3]
 3.2.  FastFed Registration Response
 
    This specification extends the contents of the FastFed Registration
-   Response (Section 6.2.3.3 of FastFed Core [FastFed.Core]) with the
-   following attributes:
+   Response (Section 6.2.3.3 of FastFed Core [FastFed.Core]) with a
+   structure sharing the same name as the profile:
+   ""urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"".
+
+   The structure contains the following attributes:
 
    saml_metadata_uri  REQUIRED.  Contains the URL of the Application
       Provider's SAML Metadata document.
@@ -205,8 +215,21 @@ McAdams                 Expires December 20, 2018               [Page 3]
    The following is a non-normative example of the contents of a
    registration response message:
 
+
+
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 4]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
+
  {
-  "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -214,17 +237,6 @@ McAdams                 Expires December 20, 2018               [Page 3]
     "expires_in": 3600
   }
  }
-
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 4]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
 
 4.  Schema Binding
 
@@ -256,15 +268,100 @@ McAdams                 Expires December 20, 2018               [Page 4]
 
 4.1.2.  SAML Attributes
 
-   TO BE DETERMINED.
+   When users have been pre-provisioned into the Application through
+   mechanisms like SCIM, the SAML Subject alone can be sufficient to
+   correlate the incoming SAML message with the appropriate pre-existing
+   user.  However, there can be circumstances when user attributes are
+   also necessary.
 
-   Editors Note: A prior draft specification for binding SCIM to SAML is
-   defined at http://www.simplecloud.info/specs/draft-scim-saml2-
-   binding-02.html
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 5]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
+
+   One such situation occurs when an application is using Just-In-Time
+   provisioning instead of pre-provisioning.  In this mode of behavior,
+   the incoming user attributes are used to auto-instantiate a user in
+   the Application.
+
+   Another situation occurs when users were previously created in the
+   Application through a mechanism that doesn't provide the SCIM User
+   ID.  For example, this may happen when users are created manually by
+   the adminstrator through a UI flow that only gathers simple
+   attributes such as name and email address.  Later, the administator
+   may decide to convert to single sign-in.  In this situation, it is
+   necessary to match the incoming SAML message to an existing user via
+   alternative attributes such as email.  (The actual matching rules can
+   vary by Application and are outside the scope of this specification.)
+
+   To support these scenarios, Section 3.1 of this specification
+   described how user attributes can be requested for inclusion in the
+   SAML assertion.
+
+   When attributes are requested, the Identity Provider MUST include a
+   SAML Attribute element with the following properties:
+
+   o  "Name" set to ""SCIM.User"".
+
+   o  "NameFormat" set to ""urn:oasis:names:tc:SAML:2.0:attrname-
+      format:unspecified"".
+
+   o  "AttributeValue" element with "xsi:type="xs:string"" and the value
+      set to the SCIM object in JSON Representation.
+
+   The following is a non-normative example of a SAML AttributeStatement
+   which conveys the user's displayName and primary email.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 6]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
+
+ <saml:AttributeStatement>
+   <saml:Attribute Name="SCIM.User"
+                   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">
+          {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+            "id": "2819c223-7f76-453a-919d-413861904646",
+            "userName": "bjensen",
+            "displayName: "Babs Jensen",
+            "emails": [
+              {
+                "value": "bjensen@example.com",
+                "primary": true
+              }
+            ]
+          }
+        </saml:AttributeValue>
+   </saml:Attribute>
+ </saml:AttributeStatement>
+
 
 4.2.  Privacy Considerations
 
-   When exposing end-user information through SAML Attributes, FastFed
+   When exposing user information through SAML Attributes, FastFed
    Identity Providers MUST not expose any attributes which were not in
    the "desired_user_attributes" element of the Application Provider
    Metadata (Section 3.3.4 of FastFed Core [FastFed.Core]).
@@ -274,14 +371,6 @@ McAdams                 Expires December 20, 2018               [Page 4]
    Each identity standard defines a set of optional features to enable
    usage in a wide variety of circumstances.
 
-
-
-
-McAdams                 Expires December 20, 2018               [Page 5]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    However, a consequence of the flexibility is that two Providers may
    find themselves incompabitible despite sharing the same protocols.
 
@@ -290,10 +379,20 @@ McAdams                 Expires December 20, 2018               [Page 5]
    they can interoperate when sharing the same protocols.
 
    The following sections describe the subset of the SAML specifications
-   that Providers MUST implement to be FastFed Combatible for the "SAML"
-   SSO protocol.  Providers MAY support additional functionality, but
-   MUST NOT require the additional functionality when configuring
-   federation with another Provider using FastFed specifications.
+   that Providers MUST implement to be compatible with this profile.
+   Providers MAY support additional functionality, but MUST NOT require
+   the additional functionality when configuring federation with another
+   Provider using FastFed specifications.
+
+
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 7]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
 5.1.  Identity Provider Requirements
 
@@ -331,13 +430,6 @@ McAdams                 Expires December 20, 2018               [Page 5]
    o  MUST use either the HTTP Redirect or HTTP POST binding for the Web
       Browswer SSO Profile.
 
-
-
-McAdams                 Expires December 20, 2018               [Page 6]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    o  MUST accept X509 Certificates for the Signature element
       containined within the Assertion element of the SAML Response
       object.  As background, this response is returned from the SAML
@@ -349,6 +441,14 @@ McAdams                 Expires December 20, 2018               [Page 6]
 
    o  MUST include an SPSSODescriptor element in the SAML Metadata
       document as specified in [SAML.Metadata].
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 8]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    o  MUST populate the SPSSODescriptor with all values needed by a SAML
       Identity Provider to integrate with this SAML Service Provider
@@ -386,14 +486,6 @@ McAdams                 Expires December 20, 2018               [Page 6]
       revoked, where the expiration date is specified by the "notAfter"
       attribute within the X.509 certificate.
 
-
-
-
-McAdams                 Expires December 20, 2018               [Page 7]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    o  MUST include the new certificate in the SAML Metadata, alongside
       the currently active certificate, using the recommended technique
       for multiple certificates defined in the SAML Metadata
@@ -405,6 +497,14 @@ McAdams                 Expires December 20, 2018               [Page 7]
       for at least 7 days after publishing the new certificate, to give
       consumers time to read the new certificate from the SAML Metadata
       and be ready to receive the new key.
+
+
+
+
+McAdams                   Expires July 7, 2018                  [Page 9]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    o  SHOULD begin signing assertions with the new key if less than 7
       days remains until the old certificate expires.  MAY continue
@@ -443,13 +543,6 @@ McAdams                 Expires December 20, 2018               [Page 7]
    o  MUST handle an HTTP 304 response code which indicates that the
       SAML Metadata is unchanged.
 
-
-
-McAdams                 Expires December 20, 2018               [Page 8]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    o  MUST handle an HTTP 301 response code and use the new location for
       all future downloads of the Identity Provider's SAML Metadata.
 
@@ -461,6 +554,13 @@ McAdams                 Expires December 20, 2018               [Page 8]
 
    o  MUST ignore any changes in the SAML Metadata except for
       "<KeyDescriptor>" elements.
+
+
+
+McAdams                   Expires July 7, 2018                 [Page 10]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    o  MUST accept SAML assertions signed using any of the valid
       certificates specified within the "<KeyDescriptor>" elements of
@@ -495,17 +595,6 @@ McAdams                 Expires December 20, 2018               [Page 8]
               C. Mortimore, "OpenID Connect Core 1.0", November 2014,
               <http://openid.net/specs/openid-connect-core-1_0.html>.
 
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 9]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    [OpenID.Discovery]
               Sakimura, N., Bradley, J., Jones, M., and E. Jay, "OpenID
               Connect Discovery 1.0", November 2014,
@@ -517,6 +606,17 @@ McAdams                 Expires December 20, 2018               [Page 9]
               Dynamic Client Registration 1.0", November 2014,
               <http://openid.net/specs/
               openid-connect-registration-1_0.html>.
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2018                 [Page 11]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    [OpenID.SCIMProfile]
               Hunt, P. and C. Mortimore, "OpenID Connect Profile for
@@ -549,19 +649,6 @@ McAdams                 Expires December 20, 2018               [Page 9]
               Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
               September 2009, <https://www.rfc-editor.org/info/rfc5646>.
 
-
-
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018              [Page 10]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
               within Internet Public Key Infrastructure Using X.509
@@ -577,6 +664,15 @@ McAdams                 Expires December 20, 2018              [Page 10]
               Framework: Bearer Token Usage", RFC 6750,
               DOI 10.17487/RFC6750, October 2012,
               <https://www.rfc-editor.org/info/rfc6750>.
+
+
+
+
+
+McAdams                   Expires July 7, 2018                 [Page 12]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
    [RFC7643]  Hunt, P., Ed., Grizzle, K., Wahlstroem, E., and C.
               Mortimore, "System for Cross-domain Identity Management:
@@ -608,16 +704,6 @@ McAdams                 Expires December 20, 2018              [Page 10]
               (SAML) V2.0", March 2005, <http://docs.oasis-
               open.org/security/saml/v2.0/saml-metadata-2.0-os.pdf>.
 
-
-
-
-
-
-McAdams                 Expires December 20, 2018              [Page 11]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    [SAML.Profiles]
               Hughes, J., Cantor, S., Hodges, J., Hirsch, F., Mishra,
               P., Philpott, R., and E. Maler, "Profiles for the OASIS
@@ -636,6 +722,13 @@ Appendix A.  Acknowledgements
    their contributions to this specification:
 
       TODO
+
+
+
+McAdams                   Expires July 7, 2018                 [Page 13]
+
+                      FastFed Profile for SAML 2.0          January 2018
+
 
 Appendix B.  Notices
 
@@ -666,14 +759,6 @@ Appendix B.  Notices
    or otherwise), including implied warranties of merchantability, non-
    infringement, fitness for a particular purpose, or title, related to
    this specification, and the entire risk as to implementing this
-
-
-
-McAdams                 Expires December 20, 2018              [Page 12]
-
-                      FastFed Profile for SAML 2.0             June 2018
-
-
    specification is assumed by the implementer.  The OpenID Intellectual
    Property Rights policy requires contributors to offer a patent
    promise not to assert certain patent claims against other
@@ -696,33 +781,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018              [Page 13]
+McAdams                   Expires July 7, 2018                 [Page 14]

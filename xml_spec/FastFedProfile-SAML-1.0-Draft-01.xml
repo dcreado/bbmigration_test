@@ -11,7 +11,7 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="fastfed-1_0" ipr="none">
+<rfc category="std" docName="fastfed-01" ipr="none">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -31,26 +31,23 @@
       </address>
     </author>
 
-    <date day="18" month="June" year="2018" />
+    <date day="3" month="January" year="2018" />
 
     <workgroup>FastFed Working Group</workgroup>
 
     <abstract>
       <t>
-	This specification defines the requirements that an implementor must
-	satisfy to describe themselves as FastFed Compatibile for the SAML 2.0
-	protocol.
+	This specification defines the requirements to implement the FastFed
+	Basic SAML Profile.
       </t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="Introduction" title="Introduction">
-
       <t>
-	This specification defines the functionality which a provider
-	must satisfy to describe themselves as FastFed Compatible
-	for the SAML 2.0 protocol.
+	This specification defines the functionality which a provider must
+	implement to satisfy the Basic SAML Profile for FastFed. 
       </t>
       <t>
 	It consists of the following extensions to
@@ -104,12 +101,11 @@
       <t>
 	This specification extends the <xref target="FastFed.Core">FastFed
         Core</xref> metadata (Section 3.3.1) with the following value
-        for <spanx style="verb">sso_protocols_supported</spanx>:
+        for <spanx style="verb">authentication_profiles</spanx>:
 	<list style="hanging">
-	  <t hangText="SAML">
-            A Provider who includes the value <spanx style="verb">SAML</spanx> in
-            the <spanx style="verb">sso_protocols_supported</spanx> indicates
-            they comply with the requirements described in this specification.
+	  <t hangText="urn:ietf:params:fastfed:1.0:authentication:SAML:Basic">
+            A Provider who includes this URN in their list of capabilities MUST
+            comply with the requirements described in this specification.
 	  </t>
 	</list>
       </t>
@@ -121,7 +117,7 @@
  {
    "identity_provider": {
      "capabilities": {
-       "sso_protocols_supported": ["SAML"],
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
    ...
  }
 ]]></artwork></figure> 
@@ -155,12 +151,24 @@
 	<t>
 	  This specification extends the JWT contents of the FastFed
 	  Registration Request (Section 6.2.3.1
-	  of <xref target="FastFed.Core">FastFed Core</xref>) with the following
-	  attributes:
+	  of <xref target="FastFed.Core">FastFed Core</xref>) with a structure
+	  sharing the same name as the profile:
+	  <spanx style="verb">""urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	</t>
+	<t>
+	  The structure contains the following attributes:
           <list style="hanging">
             <t hangText="saml_metadata_uri">
 	      REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.
             </t>
+	    <t hangText="saml_attributes_enabled">
+	      OPTIONAL. Boolean value indicating whether a SAML
+	      AttributeStatement should be included in sign-in
+	      responses, populated with user attributes. If not specified, only
+	      the SAML Subject is provided. (See
+	      <xref target="SchemaBindingScimToSamlClaimMappingSAMLAttributes"/>
+	      for details about attribute binding into SAML assertions.)
+	     </t>
           </list>
 	</t>
 	<t>
@@ -180,11 +188,15 @@
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "sso_protocol": "SAML",
-  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "user_provisioning_mode": "JIT",
   "state": "liK9x2fUOWoi1P0",
-  "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+  "authentication_profiles": [
+    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+  ],
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
+    "saml_attributes_enabled": true
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -198,11 +210,13 @@
       <section anchor="FastFedHandshakeRegistrationResponse" 
 	       title="FastFed Registration Response">
         <t>
-          This specification extends the contents of the FastFed
-          Registration Response (Section 6.2.3.3
-          of <xref target="FastFed.Core">FastFed Core</xref>) with the
-          following
-          attributes:
+          This specification extends the contents of the FastFed Registration
+          Response (Section 6.2.3.3 of <xref target="FastFed.Core">FastFed
+          Core</xref>) with a structure sharing the same name as the
+          profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	</t>
+	<t>
+	  The structure contains the following attributes:
           <list style="hanging">
             <t hangText="saml_metadata_uri">
               REQUIRED. Contains the URL of the Application Provider's
@@ -224,7 +238,9 @@
         </t>
         <figure><artwork><![CDATA[
  {
-  "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -283,20 +299,87 @@
 	<section anchor="SchemaBindingScimToSamlClaimMappingSAMLAttributes"
                  title="SAML Attributes">
 	<t>
-	  TO BE DETERMINED.
+	  When users have been pre-provisioned into the Application through
+	  mechanisms like SCIM, the SAML Subject alone can be sufficient to
+	  correlate the incoming SAML message with the appropriate pre-existing
+	  user. However, there can be circumstances when user attributes are
+	  also necessary.
 	</t>
 	<t>
-	  Editors Note: A prior draft specification for binding SCIM to SAML is defined at
-	  http://www.simplecloud.info/specs/draft-scim-saml2-binding-02.html
+	  One such situation occurs when an application is using Just-In-Time
+	  provisioning instead of pre-provisioning. In this mode of behavior,
+	  the incoming user attributes are used to auto-instantiate a user in
+	  the Application.
 	</t>
-	</section>
+	<t>
+	  Another situation occurs when users were previously created in the
+	  Application through a mechanism that doesn't provide the SCIM User
+	  ID. For example, this may happen when users are created manually by
+	  the adminstrator through a UI flow that only gathers simple attributes
+	  such as name and email address. Later, the administator may decide to
+	  convert to single sign-in. In this situation, it is necessary to match
+	  the incoming SAML message to an existing user via alternative
+	  attributes such as email. (The actual matching rules can vary by
+	  Application and are outside the scope of this specification.)
+	</t>
+	<t>
+	  To support these scenarios,
+	  <xref target="FastFedHandshakeRegistrationRequest"/> of this
+	  specification described how user attributes can be requested for
+	  inclusion in the SAML assertion.
+	</t>
+	<t>
+	  When attributes are requested, the Identity Provider MUST include a
+	  SAML Attribute element with the following properties:
+          <list style="symbols">
+            <t>
+              <spanx style="verb">Name</spanx> set to
+              <spanx style="verb">"SCIM.User"</spanx>.
+            </t>
+            <t>
+              <spanx style="verb">NameFormat</spanx> set to <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"</spanx>.
+            </t>
+	    <t>
+	      <spanx style="verb">AttributeValue</spanx> element
+	      with <spanx style="verb">xsi:type="xs:string"</spanx> and the
+	      value set to the SCIM object in JSON Representation.
+	    </t>
+          </list>
+	</t>
+	<t>
+          The following is a non-normative example of a SAML
+          AttributeStatement which conveys the user's displayName and primary
+          email.
+	</t>
+        <figure><artwork><![CDATA[
+ <saml:AttributeStatement>
+   <saml:Attribute Name="SCIM.User"
+		   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">
+          {
+            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+            "id": "2819c223-7f76-453a-919d-413861904646",
+	    "userName": "bjensen",
+            "displayName: "Babs Jensen",
+            "emails": [
+              {
+                "value": "bjensen@example.com",
+                "primary": true
+              }
+            ]
+          }
+        </saml:AttributeValue>
+   </saml:Attribute>
+ </saml:AttributeStatement>
 
+]]></artwork></figure>
+	</section>
       </section>
 
       <section anchor="SchemaBindingPrivacyConsiderations"
                title="Privacy Considerations">
         <t>
-          When exposing end-user information through SAML Attributes, FastFed
+          When exposing user information through SAML Attributes, FastFed
           Identity Providers MUST not expose any attributes which were not in
           the <spanx style="verb">desired_user_attributes</spanx> element of the
           Application Provider Metadata (Section 3.3.4
@@ -323,12 +406,11 @@
        can interoperate when sharing the same protocols.
      </t>
      <t>
-       The following sections describe the subset of the SAML
-       specifications that Providers MUST implement to be FastFed Combatible for
-       the <spanx style="verb">SAML</spanx> SSO protocol. Providers MAY support
-       additional functionality, but MUST NOT require the additional
-       functionality when configuring federation with another Provider using
-       FastFed specifications.
+       The following sections describe the subset of the SAML specifications
+       that Providers MUST implement to be compatible with this profile.
+       Providers MAY support additional functionality, but MUST NOT require the
+       additional functionality when configuring federation with another
+       Provider using FastFed specifications.
      </t>
 
      <section anchor="SAMLInteroperabilityIdentityProviderReqs"

@@ -12,9 +12,8 @@
 
 Abstract
 
-   This specification defines the requirements that an implementor must
-   satisfy to describe themselves as FastFed Compatibile with SCIM user
-   provisioning.
+   This specification defines the requirements to implement the FastFed
+   Profile for SCIM Full Lifecycle provisioning.
 
 Table of Contents
 
@@ -26,7 +25,7 @@ Table of Contents
      3.1.  FastFed Registration Response . . . . . . . . . . . . . .   3
    4.  Interoperability Requirements . . . . . . . . . . . . . . . .   3
      4.1.  Identity Provider Requirements  . . . . . . . . . . . . .   4
-     4.2.  Application Provider Requirements . . . . . . . . . . . .   4
+     4.2.  Application Provider Requirements . . . . . . . . . . . .   5
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
    7.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
@@ -38,7 +37,7 @@ Table of Contents
 1.  Introduction
 
    This specification defines the functionality which a provider must
-   satisfy to describe themselves as FastFed Compatible with SCIM user
+   implement to satisfy the FastFed Profile for SCIM Full Lifecycle
    provisioning.
 
    It consists of the following extensions to the FastFed Core
@@ -50,6 +49,7 @@ Table of Contents
    o  An interoperability profile describing the subset of the SCIM
       specifications which must be implemented in order to be FastFed
       Compatible for SCIM provisioning.
+
 
 
 
@@ -77,11 +77,22 @@ McAdams                 Expires December 20, 2018               [Page 1]
 
 2.  FastFed Metadata
 
-   Section 3.3.1 of the FastFed Core [FastFed.Core] specification
-   defines the value ""SCIM"" as a valid provisioning mode.
+   This specification extends the FastFed Core [FastFed.Core] metadata
+   (Section 3.3.1) with the following value for "provisioning_profiles":
 
-   A Provider who includes ""SCIM"" as a supported mode MUST comply with
-   the requirements of this specification.
+   urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle  A
+      Provider who includes this URN in their list of capabilities MUST
+      comply with the requirements described in this specification.
+
+   The following is a non-normative example of Provider Metadata showing
+   the usage of the value:
+
+ {
+   "identity_provider": {
+     "capabilities": {
+       "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+   ...
+ }
 
 3.  FastFed Handshake
 
@@ -95,17 +106,6 @@ McAdams                 Expires December 20, 2018               [Page 1]
 
    The Application Provider fulfills the role of a SCIM Service.  It has
    a responsibility to host a SCIM Endpoint and handle provisioning
-   messages from the Identity Provider as described in described in
-   Section 4.2
-
-   This specification extends the FastFed Core [FastFed.Core] handshake
-   messages with the additional attributes necessary for each party to
-   fulfill their respective obligations under SCIM.
-
-
-
-
-
 
 
 
@@ -114,11 +114,22 @@ McAdams                 Expires December 20, 2018               [Page 2]
                   FastFed Profile for SCIM Provisioning        June 2018
 
 
+   messages from the Identity Provider as described in described in
+   Section 4.2
+
+   This specification extends the FastFed Core [FastFed.Core] handshake
+   messages with the additional attributes necessary for each party to
+   fulfill their respective obligations under SCIM.
+
 3.1.  FastFed Registration Response
 
    This specification extends the contents of the FastFed Registration
-   Response (Section 6.2.3.3 of FastFord Core [FastFed.Core]) with the
-   following attributes:
+   Response (Section 6.2.3.3 of FastFord Core [FastFed.Core]) with a
+   structure sharing the same name as the profile:
+   ""urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"".
+
+   The structure contains the following attributes: following
+   attributes:
 
    scim_service_uri  REQUIRED.  Contains the URL of the Application
       Provider's SCIM Endpoint.
@@ -134,7 +145,9 @@ McAdams                 Expires December 20, 2018               [Page 2]
    registration response message:
 
     {
-     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+       "scim_service_uri": "https://tenant-56789.app.example.com/scim"
+     },
      "oauth_token": {
        "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
        "token_type": "bearer",
@@ -147,6 +160,15 @@ McAdams                 Expires December 20, 2018               [Page 2]
 
    Each identity standard defines a set of optional features to enable
    usage in a wide variety of circumstances.
+
+
+
+
+
+McAdams                 Expires December 20, 2018               [Page 3]
+
+                  FastFed Profile for SCIM Provisioning        June 2018
+
 
    However, a consequence of the flexibility is that two Providers may
    find themselves incompabitible despite sharing the same protocols.
@@ -161,14 +183,6 @@ McAdams                 Expires December 20, 2018               [Page 2]
    functionality, but MUST NOT require the additional functionality when
    configuring federation with another Provider using the FastFed
    specifications.
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 3]
-
-                  FastFed Profile for SCIM Provisioning        June 2018
-
 
 4.1.  Identity Provider Requirements
 
@@ -205,6 +219,13 @@ McAdams                 Expires December 20, 2018               [Page 3]
 
          +  Deactivate account via _PATCH /Users{id}_
 
+
+
+McAdams                 Expires December 20, 2018               [Page 4]
+
+                  FastFed Profile for SCIM Provisioning        June 2018
+
+
          +  Read list of accounts via _GET /Users_
 
          +  Read account details via _GET /Users/{id}_
@@ -217,14 +238,6 @@ McAdams                 Expires December 20, 2018               [Page 3]
 
    o  MUST implement the required functionality of a SCIM Service
       Provider as defined in [RFC7643] and [RFC7644].
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 4]
-
-                  FastFed Profile for SCIM Provisioning        June 2018
-
 
    o  MUST support the following operations:
 
@@ -261,6 +274,14 @@ McAdams                 Expires December 20, 2018               [Page 4]
               McAdams, K., "FastFed Core", June 2018,
               <http://example.com>.
 
+
+
+
+McAdams                 Expires December 20, 2018               [Page 5]
+
+                  FastFed Profile for SCIM Provisioning        June 2018
+
+
    [FastFedProfile.SCIM]
               McAdams, K., "FastFed Profile for SCIM", June 2018,
               <http://example.com>.
@@ -269,18 +290,6 @@ McAdams                 Expires December 20, 2018               [Page 4]
               Sakimura, N., Bradley, J., Jones, M., de Medeiros, B., and
               C. Mortimore, "OpenID Connect Core 1.0", November 2014,
               <http://openid.net/specs/openid-connect-core-1_0.html>.
-
-
-
-
-
-
-
-
-McAdams                 Expires December 20, 2018               [Page 5]
-
-                  FastFed Profile for SCIM Provisioning        June 2018
-
 
    [OpenID.Discovery]
               Sakimura, N., Bradley, J., Jones, M., and E. Jay, "OpenID
@@ -321,15 +330,6 @@ McAdams                 Expires December 20, 2018               [Page 5]
               DOI 10.17487/RFC4627, July 2006,
               <https://www.rfc-editor.org/info/rfc4627>.
 
-   [RFC5646]  Phillips, A., Ed. and M. Davis, Ed., "Tags for Identifying
-              Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
-              September 2009, <https://www.rfc-editor.org/info/rfc5646>.
-
-
-
-
-
-
 
 
 
@@ -337,6 +337,10 @@ McAdams                 Expires December 20, 2018               [Page 6]
 
                   FastFed Profile for SCIM Provisioning        June 2018
 
+
+   [RFC5646]  Phillips, A., Ed. and M. Davis, Ed., "Tags for Identifying
+              Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
+              September 2009, <https://www.rfc-editor.org/info/rfc5646>.
 
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
@@ -382,10 +386,6 @@ Appendix B.  Notices
 
    The OpenID Foundation (OIDF) grants to any Contributor, developer,
    implementer, or other interested party a non-exclusive, royalty free,
-   worldwide copyright license to reproduce, prepare derivative works
-   from, distribute, perform and display, this Implementers Draft or
-   Final Specification solely for the purposes of (i) developing
-   specifications, and (ii) implementing Implementers Drafts and Final
 
 
 
@@ -394,6 +394,10 @@ McAdams                 Expires December 20, 2018               [Page 7]
                   FastFed Profile for SCIM Provisioning        June 2018
 
 
+   worldwide copyright license to reproduce, prepare derivative works
+   from, distribute, perform and display, this Implementers Draft or
+   Final Specification solely for the purposes of (i) developing
+   specifications, and (ii) implementing Implementers Drafts and Final
    Specifications based on such documents, provided that attribution be
    made to the OIDF as the source of the material, but that such
    attribution does not indicate an endorsement by the OIDF.
@@ -431,10 +435,6 @@ Author's Address
    Amazon
 
    Email: darinm@amazon.com
-
-
-
-
 
 
 

@@ -38,9 +38,8 @@
 
     <abstract>
       <t>
-	This specification defines the requirements that an implementor must
-	satisfy to describe themselves as FastFed Compatibile with SCIM user
-	provisioning.
+	This specification defines the requirements to implement the FastFed
+	Profile for SCIM Full Lifecycle provisioning.
       </t>
     </abstract>
   </front>
@@ -49,9 +48,9 @@
     <section anchor="Introduction" title="Introduction">
 
       <t>
-	This specification defines the functionality which a provider
-	must satisfy to describe themselves as FastFed Compatible with SCIM
-	user provisioning.
+        This specification defines the functionality which a provider must
+        implement to satisfy the FastFed Profile for SCIM Full Lifecycle
+        provisioning.
       </t>
       <t>
 	It consists of the following extensions to
@@ -96,15 +95,28 @@
     
     <section anchor="FastFedMetadata" title="FastFed Metadata">
       <t>
-	Section 3.3.1 of the <xref target="FastFed.Core">FastFed Core</xref>
-	specification defines the value <spanx style="verb">"SCIM"</spanx>
-	as a valid provisioning mode.
+        This specification extends the <xref target="FastFed.Core">FastFed
+        Core</xref> metadata (Section 3.3.1) with the following value
+        for <spanx style="verb">provisioning_profiles</spanx>:
+        <list style="hanging">
+          <t hangText="urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle">
+            A Provider who includes this URN in their list of capabilities MUST
+            comply with the requirements described in this specification.
+          </t>
+        </list>
       </t>
       <t>
-	A Provider who includes <spanx style="verb">"SCIM"</spanx> as a supported
-	mode MUST comply with the requirements of this
-	specification.
+        The following is a non-normative example of Provider Metadata showing
+        the usage of the value:
       </t>
+        <figure><artwork><![CDATA[
+ {
+   "identity_provider": {
+     "capabilities": {
+       "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+   ...
+ }
+]]></artwork></figure>
     </section>
     
     <section anchor="FastFedHandshake" title="FastFed Handshake">
@@ -136,9 +148,13 @@
       <section anchor="FastFedHandshakeRegistrationResponse" 
 	       title="FastFed Registration Response">
         <t>
-          This specification extends the contents of the FastFed
-          Registration Response (Section 6.2.3.3
-          of <xref target="FastFed.Core">FastFord Core</xref>) with the
+          This specification extends the contents of the FastFed Registration
+          Response (Section 6.2.3.3 of <xref target="FastFed.Core">FastFord
+          Core</xref>) with a structure sharing the same name as the
+          profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>.
+	</t>
+	<t>
+	  The structure contains the following attributes:
           following
           attributes:
           <list style="hanging">
@@ -163,7 +179,9 @@
         </t>
         <figure><artwork><![CDATA[
  {
-  "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+  "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+    "scim_service_uri": "https://tenant-56789.app.example.com/scim"
+  },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",

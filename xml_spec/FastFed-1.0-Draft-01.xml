@@ -11,7 +11,7 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="fastfed-1_0" ipr="none">
+<rfc category="std" docName="fastfed-01" ipr="none">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -31,7 +31,7 @@
       </address>
     </author>
 
-    <date day="6" month="June" year="2018" />
+    <date day="3" month="Jan" year="2019" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -57,16 +57,15 @@
       </t>
 
       <t>
-	One source of difficulty arises because the existing identity standards
-	each solve a portion of the federation ecosystem, such as
-	authentication, schema definition, or end-user information exchange; but
-	without a clear recommendation on how to assemble the pieces into a
-	whole. As a result, each hosted application may choose to assemble
-	standards in different ways or even ignore them, such as by declaring
-	their own user attribute schema. The resulting impact is that each
-	hosted application can be an architectural one-off that an administrator
-	must study and understand before beginning to configure a federation
-	relationship.
+	One source of difficulty arises because the existing standards each
+	solve a portion of the ecosystem, such as authentication, schema
+	definition, or end-user provisioning; but without a clear recommendation
+	on how to assemble the pieces into a whole. As a result, each
+	application may choose to assemble standards in different ways or even
+	ignore them, such as by declaring their own user schema. The resulting
+	impact is that each hosted application can be an architectural one-off
+	that an administrator must study and understand before beginning to
+	configure a federation relationship.
       </t>
       
       <t>
@@ -154,7 +153,7 @@
 	<t>
 	  In addition, this specification defines the following terms. When used
 	  in this document, the terms refer to the definitions here and not to
-	  any terminology from underlying standards:
+	  any terminology from related standards:
 	  <list style="hanging">
 
 	    <t hangText="Administrator">
@@ -218,7 +217,7 @@
 	  </t>
 	  <t hangText="Handshake">
 	    Flows that describe how an Identity Provider and Application
-	    Provider share Metatdata documents with each other, thereby
+	    Provider share Metadata documents with each other, thereby
 	    establishing the federation relationship.
 	  </t>
 	  <t hangText="User Schema and Provisioning">
@@ -273,18 +272,27 @@
      "provider_uri": "https://idp.example.com",
      "tenant_id": "tenant-12345",
      "name": "My Identity Provider",
+     "jwks_uri": "https://cloudprovider.com/fastfed/keys",
      "icons": {
        "large_icon_uri": "https://idp.example.com/images/tile.png",
        "small_icon_uri": "https://idp.example.com/images/favicon.png"
      }
      "capabilities": {
-       "sso_protocols_supported": ["OIDC","SAML"],
-       "user_schemas_supported": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-       "user_provisioning_modes_supported": ["SCIM","JIT","NoProvisioning"],
-       "signing_alg_supported": ["RS256"]
+       "authentication_profiles": [
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
+         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+       ],
+       "provisioning_profiles": [
+         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+       ],
+       "schemas": [
+         "urn:ietf:params:scim:schemas:core:2.0:User"
+       ],
+       "handshake_signing_alg": [
+         "RS256"
+       ]
      }
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
-     "fastfed_handshake_finish_uri": "https://tenant-12345.idp.example.com/fastfed/finish"
  }
 ]]></artwork></figure>	  
       </section>
@@ -303,15 +311,40 @@
 	  </list>
 	</t>
 	<t>
-	  And, three Endpoints for the FastFed Handshake
+	  And, two Endpoints for the FastFed Handshake
 	  <list style="symbols">
-	    <t>FastFed Handshake Start Endpoint (<xref target="HandshakeApplicationProviderStart"/>)</t>
-	    <t>FastFed Handshake Receive Endpoint (<xref target="HandshakeApplicationProviderRedirect"/>)</t>
-	    <t>FastFed Handshake Finish Endpoint (<xref target="HandshakeRegistrationRequest"/>)</t>
+	    <t>FastFed Handshake Start Endpoint, hosted by the Identity Provider (<xref target="HandshakeApplicationProviderRedirectVia302"/>)</t>
+	    <t>FastFed Handshake Finish Endpoint, hosted by the Application Provider (<xref target="HandshakeRegistrationRequest"/>)</t>
 	  </list>
 	</t>
       </section>
 
+      <section anchor="OverviewEndpointDiscovery" title="Endpoint Discovery">
+        <t>
+	  Discovery is the means by which Endpoint locations are determined. For
+	  example, when the administrator of an application wishes to enable
+	  SSO, the Application needs to know the administrator's Identity Provider
+	  Metadata Endpoint (e.g. "FastFed URL"). This is accomplished through
+	  Endpoint Discovery.
+	</t>
+	<t>
+	  The simplest discovery mechanism (though the least user-friendly)
+	  is for the end-user to manually paste their FastFed URL into a form
+	  field of the Application. The user may have discovered this value by
+	  consulting with an appropriate IT department in their organization,
+	  talking to peers, or reading internal documentation pages. This will
+	  vary by organization and is outside the scope of this specification.
+	</t>
+	<t>
+	  It is anticipated that the majority of end-users will not know their
+	  FastFed URL and would find such a question to be confusing. Therefore,
+	  to simplify the experience, FastFed also supports automated discovery
+	  based upon an email address. If a user's Identity Provider supports
+	  it, the FastFed experience can be initiated simply by a user providing
+	  their email address to the Application
+	  (<xref target="ProviderMetadataEndpointDiscovery"/>).
+	</t>
+      </section>
       <section anchor="OverviewFastFedHandshake" title="FastFed Handshake">
 	<t>
 	  The FastFed Handshake flow is the means by which Metadata documents
@@ -457,7 +490,7 @@
    "identity_provider": {
      capabilities: {
        ...
-       "user_schemas_supported": [
+       "schemas": [
          "urn:ietf:params:scim:schemas:core:2.0:User",
          "urn:ietf:params:scim:schemas:enterprise:2.0:User"
        ],
@@ -489,9 +522,8 @@
 	  </t>
 	  <figure><artwork><![CDATA[
  {
-   "application_provider_instance": {
+   "application_provider": {
      ...
-     "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
      "desired_user_attributes": [
        {"required": ["username", "emails[primary eq true]"],
         "optional": ["name.formatted"]
@@ -500,63 +532,7 @@
      ...
 ]]></artwork></figure>
 	</section>
-	
-	<section anchor="OverviewUserProvisioning"
-		 title="User Provisioning">
-	  
-	  <t>
-	    User Provisioning is the process of creating user accounts in the
-	    hosted application. Common patterns include the following:
-	  </t>
-	  <t>
-	    <list style="empty">
-	      <t>
-		Pre-Provisioning
-		<list style="empty">
-	      	  <t>
-		    Accounts are pre-created in the application prior to an
-		    end-user signing into the application. In addition,
-		    updates to user information in the Identity Provider are
-		    automatically propagated to the application
-		  </t>
-		</list>
-	      </t>
-	      <t>
-		Just In Time Provisioning (JIT)
-		<list style="empty">
-		  <t>
-		    Accounts are created when a user first signs-in. The
-		    attributes for account creation are supplied as part of
-		    the sign-in protocol. If the account already exists, it is
-		    updated using the attributes supplied as part of the
-		    sign-in protocol. A consequence of JIT Provisioning is
-		    that user information is never updated unless a user
-		    signs-in. In addition, users that become deactivated in
-		    the Identity Provider may continue to exist in the
-		    Application Provider.
-		  </t>
-		</list>
-	      </t>
-	      <t>
-		Ephemeral Users
-		<list style="empty">
-		  <t>
-		    No long-lived user accounts exist in the application. User
-		    information is discarded when the session ends.
-		  </t>
-		</list>
-	      </t>
-	    </list>
-	  </t>
-	  <t>
-	    FastFed Metadata enables Providers to describe their provisioning
-	    requirements and capabilities. See
-	    <xref target="ProviderMetadataCapabilities"/>
-	    and <xref target="CommonProviderMetadata"/>.
-	  </t>
-	</section>
-      </section>
-      
+      </section>      
     </section> <!-- End of Overview -->
 
     <section anchor="Metadata" title="Metadata">
@@ -638,7 +614,7 @@
 		 title="Capabilities">
 	  <t>
 	    Capabilities describe the supported behaviors of a Provider.  They
-	    are included in the Metatdata for both Identity Providers and
+	    are included in the Metadata for both Identity Providers and
 	    Application Providers and are the primary tool to evaluate if two
 	    Providers are compatible with one another.
 	  </t>
@@ -647,14 +623,42 @@
 	    attributes:
 
 	    <list style="hanging">
-	      <t hangText="sso_protocols_supported">
-		REQUIRED. A list of strings specifying the SSO protocols
-		supported by the Provider. For example, the value "OIDC"
+	      <t hangText="authentication_profiles">
+		OPTIONAL. A list of URNs specifying the single sign-in
+		authentication protocols supported by the Provider. For example,
+		the value
+		"urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
 		indicates the provider implements
-		the <xref target="FastFedProfile.OIDC">FastFed Profile for
+		the <xref target="FastFedProfile.OIDC">FastFed Basic Profile for
 		OpenID Connect</xref>.
+
+                <vspace/><vspace/> If no value is specified by the Application
+                Provider
+                for <spanx style="verb">authentication_profiles</spanx>, this
+                indicates the Provider does not require authentication, perhaps
+                because FastFed is being used only to configure syncronization of
+                user data between systems in a context without a need for single
+                sign-on. See
+                <xref target="ProviderCompatibilityEvaluationEmptyList"/> for
+                handling empty capabilities.
 	      </t>
-	      <t hangText="user_schemas_supported">
+	      <t hangText="provisioning_profiles">
+                OPTIONAL. A list of URNs specifying the user provisioning
+		capabilities supported by the Provider. For example, the value
+		"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+		indicates a Provider supports full user provisioning (and
+		deprovisioning) via the SCIM protocol, as defined in <xref
+                        target="FastFedProfile.SCIM"/>.
+
+                <vspace/><vspace/> If no value is specified by the Application
+                Provider for <spanx style="verb">provisioning_profiles</spanx>,
+                this indicates the Provider does not require provisioning or
+                that provisioning happens through a non-standard mechanism that
+                is out of scope of the FastFed specification. See
+                <xref target="ProviderCompatibilityEvaluationEmptyList"/> for
+                handling empty capabilities.
+	      </t>
+	      <t hangText="schemas">
 		REQUIRED. A list of URNs specifying the user schemas understood
 		by the Provider. FastFed does not mandate a specific schema, but
 		RECOMMENDS the use of SCIM.
@@ -692,72 +696,8 @@
 		extended schema is mandatory, Providers MUST list only the
 		extended schema.
 	      </t>
-	      <t hangText="user_provisioning_modes_supported">
-		REQUIRED. A list of strings defining the requirements and
-		capabilities for provisioning user accounts into an
-		application. The list must contain at least one value. The
-		following values are defined by this specification:
-		<list style="empty">
-
-		  <t><spanx style="verb">SCIM</spanx></t>
-		  <t>
-		    <list style="empty">
-		      <t>
-			A Provider supports pre-provisioning of user accounts
-			via the SCIM protocol, as defined in <xref
-			target="FastFedProfile.SCIM"/>.
-		      </t>
-		    </list>
-		  </t>
-
-		  <t><spanx style="verb">JIT</spanx></t>
-		  <t>
-		    <list style="empty">
-		      <t>
-		        Application Providers who support Just In Time
-		        Provisioning (JIT) MUST create and update user accounts
-		        when an end-user signs-in to the application.
-		      </t>
-		      <t>
-			Identity Providers who support JIT provisioning SHOULD inform
-			Administrators who are configuring single sign-on with
-			the application that the application uses JIT
-			provisioning; and while single sign-on will work, the
-			application may hold a copy of user information that can
-			become stale over time.
-		      </t>
-		    </list>
-		  </t>
-
-		  <t><spanx style="verb">NoProvisioning</spanx></t>
-		  <t>
-		    <list style="empty">
-		      <t>
-		        Application Providers who use <spanx
-		        style="verb">NoProvisioning</spanx> MUST use ephemeral
-		        sessions or accounts that do not require
-		        pre-provisioning and do not rely upon long-lived data
-		        that persists after the user session has ended.
-		      </t>
-		      <t>
-			Identity Providers who support <spanx
-			style="verb">NoProvisioning</spanx> have no required
-			responsibilities.
-			<vspace/>
-			An Identity Provider who includes <spanx
-			style="verb">NoProvisioning</spanx> as the only value in
-			their list of supported provisioning modes has
-			effectively declared they support no user provisioning
-			at all. This will cause the FastFed Handshake to halt
-			when attempting to integrate with Application Providers
-			who require one of the other provisioning modes.
-		      </t>
-		    </list>
-		  </t>
-		</list>
-	      </t>
 	      
-              <t hangText="signing_alg_supported">
+              <t hangText="handshake_signing_alg">
                 REQUIRED. A list of <xref target="RFC7515">JWS</xref>
                 [JWS] <spanx style="verb">alg</spanx> algorithms
                 <xref target="RFC7518">[JWA]</xref> for signing request objects
@@ -858,10 +798,10 @@
 	    Provider Metadata</xref>, plus the following additional elements:
 
             <list style="hanging">
-              <t hangText="fastfed_handshake_receive_uri">
-                REQUIRED. A URL which specifies the endpoint for Identity
-                Providers to receive a FastFed Handshake request. See
-                <xref target="HandshakeApplicationProviderRedirect" />.
+              <t hangText="fastfed_handshake_start_uri">
+                REQUIRED. A URL which specifies the endpoint for the Identity
+                Provider to receive a FastFed Handshake initiation request. See
+                <xref target="HandshakeApplicationProviderRedirectVia302"/>.
               </t>
 	      <t hangText="jwks_uri">
 		REQUIRED. URL of the Identity Provider's JSON Web Key
@@ -882,11 +822,6 @@
 	    Provider Metadata</xref>, plus the following additional elements:
 
             <list style="hanging">
-              <t hangText="fastfed_handshake_start_uri">
-                REQUIRED. A URL which specifies the endpoint for starting a
-                FastFed Handshake request with the Application Provider. See
-                <xref target="HandshakeApplicationProviderStart" />.
-              </t>
               <t hangText="fastfed_handshake_finish_uri">
                 REQUIRED. A URL which specifies the endpoint for finishing a
                 FastFed Handshake with the Identity Provider. See <xref
@@ -897,31 +832,86 @@
                 the Application Provider desires from the Identity
                 Provider. During the FastFed Handshake, Administrators have an
                 opportunity to review and consent to the release of the desired
-                attributes.  <vspace/><vspace/> Attributes MUST be specified
+                attributes.  
+
+		<vspace/><vspace/> Attributes MUST be specified
                 using the attribute path syntax for the chosen user schema. For
                 SCIM schemas, attributes are referenced using the SCIM PATH
                 specification as defined in section Section 3.5.2 of
-                the <xref target="RFC7643">SCIM Core Specification</xref>
-                [RFC7643]. E.g. the SCIM formatted name
+                the <xref target="RFC7644">SCIM Protocol Specification</xref>
+                [RFC7644]. E.g. the SCIM formatted name
                 is referenced as <spanx style="verb">name.formatted</spanx>.
+
+		<vspace/><vspace/> As per the SCIM specification, attribute
+		paths MAY be fully qualified by prefixing with a schema
+		URI. E.g. <spanx style="verb">"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</spanx>.
+		When no prefix is specified, the default SCIM Core schema is
+		presumed.
+
+		<vspace/><vspace/>A trailing asterisk <spanx style="verb">*</spanx>
+		wildcard at the end of an attribute name MAY be used for prefix
+		matching. This can be useful when an application wants to
+		receive user data without knowing in advance which attributes
+		are defined or available for the user. For
+		example, <spanx style="verb">"urn:ietf:params:scim:schemas:*"</spanx>
+		would match attributes from any schema defined in the SCIM
+		specifications. Similarly, the
+		value <spanx style="verb">"*"</spanx> would match all attributes
+		from any schema, including custom-defined schemas. The latter
+		is effectively asking for a complete copy of the user object.
+
                 <vspace/><vspace/> The structure contains the following
                 elements:
 
                 <list style="hanging">
                   <t hangText="required_attributes">
                     A list of attributes which the Identity Provider MUST
-                    release to the Application Provider.
+                    release to the Application Provider. The value of the
+                    attributes MUST NOT be null or empty. In other words, the
+                    value must be defined and valid for the given schema.
+
+		    <vspace/><vspace/>If the value is not defined for a given
+		    end-user, the Application Provider MUST reject the user for
+		    any authentication or provisioning activity using an HTTP
+		    4xx error message. To assist with debugging, the Identity
+		    Provider SHOULD signal to the end-user that the value is
+		    missing and is required by the Application. The means of
+		    doing so are outside the scope of the specification, but
+		    could include displaying an informative error message when
+		    the end-user attempts to SSO into the application, or making
+		    error logs available to the administrators of the Identity
+		    Provider if pre-provisioning fails due to the missing
+		    attributes.
+
+		    <vspace/><vspace/>When using SCIM schemas, the attributes
+                    <spanx style="verb">id</spanx>
+                    and <spanx style="verb">userName</spanx> are required and MUST always be
+                    released to the Application Provider. If these attributes
+                    are not explicitly specified in the list of
+                    <spanx style="verb">required_attributes</spanx>, they MUST be
+                    automatically added by the Identity Provider and henceforth available
+                    to the Application Provider.
                   </t>
                   <t hangText="optional_attributes">
                     A list of attributes which the Identity Provider MAY release
                     to the Application Provider. The application MUST remain
-                    functional if the Identity Provider chooses not to release
-                    the <spanx style="verb">optional_attributes</spanx>, albeit
+                    functional if the attributes are undefined or if the
+                    Identity Provider chooses not to release
+                    the <spanx style="verb">optional_attributes</spanx>; albeit
                     with minor degradations in user experience; e.g. falling
                     back to labeling end-users with an
                     opaque <spanx style="verb">userName</spanx> instead of a
                     human-readable
                     <spanx style="verb">displayName</spanx>.
+
+		    <vspace/><vspace/>When using SCIM schemas, the attribute
+                    <spanx style="verb">externalId</spanx> is optional but
+                    encouraged to be used when available. If this attribute is
+                    not explicitly specified in the list of
+                    <spanx style="verb">desired_attributes</spanx>, it MUST be
+                    automatically added by the Identity Provider and henceforth
+                    available to the Application Provider whenever it is defined
+                    for a given user.
                   </t>
                 </list>
               </t>
@@ -964,18 +954,68 @@
 	  <t>
             Discovering the location of a Provider Metadata Endpoint for a
             specific end-user can be achieved through several means. The
-            RECOMMENDED method of discovery is via a WebFinger request to a
-            user's email domain.
+            RECOMMENDED method of discovery is via the user's email domain.
           </t>
+	  <t>
+	    One standard mechanism to achieve this is via WebFinger
+	    <xref target="RFC7033"/>. A FastFed profile for
+	    WebFinger is defined below. However, WebFinger requires a webserver
+	    hosted at the root domain. For example, if a user's email address is
+	    <spanx style="verb">"user@company.com"</spanx>, the webfinger
+	    requests are sent to
+	    <spanx style="verb">"https://company.com/.well_known/webfinger"</spanx>.
+	  </t>
+	  <t>
+	    Administrators at large enterprises can experience organizational
+	    roadblocks when attempting to host this type of discovery endpoint
+	    at the root domain. This is because the root domain is often the
+	    publicly facing product or web presence for an organization and is
+	    maintained by different owners with security and operational
+	    privileges which the FastFed administrators may not normally
+	    possess.
+	  </t>
+	  <t>
+	    Therefore, to simplify adoption, FastFed also supports discovery 
+	    using subdomains. A well-defined prefix can be prepended to the
+	    domain name to retrieve the FastFed Provider Metadata.
+	  </t>
 
+	  <section anchor="ProviderMetadataEndpointDiscoverySubdomain"
+                   title="Email-based Discovery via Well-Known Subdomain">
+
+	    <t>
+	      If the user's email address is available to the Application
+              Provider, the Application Provider SHOULD attempt to discover the
+              Provider Metadata Endpoint using the email domain.
+	    </t>
+	    <t>
+	      The Endpoint location is determined by prefixing the email domain
+              with <spanx style="verb">"fastfed._well_known"</spanx>. For example, if the user email is
+              <spanx style="verb">"babs@example.com"</spanx>, the resulting
+              Endpoint location
+              is <spanx style="verb">"https://fastfed._well_known.example.com"</spanx>.
+            </t>
+	    <t>
+	      The validity of the endpoint is tested by performing a Read
+	      Request as defined in
+	      <xref target="ProviderMetadataEndpointRead"/>. An HTTP 200
+	      response indicates success and the FastFed handshake can proceed
+	      using the discovered information. Any other status codes SHOULD be
+	      treated as a failure. In the event of failure, discovery can
+	      fallback to alternative approaches described below.
+	    </t>
+	  </section>
 	  <section anchor="ProviderMetadataEndpointDiscoveryWebFinger"
 		   title="Email-based Discovery via WebFinger">
 
 	    <t>
 	      If the user's email address is available to the Application
-	      Provider, the Application Provider SHOULD perform a WebFinger request
-	      to the email domain to determine if the Provider Metadata Location
-	      is automatically discoverable.
+	      Provider, but discovery failed when using the Well-Known Subdomain
+	      described in
+	      <xref target="ProviderMetadataEndpointDiscoverySubdomain"/>, then
+	      the Application Provider SHOULD perform a WebFinger request to the
+	      email domain to determine if the Provider Metadata Location is
+	      automatically discoverable.
 	    </t>
 	    <t>
 	      FastFed uses the following <spanx style="verb">rel</spanx> value
@@ -1115,23 +1155,33 @@
      "provider_uri": "https://idp.example.com",
      "tenant_id": "tenant-12345",
      "name": "My Identity Provider",
+     "jwks_uri": "https://cloudprovider.com/fastfed/keys",
      "icons": {
        "large_icon_uri": "https://idp.example.com/images/tile.png",
        "small_icon_uri": "https://idp.example.com/images/favicon.png"
      }
      "capabilities": {
-       "sso_protocols_supported": ["OIDC","SAML"],
-       "user_schemas_supported": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-       "user_provisioning_modes_supported": ["JIT","NoProvisioning"],
-       "signature_alg_supported": ["RS256"]
+       "authentication_profiles": [
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
+         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+       ],
+       "provisioning_profiles":[
+         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+       ],
+       "schemas": [
+         "urn:ietf:params:scim:schemas:core:2.0:User"
+       ],
+       "handshake_signing_alg": [
+         "RS256"
+       ]
      }
-     "fastfed_handshake_receive_uri": "https://tenant-12345.idp.example.com/fastfed/receive",
+     "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  } 
 ]]></artwork></figure>
 	</section>
 
 	<section anchor="MetadataRefresh"
-		 title="Metatdata Refresh">
+		 title="Metadata Refresh">
 	  <t>
 	    Provider Metadata contains URLs that point to other objects, such as
 	    icon image files. Providers MAY locally cache the object values.
@@ -1211,37 +1261,100 @@
 	For reference, all FastFed Capabilities are represented as lists of
 	strings. This includes the following attributes:
 	<list style="symbols">
-	  <t>sso_protocols_supported</t>
-	  <t>user_schemas_supported</t>
-	  <t>user_provisioning_modes_supported</t>
-	  <t>signing_alg_supported</t>
+	  <t>authentication_profiles</t>
+	  <t>provisioning_profiles</t>
+	  <t>schemas</t>
+	  <t>handshake_signing_alg</t>
 	</list>
       </t>
       <t>
-	Each list must have at least one valid element. Missing, undefined, or
-	empty lists MUST be treated as invalid metadata documents and result
-	in an error.
+	Required attributes MUST have at least one valid element in the
+	list. Optional attributes MAY have any number of elements in the list,
+	including no elements. An optional attribute that is omitted from the
+	configuration, or defined as a null value, will be treated equivalently
+	to an empty list.
       </t>
       <t>
 	Each list is evaluated for compatibility via the following steps:
 	<list style="symbols">
 	  <t>
-	    The intersection is calculated between the list from the Identity
-	    Provider and the list from the Application Provider. If the
-	    intersection is non-empty, the Providers are compatible for that
-	    element.
+	    If the list from Identity Provider and the list from the Application
+	    Provider are both defined and non-empty, the intersection is
+	    calculated between the lists. If the resulting intersection is also
+	    non-empty, the Providers are compatible for those elements in the
+	    intersection.
+	  </t>
+	  <t>
+	    Otherwise, if one or both lists are empty, see
+	    <xref target="ProviderCompatibilityEvaluationEmptyList"/> for
+	    special handling of empty capabilities.
 	  </t>
 	</list>
       </t>
       <t>
 	The resulting intersection of capabilities represents the compatible
-	choices which a Provider can choose from when determining how to
+	choices which a Provider can select from when determining how to
 	configure federation with another Provider.
       </t>
       <t>
-	If the Providers are not compatible for one or more Fast Fed Capabilities, then the
+	If the Providers are not compatible for one or more FastFed Capabilities, then the
 	Providers MUST be treated as incompatible.
       </t>
+      <t>
+	The handling of incompatibilities depends on the context in which
+	evaluation occured and is described elsewhere in the specification. The
+	most common situation is when compatibility is tested during the FastFed
+	handshake. In this situation, failure causes the handshake to halt and a
+	diagnostic error message is displayed to the end-user.
+      </t>
+      <section anchor="ProviderCompatibilityEvaluationEmptyList"
+               title="Handling Empty Capabilities">
+	<t>
+	  A special case of compatiblity evaluation occurs when one of the
+	  Providers returns an empty value for an attribute, such as
+	  <spanx style="verb">provisioning_profiles</spanx>
+	  or <spanx style="verb">authentication_profiles</spanx>.
+	</t>
+	<t>
+	  Instead of handling as an incompatibility, a Provider MAY choose to
+          treat the missing value as a signal not to enable the
+          functionality it represents.
+	</t>
+	<t>
+	  As a reference to implementers, the following rules are RECOMMENDED for
+	  handling empty values:
+	  <list style="symbols">
+            <t>
+	      If the Application Provider returns an empty value for either
+	      <spanx style="verb">provisioning_profiles</spanx>
+              or <spanx style="verb">authentication_profiles</spanx>, the
+              Identity Provider SHOULD treat this as a signal that the
+              Application Provider does not need the capability. The Identity
+              Provider SHOULD omit the value from subsequent steps of the
+              FastFed handshake and not enable the capability after the
+              handshake completes.
+            </t>
+            <t>
+	      If the Application Provider returns an empty value for BOTH
+	      <spanx style="verb">provisioning_profiles</spanx>
+              an <spanx style="verb">authentication_profiles</spanx> such that
+              the result of the FastFed handshake would be a no-op, with no
+              functionality enabled, the Identity Provider SHOULD treat this as an
+              incompatibility.
+	    </t>
+            <t>
+	      If the Identity Provider returns an empty value for either
+              <spanx style="verb">provisioning_profiles</spanx>
+              or <spanx style="verb">authentication_profiles</spanx> and the
+              Application Provider considers the capability to be essential for
+              successful usage of the application, the Application Provider SHOULD
+              treat this as an incompatibility.
+            </t>
+          </list>
+	</t>
+
+      </section> <!-- End of Provider Compatibility Evaluation, Handling Empty Lists-->
+
     </section> <!-- End of Provider Compatibility Evaluation -->
 
     <section anchor="Handshake"
@@ -1292,7 +1405,7 @@
 	  <t>
 	    In order to serialize the parameters using the Query String
 	    Serialization, the Client constructs the string by adding the
-	    parameters and values to the query component of a URL using the
+eifjccile	    parameters and values to the query component of a URL using the
 	    application/x-www-form-urlencoded format as defined by <xref
 								      target="W3C.REC-html401-19991224"/>. Query String Serialization is
 	    typically used in HTTP GET requests. The same serialization method
@@ -1467,10 +1580,27 @@
 		  REQUIRED. The location of the Provider Metadata for the Application
 		  Provider.
 		</t>
+		<t hangText="expiration">
+		  OPTIONAL. The date/time when the Application Provider will
+		  consider the whitelisted pending registration to be expired
+		  and the administrator must restart the FastFed Handshake. This
+		  value is provided as a convenience to the Identity Provider so
+		  that it may be aware of the deadline for completing the
+		  flow. Its value MUST be a number containing a NumericDate as
+		  defined in Section 2 of <xref target="RFC7519">RFC 7519</xref>
+		  [JWT].
+		</t> 
 		<t hangText="state">
 		  OPTIONAL. Opaque value used to maintain state between the
 		  request to the Identity Provider and the callback to the
-		  Application Provider.
+		  Application Provider. The Application Provider MAY use this
+		  field to store any information that could be helpful later in
+		  the flow to correlate the callback from the Identity Provider
+		  with a pending whitelisted registration. The Application
+		  Provider SHOULD guard the value of this field with
+		  tamper-evident protections such as signing in order to detect
+		  if another party has manipulated the value prior to the
+		  callback.
 		</t>
 	      </list>
 	    </t>
@@ -1482,7 +1612,7 @@
                      title="HTTP Redirect">
             <t>
 	      An Application Provider MAY issue an HTTP 302 redirect to the
-	      <spanx style="verb">fastfed_handshake_receive_uri</spanx>
+	      <spanx style="verb">fastfed_handshake_start_uri</spanx>
 	      specified in the <xref target="IdentityProviderMetadata">Identity
 	      Provider Metadata</xref> with the request parameters encoded using
 	      <xref target="HandshakeSerialization">Query String
@@ -1493,7 +1623,7 @@
 	    </t>
 	    <figure><artwork><![CDATA[
  HTTP/1.1 302 Found
- Location: https://tenant-12345.idp.example.com/fastfed/handshake/receive?
+ Location: https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
    &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
 ]]></artwork></figure>
@@ -1519,7 +1649,7 @@
 	       <t>
 		 The request message is conveyed as a URL with the host value
 		 set to
-		 the <spanx style="verb">fastfed_handshake_receive_uri</spanx>
+		 the <spanx style="verb">fastfed_handshake_start_uri</spanx>
 		 specified in
 		 the <xref target="IdentityProviderMetadata">Identity Provider
 		 Metadata</xref> and the request parameters encoded using
@@ -1534,7 +1664,7 @@
  Hello Jane,
  Please click this link to finish setting up single sign-on with us.
  
- https://tenant-12345.idp.example.com/fastfed/handshake/receive?
+ https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
    &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
 ]]></artwork></figure>
@@ -1606,11 +1736,11 @@
             </t>
 	    <t>
 	      It is possible that both Providers may share a list of
-	      capabilities, such as supporting both "SCIM" and "JIT" for user
-	      provisioning modes. If multiple options are valid, the Identity
+	      capabilities, such as supporting both SAML and OpenID Connect for
+	      single sign-on. If multiple options are valid, the Identity
 	      Provider chooses one option to use. The Identity Provider MAY ask
 	      the Administrator to make the choice or MAY automatically choose
-	      an option based on default preferences of the provider.
+	      based on default preferences of the provider.
 	    </t>
 	  </section>
 
@@ -1652,8 +1782,8 @@
 	      The signing algorithm MUST be a compatible <xref target="RFC7515">JWS</xref>
 	       <spanx style="verb">alg</spanx> algorithm
 	      <xref target="RFC7518">[JWA]</xref> specified by both the Identity
-	      Provider and Applicaiton Provider in
-	      the <spanx style="verb">signing_alg_supported</spanx> attribute of
+	      Provider and Application Provider in
+	      the <spanx style="verb">handshake_signing_alg</spanx> attribute of
 	      the <xref target="ProviderMetadataCapabilities">Provider
 	      Capabilities</xref>. The JWS signing key must exist in the JSON
 	      Web Key Set <xref target="RFC7517">[JWK]</xref> document specified
@@ -1682,27 +1812,26 @@
 		  the <xref target="ApplicationProviderMetadata">Application
 		  Provider Metadata</xref>.
 		</t>
-		<t hangText="sso_protocol">
-		  REQUIRED. A string value containing the SSO protocol to be
-		  used for sign-in between the Identity Provider and the
-		  Application Provider, chosen from the list of
-		  <spanx style="verb">sso_protocols_supported</spanx> defined in
+		<t hangText="authentication_profiles">
+		  OPTIONAL. A list containing the SSO authentication
+		  protocols to be enabled for sign-in between the Identity Provider
+		  and the Application Provider, chosen from the list of
+		  <spanx style="verb">authentication_profiles</spanx> defined in
                   the <xref target="ProviderMetadataCapabilities">Provider
                   Capabilities</xref>.
 		</t>
-                <t hangText="user_schema">
-                  REQUIRED. A string value containing the user schema to be used
-                  by the Identity Provider and Application Provider, chosen from
-                  the list of <spanx style="verb">user_schemas_supported</spanx>
-                  defined in
-                  the <xref target="ProviderMetadataCapabilities">Provider
+                <t hangText="provisioning_profile">
+                  OPTIONAL. A list containing the user provisioning
+                  profiles to be enabled by the Identity Provider and Application
+                  Provider, chosen from the list
+                  of <spanx style="verb">provisioning_profiles</spanx> defined
+                  in the <xref target="ProviderMetadataCapabilities">Provider
                   Capabilities</xref>.
                 </t>
-                <t hangText="user_provisioning_mode">
-                  REQUIRED. A string value containing the user provisioning mode
-                  to be used, chosen from the list of
-                  <spanx style="verb">user_provisioning_modes_supported</spanx>
-                  defined in
+                <t hangText="schema">
+                  REQUIRED. A string value containing the user schema to be used
+                  by the Identity Provider and Application Provider, chosen from
+                  the list of <spanx style="verb">schemas</spanx> defined in
                   the <xref target="ProviderMetadataCapabilities">Provider
                   Capabilities</xref>.
                 </t>
@@ -1726,9 +1855,10 @@
 	      </list>
 	    </t>
 	    <t>
-	      Specific SSO protocols or user provisioning modes will typically
-	      extend the JWT attributes with additional values necessary for the
-	      protocol.
+	      Specific authentication or provisioning profiles will typically
+	      extend the set of attributes in the JWT with additional values
+	      necessary for the chosen protocol. These extentions are defined
+	      elsewhere within the profile specifications.
 	    </t>
             <t>
               The following is a non-normative example of the contents of a
@@ -1739,9 +1869,9 @@
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "sso_protocol": "SAML",
-  "user_schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "user_provisioning_mode": "SCIM",
+  "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
+  "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
   "state": "liK9x2fUOWoi1P0",
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -1807,13 +1937,26 @@
 		  <xref target="ApplicationProviderMetadata">Application
 		  Provider Metadata</xref>.
 		</t>
+		<t>
+		  If the Application Provider has applied an expiration date to the
+		  FastFed handshake flow, verify the expiration date has not
+		  been exceeded.
+		</t>
 	      </list>
+	    </t>
+	    <t>
+	      In addition, the Application Provider MUST re-verify that the
+	      capabilities chosen by the Identity Provider successfully pass the
+	      FastFed compatibility evaluation
+	      (<xref target="ProviderCompatibilityEvaluation"/>), based upon the
+	      metadata documents previously exchanged during the FastFed
+	      handshake.
 	    </t>
 	    <t>
 	      If verification succeeds, the Application Provider MUST perform
 	      any actions necessary to establish the federation relationship for
-	      the specific <spanx style="verb">sso_protocol</spanx>
-	      and <spanx style="verb">user_provisioning_mode</spanx> indicated
+	      the specific <spanx style="verb">authentication_profile</spanx>
+	      and <spanx style="verb">provisioning_profile</spanx> indicated
 	      in the registration request. These actions are defined in the
 	      FastFed Profile for each protocol.
 	    </t>
@@ -1833,7 +1976,7 @@
 	      Provider to fully complete the registration.
 	    </t>
 	    <t>
-	      A successful response SHOULD use the HTTP 201 Created status code
+	      A successful response SHOULD use the HTTP 200 status code
 	      and return a JSON document <xref target="RFC4627"/> using
 	      the <spanx style="verb">application/jason</spanx> content type.
 	    </t>
@@ -1858,12 +2001,20 @@
 	      user provisioning protocol may include the location of a
 	      provisioning endpoint.
 	    </t>
+            <t>
+              If the registration is unsuccessful, the Application Provider
+              SHOULD use an HTTP 4xx status code if the error is the result of
+              an invalid request such as an unauthorized request or malformed
+              parameters. Otherwise, if the error is the result of a problem in
+              the Application Provider, it SHOULD respond with an HTTP 5xx
+              status code.
+            </t>
 	    <t>
-              The following is a non-normative example of a response:
+              The following is a non-normative example of a successful response:
             </t>
             <figure><artwork><![CDATA[
 
- HTTP/1.1 201 Created
+ HTTP/1.1 200 OK
  Content-Type: application/json
  Cache-Control: no-store
  Pragma: no-cache
@@ -1929,12 +2080,13 @@
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7033"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7515"?> <!--JWS-->
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7517"?> <!--JWK-->
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7518"?> <!--JWA-->
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7519"?> <!--JWT-->
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7565"?> <!--acct-->
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?> 
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7515"?><!--JWS-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7517"?><!--JWK-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7518"?><!--JWA-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7519"?><!--JWT-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7565"?><!--acct-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?><!--SCIMCore-->
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?><!--SCIMProtocol-->
 
       <reference anchor="FastFedProfile.OIDC" target="http://example.com">
 	<front>
