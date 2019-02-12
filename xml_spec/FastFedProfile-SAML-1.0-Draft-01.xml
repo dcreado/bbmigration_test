@@ -55,7 +55,7 @@
 	<list style="symbols">
 	  <t>
 	    Additional metadata in the FastFed Handshake Flows
-	    in order to exchange SAML Metadata URLs.
+	    to exchange SAML Metadata URLs.
 	  </t>
 	  <t>
 	    Mapping rules for generating SAML Attributes from
@@ -92,7 +92,8 @@
 
       <section anchor="Terminology" title="Terminology">
 	<t>
-	  TODO
+	  This FastFed Profile uses the terminology defined in Section 1.2 of the
+	  <xref target="FastFed.Core">FastFed Core</xref> specification.
 	</t>
       </section>
     </section>
@@ -100,7 +101,7 @@
     <section anchor="FastFedMetadata" title="FastFed Metadata">
       <t>
 	This specification extends the <xref target="FastFed.Core">FastFed
-        Core</xref> metadata (Section 3.3.1) with the following value
+        Core</xref> Provider Metadata (Section 3.3.1) with the following value
         for <spanx style="verb">authentication_profiles</spanx>:
 	<list style="hanging">
 	  <t hangText="urn:ietf:params:fastfed:1.0:authentication:SAML:Basic">
@@ -153,7 +154,7 @@
 	  Registration Request (Section 6.2.3.1
 	  of <xref target="FastFed.Core">FastFed Core</xref>) with a structure
 	  sharing the same name as the profile:
-	  <spanx style="verb">""urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	  <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
 	</t>
 	<t>
 	  The structure contains the following attributes:
@@ -161,14 +162,6 @@
             <t hangText="saml_metadata_uri">
 	      REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.
             </t>
-	    <t hangText="saml_attributes_enabled">
-	      OPTIONAL. Boolean value indicating whether a SAML
-	      AttributeStatement should be included in sign-in
-	      responses, populated with user attributes. If not specified, only
-	      the SAML Subject is provided. (See
-	      <xref target="SchemaBindingScimToSamlClaimMappingSAMLAttributes"/>
-	      for details about attribute binding into SAML assertions.)
-	     </t>
           </list>
 	</t>
 	<t>
@@ -188,14 +181,12 @@
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "state": "liK9x2fUOWoi1P0",
   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
   "authentication_profiles": [
     "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
   ],
   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
     "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
-    "saml_attributes_enabled": true
   },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -222,8 +213,16 @@
               REQUIRED. Contains the URL of the Application Provider's
               SAML Metadata document.
             </t>
+	    <t hangText="include_attributes_in_saml_response">
+	      OPTIONAL. Boolean value indicating whether a SAML
+              AttributeStatement should be included in sign-in responses,
+              populated with user attributes. If not specified, only the SAML
+              Subject is provided. (See
+              <xref target="SchemaBindingScimToSamlAttributes"/>
+              for details about attribute binding into SAML assertions.)
+            </t>
           </list>
-        </t>
+        </t>    
         <t>
           If the SAML Metadata document is access controlled, the Application
           Provider MAY also include a value
@@ -239,7 +238,8 @@
         <figure><artwork><![CDATA[
  {
   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+    "include_attributes_in_saml_response": true
   },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -263,10 +263,10 @@
 	schemas with the SAML 2.0 protocol.
       </t>
 
-      <section anchor="SchemaBindingScimToSamlClaimMapping"
+      <section anchor="SchemaBindingScimToSaml"
 	       title="SCIM-to-SAML Attribute Mapping">
 
-	<section anchor="SchemaBindingScimToSamlClaimMappingSAMLSubject"
+	<section anchor="SchemaBindingScimToSamlSubject"
 		 title="SAML Subject">
 	<t>
 	  A SAML document contains
@@ -296,79 +296,126 @@
 ]]></artwork></figure>
 	</section>
 
-	<section anchor="SchemaBindingScimToSamlClaimMappingSAMLAttributes"
+	<section anchor="SchemaBindingScimToSamlAttributes"
                  title="SAML Attributes">
-	<t>
-	  When users have been pre-provisioned into the Application through
-	  mechanisms like SCIM, the SAML Subject alone can be sufficient to
-	  correlate the incoming SAML message with the appropriate pre-existing
-	  user. However, there can be circumstances when user attributes are
-	  also necessary.
-	</t>
-	<t>
-	  One such situation occurs when an application is using Just-In-Time
-	  provisioning instead of pre-provisioning. In this mode of behavior,
-	  the incoming user attributes are used to auto-instantiate a user in
-	  the Application.
-	</t>
-	<t>
-	  Another situation occurs when users were previously created in the
-	  Application through a mechanism that doesn't provide the SCIM User
-	  ID. For example, this may happen when users are created manually by
-	  the adminstrator through a UI flow that only gathers simple attributes
-	  such as name and email address. Later, the administator may decide to
-	  convert to single sign-in. In this situation, it is necessary to match
-	  the incoming SAML message to an existing user via alternative
-	  attributes such as email. (The actual matching rules can vary by
-	  Application and are outside the scope of this specification.)
-	</t>
-	<t>
-	  To support these scenarios,
-	  <xref target="FastFedHandshakeRegistrationRequest"/> of this
-	  specification described how user attributes can be requested for
-	  inclusion in the SAML assertion.
-	</t>
-	<t>
-	  When attributes are requested, the Identity Provider MUST include a
-	  SAML Attribute element with the following properties:
-          <list style="symbols">
+	  <t>
+	    When users have been pre-provisioned into the Application through
+	    mechanisms like SCIM, the SAML Subject alone can be sufficient to
+	    correlate the incoming SAML message with the appropriate pre-existing
+	    user. However, there can be circumstances when user attributes are
+	    also necessary.
+	  </t>
+	  <t>
+	    One such situation occurs when an application is using Just-In-Time
+	    provisioning instead of pre-provisioning. In this mode of behavior,
+	    the incoming user attributes are used to auto-instantiate a user in
+	    the Application.
+	  </t>
+	  <t>
+	    Another situation occurs when users were previously created in the
+	    Application through a mechanism that doesn't provide the SCIM User
+	    ID. For example, this may happen when users are created manually by
+	    the adminstrator through a UI flow that only gathers simple attributes
+	    such as name and email address. Later, the administator may decide to
+	    convert to single sign-in. In this situation, it is necessary to match
+	    the incoming SAML message to an existing user via alternative
+	    attributes such as email. (The actual matching rules can vary by
+	    Application and are outside the scope of this specification.)
+	  </t>
+	  <t>
+	    To support these scenarios, FastFed allows a subset of user attributes
+	    to be included in SAML response messages according to the mapping rules
+	    below. Any attributes not in the mapping table are only accessible via SCIM
+	    provisioning and cannot be included in SAML response messages.
+	  </t>
+	  <t>
+	    Attributes are requested by setting the value
+	    of <spanx style="verb">"include_attributes_in_saml_response"</spanx>
+	    to <spanx style="verb">true</spanx> in the FastFed Handshake
+	    Registration Response
+	    (<xref target="FastFedHandshakeRegistrationResponse"/>).
+	  </t>
+	  <t>
+            When attributes are requested, the Identity Provider MUST include
+            SAML Attribute elements in the response message with the following
+            properties:
+            <list style="symbols">
+              <t>
+		<spanx style="verb">Name</spanx> set to the value in the mapping
+		table below.
+              </t>
+              <t>
+		<spanx style="verb">NameFormat</spanx> set
+		to <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"</spanx>.
+              </t>
+              <t>
+		<spanx style="verb">AttributeValue</spanx> element
+		with <spanx style="verb">xsi:type="xs:string"</spanx> and the
+		value from the SCIM object according to the mapping table below.
+              </t>
+            </list>
+          </t>
+	  <t>
+            Note: In the table below, SCIM attributes below refer to the "User"
+            Resource Schema defined in Section 4.1 of
+            the <xref target="RFC7643">SCIM Core
+            Specification</xref>. Individual members of a JSON structure are
+            referenced in the table using the JSON path syntax defined in
+            Section 3.5.2 of the <xref target="RFC7644">SCIM Protocol</xref>.
+	  </t>
+            <texttable>
+              <ttcol>SAML Attribute Name</ttcol>
+              <ttcol>SCIM Attribute</ttcol>
+	      
+              <c>displayName</c>
+              <c>displayName</c>
+	      
+              <c>givenName</c>
+              <c>name.givenName</c>
+	      
+              <c>familyName</c>
+              <c>name.familyName</c>
+	      
+              <c>middleName</c>
+              <c>name.middleName</c>
+	      
+              <c>userName</c>
+              <c>userName</c>
+	      
+              <c>email</c>
+              <c>emails[primary eq true].value</c>
+	      
+              <c>phoneNumber</c>
+              <c>phoneNumbers[primary eq true].value</c>
+            </texttable>
+	    
             <t>
-              <spanx style="verb">Name</spanx> set to
-              <spanx style="verb">"SCIM.User"</spanx>.
+	      The following is a non-normative example demonstrating a
+              transformation from a SCIM User to SAML Attributes:
             </t>
-            <t>
-              <spanx style="verb">NameFormat</spanx> set to <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"</spanx>.
-            </t>
-	    <t>
-	      <spanx style="verb">AttributeValue</spanx> element
-	      with <spanx style="verb">xsi:type="xs:string"</spanx> and the
-	      value set to the SCIM object in JSON Representation.
-	    </t>
-          </list>
-	</t>
-	<t>
-          The following is a non-normative example of a SAML
-          AttributeStatement which conveys the user's displayName and primary
-          email.
-	</t>
-        <figure><artwork><![CDATA[
+
+       <figure><artwork><![CDATA[
  <saml:AttributeStatement>
-   <saml:Attribute Name="SCIM.User"
-		   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
-        <saml:AttributeValue xsi:type="xs:string">
-          {
-            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-            "id": "2819c223-7f76-453a-919d-413861904646",
-	    "userName": "bjensen",
-            "displayName: "Babs Jensen",
-            "emails": [
-              {
-                "value": "bjensen@example.com",
-                "primary": true
-              }
-            ]
-          }
-        </saml:AttributeValue>
+   <saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">Babs Jensen</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="givenName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">Barbara</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="familyName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">Jensen</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="middleName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">Jane</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="userName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">bjensen</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">bjensen@example.com</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="phoneNumber" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">1-555-555-5555</saml:AttributeValue>
    </saml:Attribute>
  </saml:AttributeStatement>
 
@@ -416,92 +463,83 @@
      <section anchor="SAMLInteroperabilityIdentityProviderReqs"
 	      title="Identity Provider Requirements">
 
-       <t>                                                                                                                                                                
-         <list style="symbols">                                                                                                                                           
-           <t>                                                                                                                                                            
+       <t>
+	 <list style="symbols">
+	   <t>
              MUST implement the required functionality of a SAML Identity
-             Provider                                                                                        
-             as defined in the SAML Web Browser SSO Profile (Section 4.1 of                                                                                               
-             <xref target="SAML.Profiles"/>).                                                                                                                             
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST support the HTTP Redirect and HTTP POST bindings for the Web                                                                                            
-             Browswer SSO Profile.                                                                                                                                        
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST use X509 Certificates for the Signature element containined                                                                                             
-             within the Assertion element of the SAML Response object. As                                                                                                 
-             background, this response is returned from the SAML Identity                                                                                                 
-             Provider to the SAML Service Provider as part of the SAML Web                                                                                                
-             Browser SSO Profile.                                                                                                                                         
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST host a SAML Metadata document at the location specified by
-             the                                                                                          
+             Provider as defined in the SAML Web Browser SSO Profile (Section
+             4.1 of <xref target="SAML.Profiles"/>).
+           </t>
+	   <t> 
+	     MUST use the HTTP POST bindings for the authentication response
+	     of the Web Browswer SSO Profile.
+           </t>
+	   <t> 
+	     MUST use X509 Certificates for the Signature element containined
+	     within the Assertion element of the SAML Response object.
+           </t>
+	   <t> 
+	     MUST host a SAML Metadata document at the location specified by the
              <spanx style="verb">saml_metadata_uri</spanx> exchanged during the
              FastFed Handshake.
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST include an IDPSSODescriptor element in the SAML Metadata                                                                                                
-             document as specified in <xref target="SAML.Metadata"/>.                                                                                                     
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST populate the IDPSSODescriptor element with all values needed                                                                                            
-             by a SAML Service Provider to integrate with this SAML Identity                                                                                              
-             Provider using the capabilities described in this section.                                                                                                   
-           </t>                                                                                                                                                           
-         </list>                                                                                                                                                          
-       </t>                                                                                                                                                               
+           </t>
+	   <t> 
+	     MUST include an IDPSSODescriptor element in the SAML Metadata
+             document as specified in <xref target="SAML.Metadata"/>.
+           </t>
+	   <t>
+	     MUST populate the IDPSSODescriptor element with all values needed
+             by a SAML Service Provider to integrate with this SAML Identity
+             Provider using the capabilities described in this section.
+           </t>
+	 </list>
+       </t>
      </section>             
      
      <section anchor="SAMLInteroperabilityApplicationProviderReqs"
 	      title="Application Provider Requirements">
-       <t>                                                                                                                                                                
-         SAML Requirements for Application Providers:                                                                                                                     
-         <list style="symbols">                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST implement the required functionality of a SAML Service
-             Provider                                                                                         
-             as defined in the SAML Web Browser SSO Profile (Section 4.1 of                                                                                               
-             <xref target="SAML.Profiles"/>).                                                                                                                             
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST use either the HTTP Redirect or HTTP POST binding for                                                                                                   
-             the Web Browswer SSO Profile.                                                                                                                                
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST accept X509 Certificates for the Signature element
-             containined                                                                                          
-             within the Assertion element of the SAML Response object. As                                                                                                 
-             background, this response is returned from the SAML Identity                                                                                                 
-             Provider to the SAML Service Provider as part of the SAML Web                                                                                                
-             Browser SSO Profile.                                                                                                                                         
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST host a SAML Metadata document at the location specified by
-             the                                                                                          
+       <t>
+	 SAML Requirements for Application Providers:
+
+	 <list style="symbols">
+	   <t> 
+	     MUST implement the required functionality of a SAML Service
+             Provider as defined in the SAML Web Browser SSO Profile (Section
+             4.1 of <xref target="SAML.Profiles"/>).
+           </t>
+           <t> 
+	     MUST use the HTTP Redirect binding for the authentication request
+	     of the Web Browswer SSO Profile.
+           </t>
+           <t>
+	     MUST accept X509 Certificates for the Signature element
+             containined within the Assertion element of the SAML Response
+             object.
+	   </t>
+           <t> 
+	     MUST host a SAML Metadata document at the location specified by the
              <spanx style="verb">saml_metadata_uri</spanx> exchanged during the
              FastFed Handshake.
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST include an SPSSODescriptor element in the SAML Metadata                                                                                                 
-             document as specified in <xref target="SAML.Metadata"/>.                                                                                                     
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MUST populate the SPSSODescriptor with all values needed by a                                                                                                
-             SAML Identity Provider to integrate with this SAML Service                                                                                                   
-             Provider using the capabilities described in this section.                                                                                                   
-           </t>                                                                                                                                                           
-           <t>                                                                                                                                                            
-             MAY use the information in the Identity Provider's corresponding                                                                                             
-             SAML Metadata document to decide whether to use additional SAML                                                                                              
-             capabilities, above and beyond the FastFed minimum                                                                                                           
-             interoperablity requirements. The additional capabilities must be                                                                                            
-             optional and the federation MUST still succeed if one Provider                                                                                               
-             does not support the additional capabilities.                                                                                                                
-           </t>                                                                                                                                                           
-         </list>                                                                                                                                                          
-       </t>                                                                                                                                                               
+           </t>
+           <t> 
+	     MUST include an SPSSODescriptor element in the SAML Metadata
+             document as specified in <xref target="SAML.Metadata"/>.
+           </t>
+           <t> 
+	     MUST populate the SPSSODescriptor with all values needed by a
+             SAML Identity Provider to integrate with this SAML Service Provider
+             using the capabilities described in this section.
+           </t>
+           <t> 
+	     MAY use the information in the Identity Provider's corresponding
+             SAML Metadata document to decide whether to use additional SAML
+             capabilities, above and beyond the FastFed minimum interoperablity
+             requirements. The additional capabilities must be optional and the
+             federation MUST still succeed if one Provider does not support the
+             additional capabilities.
+           </t>
+         </list>
+       </t>
      </section>         
 
      <section anchor="SAMLCertificateRotationRequirements"
@@ -512,7 +550,7 @@
          the FastFed Profile defined herein restricts Providers to only X509
          Keys for signing SAML Assertions in Web Browser SSO response messages
          from the Identity Provider.
-       </t>                                                                                                                                                                 
+       </t>
        <t> 
 	 FastFed Providers MUST implement automatic rotation of the X509
          Certificates. This section describes the
@@ -590,8 +628,24 @@
                 Provider">
 
          <t>
-	   To consume rotated SAML signing keys, the following requirements
-           apply to the Application Provider:
+           To consume rotated SAML signing certificates, the following options are available
+           to the Application Provider:
+             <list style="symbols">
+               <t>
+                 MAY retrieve new keys on demand by reloading the Identity
+                 Provider's SAML Metadata file upon detecting a SAML
+                 authentication response signed with an unrecognized key.
+               </t>
+               <t>
+                 Alternatively, MAY preemptively retrieve new keys by querying
+                 the Identity Provider's SAML Metadata file on a recurring basis
+                 to check for updates.
+               </t>
+	     </list>
+	 </t>
+         <t>
+	   When preemptivey querying for updates on a recurring basis, the
+           following requirements apply to the Application Provider:
            <list style="symbols">
              <t>
 	       MUST re-query the Identity Provider's SAML Metadata URL to check
@@ -606,14 +660,27 @@
 	       header received when previously downloading the SAML Metadata.
              </t>
              <t>
+               SHOULD alert the Administrator if the Identity Provider has not
+               published a new certificate and less than 14 days remains until
+               expiration of the current certificate. The alert mechanism is an
+               implementation detail that is outside the scope of the
+               specification.
+             </t>
+             <t>
 	       MUST handle an HTTP 304 response code which indicates that the
 	       SAML Metadata is unchanged.
              </t>
              <t>
-	       MUST handle an HTTP 301 response code and use the new location
+	       SHOULD handle an HTTP 301 response code and use the new location
 	       for all future downloads of the Identity Provider's SAML
 	       Metadata.
              </t>
+	   </list>
+	 </t>
+	 <t>
+	   In all cases of certificate refresh, both on-demand and preemptive, the
+	   following requirements apply to the Application Provider:
+	   <list style="symbols">
              <t>
 	       MUST support the consumption of multiple certificates using the
 	       recommended techniques defined in the
@@ -632,13 +699,6 @@
 	       certificates specified within the
                <spanx style="verb">&lt;KeyDescriptor&gt;</spanx> elements of
                the Identity Provider SAML Metadata.
-             </t>                                                                                                                                                         
-             <t> 
-	       SHOULD alert the Administrator if the Identity Provider has not
-	       published a new certificate and less than 14 days remains until
-	       expiration of the current certificate. The alert mechanism is an
-	       implementation detail that is outside the scope of the
-	       specification.
              </t>
            </list>
          </t>

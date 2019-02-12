@@ -506,7 +506,7 @@
 <p id="rfc.section.1.p.2">It consists of the following extensions to the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification: </p>
 
 <ul>
-<li>Additional metadata in the FastFed Handshake Flows in order to exchange SAML Metadata URLs.  </li>
+<li>Additional metadata in the FastFed Handshake Flows to exchange SAML Metadata URLs.  </li>
 <li>Mapping rules for generating SAML Attributes from a SCIM schema.  </li>
 <li>An interoperability profile describing the subset of the SAML specifications which must be implemented in order to be FastFed Compatible.  </li>
 <li>The mechanics of certifcate rotation for SAML.  </li>
@@ -521,11 +521,11 @@
 <h1 id="rfc.section.1.2">
 <a href="#rfc.section.1.2">1.2.</a> <a href="#Terminology" id="Terminology">Terminology</a>
 </h1>
-<p id="rfc.section.1.2.p.1">TODO </p>
+<p id="rfc.section.1.2.p.1">This FastFed Profile uses the terminology defined in Section 1.2 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification.  </p>
 <h1 id="rfc.section.2">
 <a href="#rfc.section.2">2.</a> <a href="#FastFedMetadata" id="FastFedMetadata">FastFed Metadata</a>
 </h1>
-<p id="rfc.section.2.p.1">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> metadata (Section 3.3.1) with the following value for <samp>authentication_profiles</samp>: </p>
+<p id="rfc.section.2.p.1">This specification extends the <a href="#FastFed.Core" class="xref">FastFed Core</a> Provider Metadata (Section 3.3.1) with the following value for <samp>authentication_profiles</samp>: </p>
 
 <dl>
 <dt>urn:ietf:params:fastfed:1.0:authentication:SAML:Basic</dt>
@@ -552,14 +552,12 @@
 <h1 id="rfc.section.3.1">
 <a href="#rfc.section.3.1">3.1.</a> <a href="#FastFedHandshakeRegistrationRequest" id="FastFedHandshakeRegistrationRequest">FastFed Registration Request</a>
 </h1>
-<p id="rfc.section.3.1.p.1">This specification extends the JWT contents of the FastFed Registration Request (Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>""urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</samp>.  </p>
+<p id="rfc.section.3.1.p.1">This specification extends the JWT contents of the FastFed Registration Request (Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</samp>.  </p>
 <p id="rfc.section.3.1.p.2">The structure contains the following attributes: </p>
 
 <dl>
 <dt>saml_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.  </dd>
-<dt>saml_attributes_enabled</dt>
-<dd style="margin-left: 8">OPTIONAL. Boolean value indicating whether a SAML AttributeStatement should be included in sign-in responses, populated with user attributes. If not specified, only the SAML Subject is provided. (See <a href="#SchemaBindingScimToSamlClaimMappingSAMLAttributes" class="xref">Section 4.1.2</a> for details about attribute binding into SAML assertions.) </dd>
 </dl>
 
 <p> </p>
@@ -570,14 +568,12 @@
   "iss": "https://idp.example.com",
   "sub": "tenant-12345",
   "aud": "https://app.example.com",
-  "state": "liK9x2fUOWoi1P0",
   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
   "authentication_profiles": [
     "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
   ],
   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
     "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
-    "saml_attributes_enabled": true
   },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -596,6 +592,8 @@
 <dl>
 <dt>saml_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. Contains the URL of the Application Provider's SAML Metadata document.  </dd>
+<dt>include_attributes_in_saml_response</dt>
+<dd style="margin-left: 8">OPTIONAL. Boolean value indicating whether a SAML AttributeStatement should be included in sign-in responses, populated with user attributes. If not specified, only the SAML Subject is provided. (See <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a> for details about attribute binding into SAML assertions.) </dd>
 </dl>
 
 <p> </p>
@@ -604,7 +602,8 @@
 <pre>
  {
   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
+    "include_attributes_in_saml_response": true
   },
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
@@ -620,10 +619,10 @@
 <p id="rfc.section.4.p.1">FastFed recommmends SCIM for user schemas.  </p>
 <p id="rfc.section.4.p.2">This specification defines how to be FastFed Compliant when using SCIM schemas with the SAML 2.0 protocol.  </p>
 <h1 id="rfc.section.4.1">
-<a href="#rfc.section.4.1">4.1.</a> <a href="#SchemaBindingScimToSamlClaimMapping" id="SchemaBindingScimToSamlClaimMapping">SCIM-to-SAML Attribute Mapping</a>
+<a href="#rfc.section.4.1">4.1.</a> <a href="#SchemaBindingScimToSaml" id="SchemaBindingScimToSaml">SCIM-to-SAML Attribute Mapping</a>
 </h1>
 <h1 id="rfc.section.4.1.1">
-<a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#SchemaBindingScimToSamlClaimMappingSAMLSubject" id="SchemaBindingScimToSamlClaimMappingSAMLSubject">SAML Subject</a>
+<a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#SchemaBindingScimToSamlSubject" id="SchemaBindingScimToSamlSubject">SAML Subject</a>
 </h1>
 <p id="rfc.section.4.1.1.p.1">A SAML document contains a <samp>Subject</samp> element which identifies the authenticated user.  </p>
 <p id="rfc.section.4.1.1.p.2">The <samp>Subject</samp> element MUST contain a <samp>NameID</samp> with the following properties: </p>
@@ -641,43 +640,85 @@
  &lt;/saml:Subject&gt;
 </pre>
 <h1 id="rfc.section.4.1.2">
-<a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlClaimMappingSAMLAttributes" id="SchemaBindingScimToSamlClaimMappingSAMLAttributes">SAML Attributes</a>
+<a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlAttributes" id="SchemaBindingScimToSamlAttributes">SAML Attributes</a>
 </h1>
 <p id="rfc.section.4.1.2.p.1">When users have been pre-provisioned into the Application through mechanisms like SCIM, the SAML Subject alone can be sufficient to correlate the incoming SAML message with the appropriate pre-existing user. However, there can be circumstances when user attributes are also necessary.  </p>
 <p id="rfc.section.4.1.2.p.2">One such situation occurs when an application is using Just-In-Time provisioning instead of pre-provisioning. In this mode of behavior, the incoming user attributes are used to auto-instantiate a user in the Application.  </p>
 <p id="rfc.section.4.1.2.p.3">Another situation occurs when users were previously created in the Application through a mechanism that doesn't provide the SCIM User ID. For example, this may happen when users are created manually by the adminstrator through a UI flow that only gathers simple attributes such as name and email address. Later, the administator may decide to convert to single sign-in. In this situation, it is necessary to match the incoming SAML message to an existing user via alternative attributes such as email. (The actual matching rules can vary by Application and are outside the scope of this specification.) </p>
-<p id="rfc.section.4.1.2.p.4">To support these scenarios, <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a> of this specification described how user attributes can be requested for inclusion in the SAML assertion.  </p>
-<p id="rfc.section.4.1.2.p.5">When attributes are requested, the Identity Provider MUST include a SAML Attribute element with the following properties: </p>
+<p id="rfc.section.4.1.2.p.4">To support these scenarios, FastFed allows a subset of user attributes to be included in SAML response messages according to the mapping rules below. Any attributes not in the mapping table are only accessible via SCIM provisioning and cannot be included in SAML response messages.  </p>
+<p id="rfc.section.4.1.2.p.5">Attributes are requested by setting the value of <samp>"include_attributes_in_saml_response"</samp> to <samp>true</samp> in the FastFed Handshake Registration Response (<a href="#FastFedHandshakeRegistrationResponse" class="xref">Section 3.2</a>).  </p>
+<p id="rfc.section.4.1.2.p.6">When attributes are requested, the Identity Provider MUST include SAML Attribute elements in the response message with the following properties: </p>
 
 <ul>
 <li>
-<samp>Name</samp> set to <samp>"SCIM.User"</samp>.  </li>
+<samp>Name</samp> set to the value in the mapping table below.  </li>
 <li>
 <samp>NameFormat</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"</samp>.  </li>
 <li>
-<samp>AttributeValue</samp> element with <samp>xsi:type="xs:string"</samp> and the value set to the SCIM object in JSON Representation.  </li>
+<samp>AttributeValue</samp> element with <samp>xsi:type="xs:string"</samp> and the value from the SCIM object according to the mapping table below.  </li>
 </ul>
 
 <p> </p>
-<p id="rfc.section.4.1.2.p.6">The following is a non-normative example of a SAML AttributeStatement which conveys the user's displayName and primary email.  </p>
+<p id="rfc.section.4.1.2.p.7">Note: In the table below, SCIM attributes below refer to the "User" Resource Schema defined in Section 4.1 of the <a href="#RFC7643" class="xref">SCIM Core Specification</a>. Individual members of a JSON structure are referenced in the table using the JSON path syntax defined in Section 3.5.2 of the <a href="#RFC7644" class="xref">SCIM Protocol</a>.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+<thead><tr>
+<th class="left">SAML Attribute Name</th>
+<th class="left">SCIM Attribute</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="left">displayName</td>
+<td class="left">displayName</td>
+</tr>
+<tr>
+<td class="left">givenName</td>
+<td class="left">name.givenName</td>
+</tr>
+<tr>
+<td class="left">familyName</td>
+<td class="left">name.familyName</td>
+</tr>
+<tr>
+<td class="left">middleName</td>
+<td class="left">name.middleName</td>
+</tr>
+<tr>
+<td class="left">userName</td>
+<td class="left">userName</td>
+</tr>
+<tr>
+<td class="left">email</td>
+<td class="left">emails[primary eq true].value</td>
+</tr>
+<tr>
+<td class="left">phoneNumber</td>
+<td class="left">phoneNumbers[primary eq true].value</td>
+</tr>
+</tbody>
+</table>
+<p id="rfc.section.4.1.2.p.8">The following is a non-normative example demonstrating a transformation from a SCIM User to SAML Attributes: </p>
 <pre>
  &lt;saml:AttributeStatement&gt;
-   &lt;saml:Attribute Name="SCIM.User"
-		   NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
-        &lt;saml:AttributeValue xsi:type="xs:string"&gt;
-          {
-            "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
-            "id": "2819c223-7f76-453a-919d-413861904646",
-	    "userName": "bjensen",
-            "displayName: "Babs Jensen",
-            "emails": [
-              {
-                "value": "bjensen@example.com",
-                "primary": true
-              }
-            ]
-          }
-        &lt;/saml:AttributeValue&gt;
+   &lt;saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;Babs Jensen&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="givenName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;Barbara&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="familyName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;Jensen&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="middleName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;Jane&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="userName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;bjensen&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;bjensen@example.com&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="phoneNumber" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;1-555-555-5555&lt;/saml:AttributeValue&gt;
    &lt;/saml:Attribute&gt;
  &lt;/saml:AttributeStatement&gt;
 
@@ -700,8 +741,8 @@
 
 <ul>
 <li>MUST implement the required functionality of a SAML Identity Provider as defined in the SAML Web Browser SSO Profile (Section 4.1 of <a href="#SAML.Profiles" class="xref">[SAML.Profiles]</a>).  </li>
-<li>MUST support the HTTP Redirect and HTTP POST bindings for the Web Browswer SSO Profile.  </li>
-<li>MUST use X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object. As background, this response is returned from the SAML Identity Provider to the SAML Service Provider as part of the SAML Web Browser SSO Profile.  </li>
+<li>MUST use the HTTP POST bindings for the authentication response of the Web Browswer SSO Profile.  </li>
+<li>MUST use X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object.  </li>
 <li>MUST host a SAML Metadata document at the location specified by the <samp>saml_metadata_uri</samp> exchanged during the FastFed Handshake.  </li>
 <li>MUST include an IDPSSODescriptor element in the SAML Metadata document as specified in <a href="#SAML.Metadata" class="xref">[SAML.Metadata]</a>.  </li>
 <li>MUST populate the IDPSSODescriptor element with all values needed by a SAML Service Provider to integrate with this SAML Identity Provider using the capabilities described in this section.  </li>
@@ -715,8 +756,8 @@
 
 <ul>
 <li>MUST implement the required functionality of a SAML Service Provider as defined in the SAML Web Browser SSO Profile (Section 4.1 of <a href="#SAML.Profiles" class="xref">[SAML.Profiles]</a>).  </li>
-<li>MUST use either the HTTP Redirect or HTTP POST binding for the Web Browswer SSO Profile.  </li>
-<li>MUST accept X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object. As background, this response is returned from the SAML Identity Provider to the SAML Service Provider as part of the SAML Web Browser SSO Profile.  </li>
+<li>MUST use the HTTP Redirect binding for the authentication request of the Web Browswer SSO Profile.  </li>
+<li>MUST accept X509 Certificates for the Signature element containined within the Assertion element of the SAML Response object.  </li>
 <li>MUST host a SAML Metadata document at the location specified by the <samp>saml_metadata_uri</samp> exchanged during the FastFed Handshake.  </li>
 <li>MUST include an SPSSODescriptor element in the SAML Metadata document as specified in <a href="#SAML.Metadata" class="xref">[SAML.Metadata]</a>.  </li>
 <li>MUST populate the SPSSODescriptor with all values needed by a SAML Identity Provider to integrate with this SAML Service Provider using the capabilities described in this section.  </li>
@@ -754,17 +795,31 @@
 <h1 id="rfc.section.5.3.2">
 <a href="#rfc.section.5.3.2">5.3.2.</a> <a href="#SAMLKeyConsumptionRequirements" id="SAMLKeyConsumptionRequirements">Certificate Rotation Requirements for an Application                 Provider</a>
 </h1>
-<p id="rfc.section.5.3.2.p.1">To consume rotated SAML signing keys, the following requirements apply to the Application Provider: </p>
+<p id="rfc.section.5.3.2.p.1">To consume rotated SAML signing certificates, the following options are available to the Application Provider: </p>
+
+<ul>
+<li>MAY retrieve new keys on demand by reloading the Identity Provider's SAML Metadata file upon detecting a SAML authentication response signed with an unrecognized key.  </li>
+<li>Alternatively, MAY preemptively retrieve new keys by querying the Identity Provider's SAML Metadata file on a recurring basis to check for updates.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.5.3.2.p.2">When preemptivey querying for updates on a recurring basis, the following requirements apply to the Application Provider: </p>
 
 <ul>
 <li>MUST re-query the Identity Provider's SAML Metadata URL to check for new certificates at least once every 24 hours. Because certificates can be rotated at any time, the Application Provider MUST NOT wait for the expiration date to check for updated certificates.  </li>
 <li>MUST include the If-None-Match header in the request to download the SAML Metadata, populated with the value of the ETag response header received when previously downloading the SAML Metadata.  </li>
+<li>SHOULD alert the Administrator if the Identity Provider has not published a new certificate and less than 14 days remains until expiration of the current certificate. The alert mechanism is an implementation detail that is outside the scope of the specification.  </li>
 <li>MUST handle an HTTP 304 response code which indicates that the SAML Metadata is unchanged.  </li>
-<li>MUST handle an HTTP 301 response code and use the new location for all future downloads of the Identity Provider's SAML Metadata.  </li>
+<li>SHOULD handle an HTTP 301 response code and use the new location for all future downloads of the Identity Provider's SAML Metadata.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.5.3.2.p.3">In all cases of certificate refresh, both on-demand and preemptive, the following requirements apply to the Application Provider: </p>
+
+<ul>
 <li>MUST support the consumption of multiple certificates using the recommended techniques defined in the <a href="#SAML.Interoperability" class="xref">SAML Metadata Interoperability Profile</a>. As a reference, this Interopability Profile specifies that each certificate MUST be placed within its own <samp>&lt;KeyDescriptor&gt;</samp> element.  </li>
 <li>MUST ignore any changes in the SAML Metadata except for <samp>&lt;KeyDescriptor&gt;</samp> elements.  </li>
 <li>MUST accept SAML assertions signed using any of the valid certificates specified within the <samp>&lt;KeyDescriptor&gt;</samp> elements of the Identity Provider SAML Metadata.  </li>
-<li>SHOULD alert the Administrator if the Identity Provider has not published a new certificate and less than 14 days remains until expiration of the current certificate. The alert mechanism is an implementation detail that is outside the scope of the specification.  </li>
 </ul>
 
 <p> </p>

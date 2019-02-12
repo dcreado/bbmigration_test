@@ -32,24 +32,24 @@ Table of Contents
      2.4.  FastFed Handshake . . . . . . . . . . . . . . . . . . . .   7
      2.5.  User Schemas and Provisioning . . . . . . . . . . . . . .   8
        2.5.1.  Schema Selection  . . . . . . . . . . . . . . . . . .   9
-       2.5.2.  Attribute Filtering . . . . . . . . . . . . . . . . .  10
+       2.5.2.  Attribute Filtering . . . . . . . . . . . . . . . . .   9
    3.  Metadata  . . . . . . . . . . . . . . . . . . . . . . . . . .  10
      3.1.  Metadata Serialization  . . . . . . . . . . . . . . . . .  10
-     3.2.  Metadata Languages and Scripts  . . . . . . . . . . . . .  11
+     3.2.  Metadata Languages and Scripts  . . . . . . . . . . . . .  10
      3.3.  Provider Metadata . . . . . . . . . . . . . . . . . . . .  11
-       3.3.1.  Capabilities  . . . . . . . . . . . . . . . . . . . .  12
+       3.3.1.  Capabilities  . . . . . . . . . . . . . . . . . . . .  11
        3.3.2.  Common Provider Metadata  . . . . . . . . . . . . . .  13
        3.3.3.  Identity Provider Metadata  . . . . . . . . . . . . .  14
-       3.3.4.  Application Provider Metadata . . . . . . . . . . . .  15
+       3.3.4.  Application Provider Metadata . . . . . . . . . . . .  14
    4.  Metadata Endpoints  . . . . . . . . . . . . . . . . . . . . .  16
      4.1.  Provider Metadata Endpoint  . . . . . . . . . . . . . . .  16
-       4.1.1.  Endpoint Discovery  . . . . . . . . . . . . . . . . .  17
-         4.1.1.1.  Email-based Discovery via Well-Known Subdomain  .  17
-         4.1.1.2.  Email-based Discovery via WebFinger . . . . . . .  18
-         4.1.1.3.  Alternative Discovery Mechanisms  . . . . . . . .  19
-       4.1.2.  Read Request  . . . . . . . . . . . . . . . . . . . .  20
-       4.1.3.  Read Response . . . . . . . . . . . . . . . . . . . .  20
-       4.1.4.  Metadata Refresh  . . . . . . . . . . . . . . . . . .  21
+       4.1.1.  Endpoint Validation . . . . . . . . . . . . . . . . .  17
+       4.1.2.  Endpoint Discovery  . . . . . . . . . . . . . . . . .  17
+         4.1.2.1.  Email-based Discovery via WebFinger . . . . . . .  17
+           4.1.2.1.1.  WebFinger Endpoints . . . . . . . . . . . . .  18
+           4.1.2.1.2.  WebFinger Queries . . . . . . . . . . . . . .  18
+         4.1.2.2.  Alternative Discovery Mechanisms  . . . . . . . .  21
+       4.1.3.  Read Request  . . . . . . . . . . . . . . . . . . . .  21
 
 
 
@@ -58,28 +58,29 @@ McAdams                   Expires July 7, 2019                  [Page 1]
                             FastFed Core 1.0                    Jan 2019
 
 
-   5.  Provider Compatibility Evaluation . . . . . . . . . . . . . .  22
-     5.1.  Handling Empty Capabilities . . . . . . . . . . . . . . .  23
-   6.  FastFed Handshake . . . . . . . . . . . . . . . . . . . . . .  24
-     6.1.  Common Considerations . . . . . . . . . . . . . . . . . .  24
-       6.1.1.  TLS Requirments . . . . . . . . . . . . . . . . . . .  24
-       6.1.2.  HTTP Redirects  . . . . . . . . . . . . . . . . . . .  24
-       6.1.3.  Query String Serialization  . . . . . . . . . . . . .  24
-       6.1.4.  Halting the Handshake . . . . . . . . . . . . . . . .  25
-     6.2.  Handshake Flow  . . . . . . . . . . . . . . . . . . . . .  25
-       6.2.1.  Handshake Start at Application Provider . . . . . . .  25
-         6.2.1.1.  Application Provider Receives Start Request . . .  25
-         6.2.1.2.  Application Provider Authenticates Administrator   26
-         6.2.1.3.  Application Provider Reads Identity Provider
+       4.1.4.  Read Response . . . . . . . . . . . . . . . . . . . .  21
+       4.1.5.  Metadata Refresh  . . . . . . . . . . . . . . . . . .  22
+   5.  Provider Compatibility Evaluation . . . . . . . . . . . . . .  23
+     5.1.  Handling Empty Capabilities . . . . . . . . . . . . . . .  24
+   6.  FastFed Handshake . . . . . . . . . . . . . . . . . . . . . .  25
+     6.1.  Common Considerations . . . . . . . . . . . . . . . . . .  25
+       6.1.1.  TLS Requirements  . . . . . . . . . . . . . . . . . .  25
+       6.1.2.  HTTP Redirects  . . . . . . . . . . . . . . . . . . .  25
+       6.1.3.  Query String Serialization  . . . . . . . . . . . . .  25
+       6.1.4.  Halting the Handshake . . . . . . . . . . . . . . . .  26
+     6.2.  Handshake Flow  . . . . . . . . . . . . . . . . . . . . .  26
+       6.2.1.  Handshake Initiation at Application Provider  . . . .  26
+         6.2.1.1.  Prerequisites . . . . . . . . . . . . . . . . . .  26
+         6.2.1.2.  Application Provider Reads Identity Provider
                    Metadata  . . . . . . . . . . . . . . . . . . . .  26
-         6.2.1.4.  Application Provider Verifies Compatibility with
-                   Identity Provider . . . . . . . . . . . . . . . .  26
-         6.2.1.5.  Application Provider Whitelists the Identity
-                   Provider  . . . . . . . . . . . . . . . . . . . .  26
-         6.2.1.6.  Application Provider Sends Request to the
+         6.2.1.3.  Application Provider Verifies Compatibility with
                    Identity Provider . . . . . . . . . . . . . . . .  27
-           6.2.1.6.1.  HTTP Redirect . . . . . . . . . . . . . . . .  28
-           6.2.1.6.2.  Alternative Channel . . . . . . . . . . . . .  28
+         6.2.1.4.  Application Provider Whitelists the Identity
+                   Provider  . . . . . . . . . . . . . . . . . . . .  27
+         6.2.1.5.  Application Provider Sends Request to the
+                   Identity Provider . . . . . . . . . . . . . . . .  27
+           6.2.1.5.1.  HTTP Redirect . . . . . . . . . . . . . . . .  28
+           6.2.1.5.2.  Alternative Channel . . . . . . . . . . . . .  28
        6.2.2.  Handshake Receipt by Identity Provider  . . . . . . .  29
          6.2.2.1.  Identity Provider Authenticates Administrator . .  29
          6.2.2.2.  Identity Provider Reads Application Provider
@@ -94,17 +95,16 @@ McAdams                   Expires July 7, 2019                  [Page 1]
          6.2.3.4.  Identity Provider Handles Registration Response .  34
    7.  Security Considerations . . . . . . . . . . . . . . . . . . .  34
    8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  34
-   9.  Normative References  . . . . . . . . . . . . . . . . . . . .  34
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  36
+   9.  Normative References  . . . . . . . . . . . . . . . . . . . .  35
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  37
    Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  37
-   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  37
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  37
+   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  38
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  38
 
 1.  Introduction
 
    Despite the existence of well-established standards, identity
    federation remains difficult to configure and maintain.
-
 
 
 
@@ -293,13 +293,13 @@ McAdams                   Expires July 7, 2019                  [Page 5]
 
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
-     "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "jwks_uri": "https://idp.example.com/fastfed/keys",
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -339,7 +339,7 @@ McAdams                   Expires July 7, 2019                  [Page 6]
 
 
    o  FastFed Handshake Start Endpoint, hosted by the Identity Provider
-      (Section 6.2.1.6.1)
+      (Section 6.2.1.5.1)
 
    o  FastFed Handshake Finish Endpoint, hosted by the Application
       Provider (Section 6.2.3.1)
@@ -359,40 +359,19 @@ McAdams                   Expires July 7, 2019                  [Page 6]
    talking to peers, or reading internal documentation pages.  This will
    vary by organization and is outside the scope of this specification.
 
-   It is anticipated that the majority of end-users will not know their
-   FastFed URL and would find such a question to be confusing.
-   Therefore, to simplify the experience, FastFed also supports
-   automated discovery based upon an email address.  If a user's
-   Identity Provider supports it, the FastFed experience can be
-   initiated simply by a user providing their email address to the
-   Application (Section 4.1.1).
+   To simplify the experience, FastFed also supports automated discovery
+   based upon an email address.  If a user's Identity Provider supports
+   it, the FastFed experience can be initiated simply by a user
+   providing their email address to the Application (Section 4.1.2).
 
 2.4.  FastFed Handshake
 
    The FastFed Handshake flow is the means by which Metadata documents
    are exchanged and a federation relationship becomes established.
 
-   The FastFed Handshake is initiated by sending a request to the
-   Application Provider with a parameter containing the FastFed URL of
-   the Identity Provider.
-
-   The handshake may be initiated by the Application Provider or the
-   Identity Provider.  The flow is the same for each, only varying by
-   whether the Handshake endpoint is invoked by the Application Provider
-   (by sending a request to itself) or by the Identity Provider.
-
-   Upon receiving a handshake initiation request, the abstract flow
-   follows these steps:
+   The abstract flow follows these steps:
 
    1.  Application Provider authenticates the Administrator.
-
-
-
-
-McAdams                   Expires July 7, 2019                  [Page 7]
-
-                            FastFed Core 1.0                    Jan 2019
-
 
    2.  Application Provider whitelists the Identity Provider and
        redirects the Administrator to the Identity Provider to perform
@@ -406,6 +385,14 @@ McAdams                   Expires July 7, 2019                  [Page 7]
 
    5.  Application Provider validates the Identity Provider is
        whitelisted and captures the federation configuration.
+
+
+
+
+McAdams                   Expires July 7, 2019                  [Page 7]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
    6.  Application Provider responds with any protocol-specific
        configuration needed by the Identity Provider.
@@ -441,15 +428,6 @@ McAdams                   Expires July 7, 2019                  [Page 7]
    to describe user information, plus a mechanism to transmit user
    information across organizational boundaries.
 
-
-
-
-
-McAdams                   Expires July 7, 2019                  [Page 8]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
    While previous standards each define pieces of the solution, they
    lack guidance on assembling the pieces into an end-to-end flow.  For
    example, the SCIM specification defines a User schema, but does not
@@ -464,6 +442,13 @@ McAdams                   Expires July 7, 2019                  [Page 8]
    is not uncommon for an Application Provider to completely ignore all
    preexisting standards and define their own schema which federation
    partners must adhere to in SAML or OIDC messages.
+
+
+
+McAdams                   Expires July 7, 2019                  [Page 8]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
    Administrators bear the burden of this inconsistency.  The lack of
    agreement amongst federation participants requires an Administrator
@@ -496,16 +481,6 @@ McAdams                   Expires July 7, 2019                  [Page 8]
    The following is a non-normative example showing a snippet of FastFed
    Metadata with a list of schemas understood by an Identity Provider:
 
-
-
-
-
-
-McAdams                   Expires July 7, 2019                  [Page 9]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
     {
       "identity_provider": {
         capabilities: {
@@ -523,6 +498,14 @@ McAdams                   Expires July 7, 2019                  [Page 9]
    a user.  For example, the SCIM User Resource defines more than 25
    different attribute types, some containing sensitive user
    information.  It is typically unnecessary to share all user
+
+
+
+McAdams                   Expires July 7, 2019                  [Page 9]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
    information with a hosted application.  In recognition of this,
    FastFed provides a mechanism for Application Providers to define the
    subset of attributes needed to use the application.
@@ -554,6 +537,23 @@ McAdams                   Expires July 7, 2019                  [Page 9]
    are represented as JSON numbers.  Boolean values are represented as
    JSON Booleans.  Lists are represented as JSON arrays.  Complex
    structures are represented as JSON objects.  Omitted properties and
+   properties with no value SHOULD be omitted from the object and not
+   represented by a JSON null value.
+
+3.2.  Metadata Languages and Scripts
+
+   Human-readable Metadata values and Metadata values that reference
+   human-readable values MAY be represented in multiple languages and
+   scripts.  For example, values such as display_name and logo_uri might
+   have multiple locale-specific values for some Providers.
+
+   To specify the languages and scripts, BCP47 [RFC5646] [RFC5646]
+   language tags are added to Provider Metadata member names, delimited
+   by a # character.
+
+   If such a human-readable field is sent without a language tag,
+   parties using it MUST NOT make any assumptions about the language,
+   character set, or script of the string value, and the string value
 
 
 
@@ -562,23 +562,6 @@ McAdams                   Expires July 7, 2019                 [Page 10]
                             FastFed Core 1.0                    Jan 2019
 
 
-   properties with no value SHOULD be omitted from the object and not
-   represented by a JSON null value.
-
-3.2.  Metadata Languages and Scripts
-
-   Human-readable Metadata values and Metadata values that reference
-   human-readable values MAY be represented in multiple languages and
-   scripts.  For example, values such as client_name and large_icon_uri
-   might have multiple locale-specific values for some Providers.
-
-   To specify the languages and scripts, BCP47 [RFC5646] [RFC5646]
-   language tags are added to Client Metadata member names, delimited by
-   a # character.
-
-   If such a human-readable field is sent without a language tag,
-   parties using it MUST NOT make any assumptions about the language,
-   character set, or script of the string value, and the string value
    MUST be used as-is wherever it is presented in a user interface.  To
    facilitate interoperability, it is RECOMMENDED that any human-
    readable fields sent without language tags contain values suitable
@@ -588,7 +571,7 @@ McAdams                   Expires July 7, 2019                 [Page 10]
 
    Provider Metadata enables Providers to advertise their capabilities
    and evaluate compatibility with other Providers by comparing
-   capabilities.  The metadata also contains the endpoint configuration
+   capabilities.  The Metadata also contains the endpoint configuration
    needed to perform the FastFed Handshake.
 
    Provider Metadata is a structure with the following top-level
@@ -611,13 +594,6 @@ McAdams                   Expires July 7, 2019                 [Page 10]
    If neither part is specified, the FastFed Handshake will halt as per
    Section 6.1.4.
 
-
-
-McAdams                   Expires July 7, 2019                 [Page 11]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
 3.3.1.  Capabilities
 
    Capabilities describe the supported behaviors of a Provider.  They
@@ -634,6 +610,13 @@ McAdams                   Expires July 7, 2019                 [Page 11]
       "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic" indicates
       the provider implements the FastFed Basic Profile for OpenID
       Connect [FastFedProfile.OIDC].
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 11]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
       If no value is specified by the Application Provider for
       "authentication_profiles", this indicates the Provider does not
@@ -667,13 +650,6 @@ McAdams                   Expires July 7, 2019                 [Page 11]
       Provider SHOULD consider defining this schema as an extension of
       the core SCIM User Resource.
 
-
-
-McAdams                   Expires July 7, 2019                 [Page 12]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
       If SCIM is used, the SCIM Core Schemas defined in [RFC7643] MUST
       be represented using the following values:
 
@@ -689,6 +665,15 @@ McAdams                   Expires July 7, 2019                 [Page 12]
 
 
 
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 12]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
             Indicates the provider understands the SCIM Enterprise User
             Schema Extension specified in Section 4.3 of SCIM Core
             [RFC7643] [RFC7643]
@@ -699,8 +684,8 @@ McAdams                   Expires July 7, 2019                 [Page 12]
       extended schema is mandatory, Providers MUST list only the
       extended schema.
 
-   handshake_signing_alg  REQUIRED.  A list of JWS [RFC7515] [JWS] "alg"
-      algorithms [JWA] [RFC7518] for signing request objects within the
+   handshake_signing_alg  REQUIRED.  A list of JWS [RFC7515] "alg"
+      algorithms [RFC7518] for signing request objects within the
       FastFed Handshake.  Providers SHOULD support RS256.
 
 3.3.2.  Common Provider Metadata
@@ -710,18 +695,33 @@ McAdams                   Expires July 7, 2019                 [Page 12]
 
    Common Provider Metadata is a structure with the following values:
 
-   provider_uri  REQUIRED.  A Uniform Resource Identifier [RFC3986]
-      which uniquely identifies a Provider.  Typically used as the
-      primary key for programmatic use cases that require storing and
-      retrieving Provider information.
+   provider_domain_name  REQUIRED.  A Domain Name [RFC1034] for the
+      provider.  Serves as a globally unique primary key for
+      programmatic use cases that require awareness of a distinct
+      Provider identity.  An example is duplicate detection of FastFed
+      registrations where the combination of "provider_domain_name" and
+      "tenant_id" can enable detection of a duplicate operations.  See
+      Section 4.1.1 for rules on defining and validating the
+      "provider_domain_name".
 
    tenant_id  REQUIRED.  An opaque string representing a specific tenant
-      within the provider.  The "tenant_id" must be locally unique and
-      never reassigned within the Provider.
+      within the provider.  The "tenant_id" must be locally unique
+      within the Provider and never reassigned.
 
-   name  REQUIRED.  The name of the Provider, suitable for display to
-      end-users.  The value SHOULD be the primary textual label by which
-      this Provider is normally displayed when presenting it to end-
+   display_name  REQUIRED.  The name of the Provider suitable for
+      display to end-users.  The value SHOULD be the primary textual
+      label by which this Provider is normally displayed when presenting
+      it to end-users.  If desired, representation of this value in
+      different languages and scripts is represented as described in
+      Section 3.2.
+
+   display_images  OPTIONAL.  A structure containing URLs that reference
+      icons and logos for the Provider.  The values must point to a
+      valid image file.  If defined, these image specifications
+      supercede any overlapping image specification contained in the
+      configuration metadata for underlying protocols referenced by the
+      FastFed Metadata; e.g. the "logo_uri" defined in OpenID Connect
+
 
 
 
@@ -730,38 +730,28 @@ McAdams                   Expires July 7, 2019                 [Page 13]
                             FastFed Core 1.0                    Jan 2019
 
 
-      users.  If desired, representation of this value in different
-      languages and scripts is represented as described in Section 3.2.
-
-   icons  OPTIONAL.  A structure containing URLs that reference an icon
-      for the Provider.  The values must point to a valid image file.
-      If defined, these image specifications supercede any overlapping
-      image specification contained in the configuration metadata for
-      underlying protocols referenced by the FastFed Metadata; e.g. the
-      "logo_uri" defined in OpenID Connect Dynamic Client Registration
-      1.0 [OpenID.Registration] [OpenID.Registration]
+      Dynamic Client Registration 1.0
+      [OpenID.Registration][OpenID.Registration]
 
       This structure has the following attributes:
 
-      large_icon_uri  A URL that points to an image file that can be
-         used as a tile in grid layouts or similar situations in which a
-         larger icon delivers a preferable end-user experience.  Image
-         dimensions MUST NOT be smaller than 128x128 pixels and MUST NOT
-         exceed 256x256 pixels.  Images files SHOULD be in PNG format,
+      icon_uri  OPTONAL.  A URL that points to a square image file that
+         can be used as a tile in grid layouts.  Commonly used in
+         scenarios where clicking the icon results in launching an
+         instance of the application for the user.  Image dimensions
+         MUST be 180x180 pixels.  Images files SHOULD be in PNG format,
          but Providers MAY accept alternative formats.  Providers who
          consume and display the image MAY resize the image to a smaller
-         dimension and/or convert to alternative formats.
+         dimension and/or convert to alternative file formats.
          If desired, representation of this value in different languages
          and scripts is represented as described in Section 3.2.
 
-      small_icon_uri  A URL that points to an image file for use in list
-         layouts, as a favicon, or similar situations in which a small
-         icon delivers a preferable end-user experience.  Image
-         dimensions MUST NOT be smaller than 16x16 pixels and MUST NOT
-         exceed 32x32 pixels.  Images files SHOULD be in PNG format, but
-         Providers MAY accept alternative formats.  Providers who
-         consume and display the image MAY resize the image to a smaller
-         dimension and/or convert to alternative formats.
+      logo_uri  OPTIONAL.  A URL that points to a logo file for the
+         business or organization.  Image dimensions must be 180x80
+         pixels.  Images files SHOULD be in PNG format, but Providers
+         MAY accept alternative formats.  Providers who consume and
+         display the image MAY resize the image to a smaller dimension
+         and/or convert to alternative file formats.
          If desired, representation of this value in different languages
          and scripts is represented as described in Section 3.2.
 
@@ -776,15 +766,7 @@ McAdams                   Expires July 7, 2019                 [Page 13]
 
    fastfed_handshake_start_uri  REQUIRED.  A URL which specifies the
       endpoint for the Identity Provider to receive a FastFed Handshake
-      initiation request.  See Section 6.2.1.6.1.
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 14]
-
-                            FastFed Core 1.0                    Jan 2019
-
+      initiation request.  See Section 6.2.1.5.1.
 
    jwks_uri  REQUIRED.  URL of the Identity Provider's JSON Web Key Set
       [JWK] [RFC7517] document.  This contains the signing key(s) the
@@ -796,6 +778,13 @@ McAdams                   Expires July 7, 2019                 [Page 14]
    Application Provider Metadata is a structure that includes all the
    elements defined in Common Provider Metadata (Section 3.3.2), plus
    the following additional elements:
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 14]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
    fastfed_handshake_finish_uri  REQUIRED.  A URL which specifies the
       endpoint for finishing a FastFed Handshake with the Identity
@@ -834,6 +823,17 @@ McAdams                   Expires July 7, 2019                 [Page 14]
 
       required_attributes  A list of attributes which the Identity
          Provider MUST release to the Application Provider.  The value
+         of the attributes MUST NOT be null or empty.
+
+         If a required value is not defined for an end-user, the
+         Application Provider MUST reject the end-user for any
+         authentication or provisioning activity using an HTTP 4xx error
+         message.  To assist with debugging, the Identity Provider
+         SHOULD signal to the end-user that the value is missing and is
+         required by the Application.  The means of doing so are outside
+         the scope of the specification, but could include displaying an
+         informative error message when the end-user attempts to SSO
+         into the application, or making error logs available to the
 
 
 
@@ -842,19 +842,7 @@ McAdams                   Expires July 7, 2019                 [Page 15]
                             FastFed Core 1.0                    Jan 2019
 
 
-         of the attributes MUST NOT be null or empty.  In other words,
-         the value must be defined and valid for the given schema.
-
-         If the value is not defined for a given end-user, the
-         Application Provider MUST reject the user for any
-         authentication or provisioning activity using an HTTP 4xx error
-         message.  To assist with debugging, the Identity Provider
-         SHOULD signal to the end-user that the value is missing and is
-         required by the Application.  The means of doing so are outside
-         the scope of the specification, but could include displaying an
-         informative error message when the end-user attempts to SSO
-         into the application, or making error logs available to the
-         administrators of the Identity Provider if pre-provisioning
+         administrators of the Identity Provider if user provisioning
          fails due to the missing attributes.
 
          When using SCIM schemas, the attributes "id" and "userName" are
@@ -889,15 +877,6 @@ McAdams                   Expires July 7, 2019                 [Page 15]
    A request to this endpoint will return the Provider Metadata document
    defined in Section 3.3.
 
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 16]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
    The Provider Metadata Endpoint MUST be accessible to other Providers
    who are permitted to initiate a FastFed Handhake Flow with the
    entity.  Access to the Endpoint SHOULD NOT require Administrators to
@@ -908,44 +887,65 @@ McAdams                   Expires July 7, 2019                 [Page 16]
    through other means.  Requests to the endpoint may be rate-limited or
    otherwise limited to prevent a denial-of-service attack.
 
-4.1.1.  Endpoint Discovery
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 16]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
+4.1.1.  Endpoint Validation
+
+   To prevent impersonanation of Providers, the value of the
+   "provider_domain_name" returned in the Metadata (Section 3.3.2) MUST
+   match the domain of the Metadata Endpoint.
+
+   The Metadata Endpoint MAY be hosted at a subdomain of the
+   "provider_domain_name".
+
+   A TLS server certificate check MUST be performed when connecting to
+   the Endpoint.
+
+   The following is a non-normative example showing valid and invalid
+   Metadata Endpoints.
+
+ For a Metadata document containing the following domain name:
+     {
+       "provider_domain_name": "idp.example.com",
+       ...
+     }
+
+ The name is valid if retrieved from any of these Endpoints:
+
+     https://idp.example.com/                 --> OK. Exact Match.
+     https://tenant-12345.idp.example.com/    --> OK. Suffix Match.
+     https://idp.example.com/fastfed/metadata --> OK. Exact Match + Path.
+
+ The name is invalid if retrieved from any of these Endpoints:
+
+     https://idp.example.com.otherdomain.ru/ --> INVALID. No suffix match.
+     https://example.com/                    --> INVALID. Incomplete match.
+     http://idp.example.com/                 --> INVALID. Not https.
+
+
+   If the "provider_domain_name" is invalid, the FastFed Handshake MUST
+   be halted as specified in Section 6.1.4.
+
+4.1.2.  Endpoint Discovery
+
+4.1.2.1.  Email-based Discovery via WebFinger
 
    Discovering the location of a Provider Metadata Endpoint for a
-   specific end-user can be achieved through several means.  The
-   RECOMMENDED method of discovery is via the user's email domain.
+   specific end-user can be achieved through several means.  If the
+   user's email address is available to the Application Provider, the
+   RECOMMENDED method of discovery is via a WebFinger request to the
+   user's email domain.
 
-   One standard mechanism to achieve this is via WebFinger [RFC7033].  A
-   FastFed profile for WebFinger is defined below.  However, WebFinger
-   requires a webserver hosted at the root domain.  For example, if a
-   user's email address is ""user@company.com"", the webfinger requests
-   are sent to ""https://company.com/.well_known/webfinger"".
 
-   Administrators at large enterprises can experience organizational
-   roadblocks when attempting to host this type of discovery endpoint at
-   the root domain.  This is because the root domain is often the
-   publicly facing product or web presence for an organization and is
-   maintained by different owners with security and operational
-   privileges which the FastFed administrators may not normally possess.
-
-   Therefore, to simplify adoption, FastFed also supports discovery
-   using subdomains.  A well-defined prefix can be prepended to the
-   domain name to retrieve the FastFed Provider Metadata.
-
-4.1.1.1.  Email-based Discovery via Well-Known Subdomain
-
-   If the user's email address is available to the Application Provider,
-   the Application Provider SHOULD attempt to discover the Provider
-   Metadata Endpoint using the email domain.
-
-   The Endpoint location is determined by prefixing the email domain
-   with ""fastfed._well_known"".  For example, if the user email is
-   ""babs@example.com"", the resulting Endpoint location is
-   ""https://fastfed._well_known.example.com"".
-
-   The validity of the endpoint is tested by performing a Read Request
-   as defined in Section 4.1.2.  An HTTP 200 response indicates success
-   and the FastFed handshake can proceed using the discovered
-   information.  Any other status codes SHOULD be treated as a failure.
 
 
 
@@ -954,16 +954,37 @@ McAdams                   Expires July 7, 2019                 [Page 17]
                             FastFed Core 1.0                    Jan 2019
 
 
-   In the event of failure, discovery can fallback to alternative
-   approaches described below.
+4.1.2.1.1.  WebFinger Endpoints
 
-4.1.1.2.  Email-based Discovery via WebFinger
+   WebFinger traditionally requires a webserver hosted at the root
+   domain.  For example, if a user's email address is
+   ""user@company.com"", WebFinger requests are sent to
+   ""https://company.com/.well_known/webfinger"".
 
-   If the user's email address is available to the Application Provider,
-   but discovery failed when using the Well-Known Subdomain described in
-   Section 4.1.1.1, then the Application Provider SHOULD perform a
-   WebFinger request to the email domain to determine if the Provider
-   Metadata Location is automatically discoverable.
+   However, administrators at large enterprises can experience
+   organizational roadblocks when attempting to host this type of
+   discovery endpoint at the root domain.  This is because the root
+   domain is often the publicly facing product or web presence for an
+   organization and is maintained by different owners with security and
+   operational privileges which FastFed administrators may not normally
+   possess.
+
+   Therefore, to simplify adoption, FastFed also supports WebFinger
+   discovery using subdomains.  A well-defined prefix can be prepended
+   to the domain name to retrieve the FastFed Provider Metadata.
+
+   The subdomain location is determined by prefixing the email domain
+   with ""webfinger._well_known"".  For example, if the user email is
+   ""babs@example.com"", the resulting Webfinger endpoint is
+   ""https://webfinger._well_known.example.com"".
+
+   Application Providers performing WebFinger discovery MUST first
+   attempt to read from the subdomain endpoint.  If the response is not
+   an HTTP 200, the Application Provider MUST subsequently attempt
+   reading from the traditional WebFinger path at the root domain.  A
+   non-normative example is illustrated in Section 4.1.2.1.2.
+
+4.1.2.1.2.  WebFinger Queries
 
    FastFed uses the following "rel" value in WebFinger [RFC7033]
 
@@ -979,6 +1000,15 @@ McAdams                   Expires July 7, 2019                 [Page 17]
    prepended with the "acct:" scheme [RFC7565].  All WebFinger
    communication MUST utilize TLS in the manner described in
    Section 6.1.1.
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 18]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
    The FastFed Provider Metadata location MUST be returned in the
    WebFinger response as the value of the "href" member of a "links"
@@ -997,19 +1027,6 @@ McAdams                   Expires July 7, 2019                 [Page 17]
    FastFed Provider Metadata for "jane@example.com".  The WebFinger
    parameters are as follows:
 
-
-
-
-
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 18]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
    +-------------------+-----------------------------------------------+
    | WebFinger         | Value                                         |
    | Parameter         |                                               |
@@ -1021,9 +1038,57 @@ McAdams                   Expires July 7, 2019                 [Page 18]
    | rel               | https://openid.net/specs/fastfed/1.0/provider |
    +-------------------+-----------------------------------------------+
 
-   The Application Provider would make the following WebFinger request
-   to discover the end-users Identity Provider Metadata location (with
-   line wraps for display purposes only):
+   The Application Provider would first make a WebFinger request to the
+   well-known subdomain endpoint (with line wraps for display purposes
+   only):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 19]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
+     GET /
+       ?resource=acct%3Ajane%40example.com
+       &rel=http%3A%2F%2Fopenid.net%2Fspecs%2Ffastfed%2F1.0%2Fprovider
+       HTTP/1.1
+     Host: webfinger._well_known.example.com
+
+     HTTP/1.1 200 OK
+     Content-Type: application/jrd+json
+
+     {
+      "subject": "acct:jane@example.com",
+      "links":
+       [
+        {
+         "rel": "http://openid.net/specs/fastfed/1.0/provder",
+         "href": "https://tenant-12345.idp.example.com/fastfed"
+        }
+       ]
+     }
+
+   If the subdomain endpoint did not return an HTTP 200 response code,
+   the same query would be performed against the root domain using the
+   WebFinger path:
 
      GET /.well-known/webfinger
        ?resource=acct%3Ajane%40example.com
@@ -1045,7 +1110,19 @@ McAdams                   Expires July 7, 2019                 [Page 18]
        ]
      }
 
-4.1.1.3.  Alternative Discovery Mechanisms
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 20]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
+4.1.2.2.  Alternative Discovery Mechanisms
 
    Application Providers MAY use other means of discovering the FastFed
    URL for an Identity Provider.  This is an implementation detail.
@@ -1055,21 +1132,10 @@ McAdams                   Expires July 7, 2019                 [Page 18]
    Provider's SSO documention and then paste the location into a form
    field.
 
+4.1.3.  Read Request
 
-
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 19]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
-4.1.2.  Read Request
-
-   Provider Metadata can be read by making an HTTP GET request to the
-   Provider Metadata Endpoint.
+   After the endpoint is discovered, Provider Metadata can be read by
+   making an HTTP GET request to the Provider Metadata Endpoint.
 
    The following is a non-normative example read request:
 
@@ -1077,7 +1143,7 @@ McAdams                   Expires July 7, 2019                 [Page 19]
      Accept: application/json
      Host: provider.example.com
 
-4.1.3.  Read Response
+4.1.4.  Read Response
 
    Upon a successful read operation, the server SHOULD return all
    available Provider Metadata.
@@ -1107,17 +1173,7 @@ McAdams                   Expires July 7, 2019                 [Page 19]
 
 
 
-
-
-
-
-
-
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 20]
+McAdams                   Expires July 7, 2019                 [Page 21]
 
                             FastFed Core 1.0                    Jan 2019
 
@@ -1126,13 +1182,13 @@ McAdams                   Expires July 7, 2019                 [Page 20]
  Content-Type: application/json
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
      "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -1152,7 +1208,7 @@ McAdams                   Expires July 7, 2019                 [Page 20]
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  }
 
-4.1.4.  Metadata Refresh
+4.1.5.  Metadata Refresh
 
    Provider Metadata contains URLs that point to other objects, such as
    icon image files.  Providers MAY locally cache the object values.
@@ -1173,7 +1229,7 @@ McAdams                   Expires July 7, 2019                 [Page 20]
 
 
 
-McAdams                   Expires July 7, 2019                 [Page 21]
+McAdams                   Expires July 7, 2019                 [Page 22]
 
                             FastFed Core 1.0                    Jan 2019
 
@@ -1229,7 +1285,7 @@ McAdams                   Expires July 7, 2019                 [Page 21]
 
 
 
-McAdams                   Expires July 7, 2019                 [Page 22]
+McAdams                   Expires July 7, 2019                 [Page 23]
 
                             FastFed Core 1.0                    Jan 2019
 
@@ -1285,7 +1341,7 @@ McAdams                   Expires July 7, 2019                 [Page 22]
 
 
 
-McAdams                   Expires July 7, 2019                 [Page 23]
+McAdams                   Expires July 7, 2019                 [Page 24]
 
                             FastFed Core 1.0                    Jan 2019
 
@@ -1303,7 +1359,7 @@ McAdams                   Expires July 7, 2019                 [Page 23]
 
 6.1.  Common Considerations
 
-6.1.1.  TLS Requirments
+6.1.1.  TLS Requirements
 
    All implementations MUST require the use of TLS for all FastFed
    Endpoints, including the Metadata Endpoints and FastFed Handshake
@@ -1341,7 +1397,7 @@ McAdams                   Expires July 7, 2019                 [Page 23]
 
 
 
-McAdams                   Expires July 7, 2019                 [Page 24]
+McAdams                   Expires July 7, 2019                 [Page 25]
 
                             FastFed Core 1.0                    Jan 2019
 
@@ -1364,90 +1420,34 @@ McAdams                   Expires July 7, 2019                 [Page 24]
 
 6.2.  Handshake Flow
 
-6.2.1.  Handshake Start at Application Provider
+6.2.1.  Handshake Initiation at Application Provider
 
-6.2.1.1.  Application Provider Receives Start Request
+6.2.1.1.  Prerequisites
 
-   The FastFed Handshake begins by sending an HTTP GET request to the
-   Application Provider's "fastfed_handshake_start_uri", as defined
-   within the Application Provider Metadata per Section 3.3.4.
+   Prior to beginning the FastFed Handshake, the Application Provider
+   MUST perform Endpoint Discovery (Section 4.1.2) and successfully
+   discover and validate (Section 4.1.1) an Identity Provider Metadata
+   Endpoint URI.
 
-   The request contains the following parameters:
+   The Application Provider MUST also authenticate the Administrator and
+   verify they are authorized to initiate the FastFed Handshake.  The
+   means of doing so are outside the scope of this specification.
 
-   idp_metadata_uri  REQUIRED.  The Provider Metadata Endpoint
-      (Section 4.1) for the Identity Provider with whom the handshake
-      will be performed.
+6.2.1.2.  Application Provider Reads Identity Provider Metadata
 
-   Request parameters are serialized using URI Query String
-   Serialization (Section 6.1.3).
-
-   Any entity may initiate the FastFed Handshake.  As a reference to
-   implementers, an Application Provider can initiate the handshake by
-   sending a message to itself, using the "fastfed_handshake_start_uri"
-   that is already known to the Application Provider.  Alternatively, an
-   Identity Provider can initiate the handshake by asking an
-   Administrator for the FastFed URL of an Application Provider and then
-   querying the endpoint to retrieve the Application Provider Metadata
-   (Section 3.3.4) document which contains the
-   "fastfed_handshake_start_uri".
-
-   The following is a non-normative example of a handshake initiation
-   request:
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 25]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
- GET /fastfed/handshake/start?idp_metadata_uri=https%3A%2F%2Fidp.example.com%2Ffastfed%2Fprovider-metadata HTTP/1.1
- Host: tenant-67890.app.example.com
-
-6.2.1.2.  Application Provider Authenticates Administrator
-
-   Upon receiving the handshake initiation request, the Application
-   Provider MUST authenticate the Administrator and verify they are
-   authorized to initiate the FastFed Handshake with the Identity
-   Provider.  The means of doing so are outside the scope of this
-   specification.
-
-   If the Administrator cannot be authenticated, the FastFed Handshake
-   MUST be halted.
-
-6.2.1.3.  Application Provider Reads Identity Provider Metadata
-
-   Using the "idp_metadata_uri" sent as a parameter in the handshake
-   request, the Application Provider queries the Identity Provider
-   Metadata Endpoint (Section 4.1).
+   The Application Provider queries the Identity Provider Metadata
+   Endpoint (Section 4.1).
 
    If the Identity Provider Metadata cannot be downloaded or is missing
    required elements, the FastFed Handshake MUST be halted.
 
    If the tenant of the Application Provider already has an established
    federation relationship with the tenant of the Identity Provider, as
-   determined by examining the "provider_uri" and "tenant_id" specified
-   in the Identity Provider metadata, the Application Provider SHOULD
-   alert the Administrator of a duplicate registration attempt.
+   determined by examining the "provider_domain_name" and "tenant_id"
+   specified in the Identity Provider metadata, the Application Provider
+   SHOULD alert the Administrator of a duplicate registration attempt.
 
-6.2.1.4.  Application Provider Verifies Compatibility with Identity
-          Provider
 
-   The Application Provider MUST compare its Provider Metadata against
-   the Identity Provider Metadata in order to verify compatibility, as
-   described in Section 5.
-
-   If the Providers are incompatible, the FastFed Handshake MUST be
-   halted.
-
-6.2.1.5.  Application Provider Whitelists the Identity Provider
-
-   The Application Provider whitelists that the tenant of the Identity
-   Provider is permitted to create a federation relationship with the
-   instance of the Application.  This whitelisting will be utilized
-   later in the handshake when the Identity Provider calls back to the
-   Application Provider to complete the registration.
 
 
 
@@ -1458,11 +1458,29 @@ McAdams                   Expires July 7, 2019                 [Page 26]
                             FastFed Core 1.0                    Jan 2019
 
 
-   The whitelisting record must capture the "entity_id", "tenant_id" and
-   the "jwks_uri" from the Identity Provider Metadata document.  The
-   keys from the "jwks_uri" will be used to validate message signatures
-   and confirm the authenticity of subsequent handshake messages from
-   whitelisted providers.
+6.2.1.3.  Application Provider Verifies Compatibility with Identity
+          Provider
+
+   The Application Provider MUST compare its Provider Metadata against
+   the Identity Provider Metadata in order to verify compatibility, as
+   described in Section 5.
+
+   If the Providers are incompatible, the FastFed Handshake MUST be
+   halted.
+
+6.2.1.4.  Application Provider Whitelists the Identity Provider
+
+   The Application Provider whitelists that the tenant of the Identity
+   Provider is permitted to create a federation relationship with the
+   instance of the Application.  This whitelisting will be utilized
+   later in the handshake when the Identity Provider calls back to the
+   Application Provider to complete the registration.
+
+   The whitelisting record must capture the "provider_domain_name",
+   "tenant_id" and the "jwks_uri" from the Identity Provider Metadata
+   document.  The keys from the "jwks_uri" will be used to validate
+   message signatures and confirm the authenticity of subsequent
+   handshake messages from whitelisted providers.
 
    The representation of the whitelisting record is an implementation
    detail.
@@ -1474,7 +1492,7 @@ McAdams                   Expires July 7, 2019                 [Page 26]
    application for single sign-in.  These approvals may take days or
    weeks to acquire.
 
-6.2.1.6.  Application Provider Sends Request to the Identity Provider
+6.2.1.5.  Application Provider Sends Request to the Identity Provider
 
    If the preceding steps were successful, the Application Provider
    responds by issuing a request to the Identity Provider containing the
@@ -1488,24 +1506,6 @@ McAdams                   Expires July 7, 2019                 [Page 26]
       and the administrator must restart the FastFed Handshake.  This
       value is provided as a convenience to the Identity Provider so
       that it may be aware of the deadline for completing the flow.  Its
-      value MUST be a number containing a NumericDate as defined in
-      Section 2 of RFC 7519 [RFC7519] [JWT].
-
-   state  OPTIONAL.  Opaque value used to maintain state between the
-      request to the Identity Provider and the callback to the
-      Application Provider.  The Application Provider MAY use this field
-      to store any information that could be helpful later in the flow
-      to correlate the callback from the Identity Provider with a
-      pending whitelisted registration.  The Application Provider SHOULD
-      guard the value of this field with tamper-evident protections such
-      as signing in order to detect if another party has manipulated the
-      value prior to the callback.
-
-   The request can be transmitted through the following mechanisms.
-
-
-
-
 
 
 
@@ -1514,7 +1514,12 @@ McAdams                   Expires July 7, 2019                 [Page 27]
                             FastFed Core 1.0                    Jan 2019
 
 
-6.2.1.6.1.  HTTP Redirect
+      value MUST be a number containing a NumericDate as defined in
+      Section 2 of RFC 7519 [RFC7519] [JWT].
+
+   The request can be transmitted through the following mechanisms.
+
+6.2.1.5.1.  HTTP Redirect
 
    An Application Provider MAY issue an HTTP 302 redirect to the
    "fastfed_handshake_start_uri" specified in the Identity Provider
@@ -1527,9 +1532,9 @@ McAdams                   Expires July 7, 2019                 [Page 27]
  HTTP/1.1 302 Found
  Location: https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &expiration=1475878357
 
-6.2.1.6.2.  Alternative Channel
+6.2.1.5.2.  Alternative Channel
 
    In some circumstances, the end-user who is initiating the FastFed
    Handshake at the Application Provider may not be a valid end-user in
@@ -1556,12 +1561,7 @@ McAdams                   Expires July 7, 2019                 [Page 27]
 
  https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
-
-
-
-
-
+   &expiration=1475878357
 
 
 
@@ -1575,8 +1575,8 @@ McAdams                   Expires July 7, 2019                 [Page 28]
 6.2.2.1.  Identity Provider Authenticates Administrator
 
    Upon receiving a handshake message from the Application Provider as
-   specified in Step 6.2.1.6, the Identity Provider MUST authenticate
-   the end-user and verify they are authorized to request a federation
+   specified in Step 6.2.1.5, the Identity Provider MUST authenticate
+   the end-user and verify they are authorized to initiate a federation
    relationship with the Application Provider.
 
    If the end-user cannot be authenticated, the FastFed Handshake MUST
@@ -1597,11 +1597,17 @@ McAdams                   Expires July 7, 2019                 [Page 28]
    If the Application Provider Metadata cannot be downloaded or is
    missing required elements, the FastFed Handshake must be halted.
 
-   If the tenant of the Identity Provider already has an established
-   federation relationship with the tenant of the Application Provider,
-   as determined by examining the "provider_uri" and "tenant_id"
-   specified in the Application Provider metadata, the Identity Provider
-   SHOULD alert the Administrator of a duplicate registration attempt.
+   If the tenant of the Identity Provider already has an established or
+   pending federation relationship with the tenant of the Application
+   Provider, as determined by examining the "provider_domain_name" and
+   "tenant_id" specified in the Application Provider Metadata, the
+   Identity Provider SHOULD alert the Administrator of the existing
+   configuration and display the current status of the relationship,
+   such as whether the relationship is active or pending approval.  The
+   Identity Provider MAY also allow the Administrator to proceed with
+   modifying the existing configuration or creating a duplicate
+   configuration.  This is an implementation detail outside the scope of
+   the specifiation.
 
 6.2.2.3.  Identity Provider Verifies Compatibility
 
@@ -1612,12 +1618,6 @@ McAdams                   Expires July 7, 2019                 [Page 28]
    If the Providers are incompatible, the FastFed Handshake MUST be
    halted.
 
-   It is possible that both Providers may share a list of capabilities,
-   such as supporting both SAML and OpenID Connect for single sign-on.
-   If multiple options are valid, the Identity Provider chooses one
-   option to use.  The Identity Provider MAY ask the Administrator to
-   make the choice or MAY automatically choose based on default
-   preferences of the provider.
 
 
 
@@ -1626,15 +1626,21 @@ McAdams                   Expires July 7, 2019                 [Page 29]
                             FastFed Core 1.0                    Jan 2019
 
 
+   It is possible that both Providers may share a list of capabilities,
+   such as supporting both SAML and OpenID Connect for single sign-on.
+   If multiple options are valid, the Identity Provider chooses one
+   option to use.  The Identity Provider MAY ask the Administrator to
+   make the choice or MAY automatically choose based on default
+   preferences of the provider.
+
 6.2.2.4.  Identity Provider Obtains Consent from Administrator
 
    The Identity Provider MUST obtain explicit consent from an
    Administrator to enable federation with the Application Provider.
 
    As a reference to implementers, consent could include displaying a
-   confirmation page.  The Identity Provider may also alert the
-   Administrator of any risks with the Application Provider, such as
-   indicators of a potential phishing site.
+   verification page which summarizes the actions that will occur and
+   asks the user to click a confirmation button.
 
 6.2.3.  Handshake Finalization
 
@@ -1659,21 +1665,15 @@ McAdams                   Expires July 7, 2019                 [Page 29]
 
    The JWT contains the following parameters:
 
-   iss  REQUIRED.  The Identity Provider URI.  MUST match the
-      "provider_uri" in the Identity Provider Metadata (Section 3.3.3).
+   iss  REQUIRED.  The Identity Provider Domain Name.  MUST match the
+      "provider_domain_name" in the Identity Provider Metadata
+      (Section 3.3.3).
 
    sub  REQUIRED.  The Identity Provider Tenant ID.  MUST match the
       "tenant_id" in the Identity Provider Metadata (Section 3.3.3).
 
-   aud  REQUIRED.  The Application Provider Entity ID.  MUST match the
-      "provider_uri" in the Application Provider Metadata
-      (Section 3.3.4).
 
-   authentication_profiles  OPTIONAL.  A list containing the SSO
-      authentication protocols to be enabled for sign-in between the
-      Identity Provider and the Application Provider, chosen from the
-      list of "authentication_profiles" defined in the Provider
-      Capabilities (Section 3.3.1).
+
 
 
 
@@ -1681,6 +1681,16 @@ McAdams                   Expires July 7, 2019                 [Page 30]
 
                             FastFed Core 1.0                    Jan 2019
 
+
+   aud  REQUIRED.  The Application Provider Domain Name.  MUST match the
+      "provider_domain_name" in the Application Provider Metadata
+      (Section 3.3.4).
+
+   authentication_profiles  OPTIONAL.  A list containing the SSO
+      authentication protocols to be enabled for sign-in between the
+      Identity Provider and the Application Provider, chosen from the
+      list of "authentication_profiles" defined in the Provider
+      Capabilities (Section 3.3.1).
 
    provisioning_profile  OPTIONAL.  A list containing the user
       provisioning profiles to be enabled by the Identity Provider and
@@ -1692,10 +1702,6 @@ McAdams                   Expires July 7, 2019                 [Page 30]
       used by the Identity Provider and Application Provider, chosen
       from the list of "schemas" defined in the Provider Capabilities
       (Section 3.3.1).
-
-   state  REQUIRED if the handshake request from the Application
-      Provider included the "state" parameter.  Set to the value
-      received from the Application Provider.
 
    oauth_token  OPTIONAL.  A structure containing an OAuth Access Token
       response as defined in Section 5.1 of the OAuth 2.0 Authorization
@@ -1711,14 +1717,34 @@ McAdams                   Expires July 7, 2019                 [Page 30]
    The following is a non-normative example of the contents of a
    registration request message, prior to serialization:
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 31]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
  {
-  "iss": "https://idp.example.com",
+  "iss": "idp.example.com",
   "sub": "tenant-12345",
-  "aud": "https://app.example.com",
+  "aud": "app.example.com",
   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "state": "liK9x2fUOWoi1P0",
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -1729,13 +1755,6 @@ McAdams                   Expires July 7, 2019                 [Page 30]
 
    The following is a non-normative example of sending the message after
    it has been encoded and signed using JWS JSON Serialization:
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 31]
-
-                            FastFed Core 1.0                    Jan 2019
 
 
     POST /fastfed/handshake/finish
@@ -1761,16 +1780,25 @@ McAdams                   Expires July 7, 2019                 [Page 31]
    steps:
 
    o  Verify the JWT signature using the JSON Web Key Set [JWK]
-      [RFC7517] at the "jwks_uri" captured in Section 6.2.1.5.
+      [RFC7517] at the "jwks_uri" captured in Section 6.2.1.4.
 
-   o  Verify the "iss" attribute matches the whitelisted "provider_uri"
-      captured in Section 6.2.1.5.
+   o  Verify the "iss" attribute matches the whitelisted
+      "provider_domain_name" captured in Section 6.2.1.4.
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 32]
+
+                            FastFed Core 1.0                    Jan 2019
+
 
    o  Verify the "sub" attribute matches the whitelisted "tenant_id"
-      captured in Section 6.2.1.5.
+      captured in Section 6.2.1.4.
 
-   o  Verify the "aud" attribute matches the "provider_uri" specified in
-      the Application Provider Metadata (Section 3.3.4).
+   o  Verify the "aud" attribute matches the "provider_domain_name"
+      specified in the Application Provider Metadata (Section 3.3.4).
 
    o  If the Application Provider has applied an expiration date to the
       FastFed handshake flow, verify the expiration date has not been
@@ -1787,13 +1815,6 @@ McAdams                   Expires July 7, 2019                 [Page 31]
    indicated in the registration request.  These actions are defined in
    the FastFed Profile for each protocol.
 
-
-
-McAdams                   Expires July 7, 2019                 [Page 32]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
    At the end of this step, the Application Provider MUST be ready to
    accept single sign-on requests and user provisioning activities from
    the Identity Provider using the protocols specified in the request.
@@ -1805,7 +1826,7 @@ McAdams                   Expires July 7, 2019                 [Page 32]
    fully complete the registration.
 
    A successful response SHOULD use the HTTP 200 status code and return
-   a JSON document [RFC4627] using the "application/jason" content type.
+   a JSON document [RFC4627] using the "application/json" content type.
 
    The JSON document contains the following attributes:
 
@@ -1820,27 +1841,6 @@ McAdams                   Expires July 7, 2019                 [Page 32]
    user provisioning protocol may include the location of a provisioning
    endpoint.
 
-   If the registration is unsuccessful, the Application Provider SHOULD
-   use an HTTP 4xx status code if the error is the result of an invalid
-   request such as an unauthorized request or malformed parameters.
-   Otherwise, if the error is the result of a problem in the Application
-   Provider, it SHOULD respond with an HTTP 5xx status code.
-
-   The following is a non-normative example of a successful response:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1848,6 +1848,15 @@ McAdams                   Expires July 7, 2019                 [Page 32]
 McAdams                   Expires July 7, 2019                 [Page 33]
 
                             FastFed Core 1.0                    Jan 2019
+
+
+   If the registration is unsuccessful, the Application Provider SHOULD
+   use an HTTP 4xx status code if the error is the result of an invalid
+   request such as an unauthorized request or malformed parameters.
+   Otherwise, if the error is the result of a problem in the Application
+   Provider, it SHOULD respond with an HTTP 5xx status code.
+
+   The following is a non-normative example of a successful response:
 
 
     HTTP/1.1 200 OK
@@ -1888,6 +1897,15 @@ McAdams                   Expires July 7, 2019                 [Page 33]
 
    TODO
 
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 34]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
 9.  Normative References
 
    [FastFedProfile.OIDC]
@@ -1898,14 +1916,6 @@ McAdams                   Expires July 7, 2019                 [Page 33]
               McAdams, K., "FastFed Profile for SAML", June 2018,
               <http://example.com>.
 
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 34]
-
-                            FastFed Core 1.0                    Jan 2019
-
-
    [FastFedProfile.SCIM]
               McAdams, K., "FastFed Profile for SCIM", June 2018,
               <http://example.com>.
@@ -1915,6 +1925,10 @@ McAdams                   Expires July 7, 2019                 [Page 34]
               Dynamic Client Registration 1.0", November 2014,
               <http://openid.net/specs/
               openid-connect-registration-1_0.html>.
+
+   [RFC1034]  Mockapetris, P., "Domain names - concepts and facilities",
+              STD 13, RFC 1034, DOI 10.17487/RFC1034, November 1987,
+              <https://www.rfc-editor.org/info/rfc1034>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1941,6 +1955,13 @@ McAdams                   Expires July 7, 2019                 [Page 34]
               Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
               September 2009, <https://www.rfc-editor.org/info/rfc5646>.
 
+
+
+McAdams                   Expires July 7, 2019                 [Page 35]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
               within Internet Public Key Infrastructure Using X.509
@@ -1951,16 +1972,6 @@ McAdams                   Expires July 7, 2019                 [Page 34]
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
               <https://www.rfc-editor.org/info/rfc6749>.
-
-
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 35]
-
-                            FastFed Core 1.0                    Jan 2019
-
 
    [RFC7033]  Jones, P., Salgueiro, G., Jones, M., and J. Smarr,
               "WebFinger", RFC 7033, DOI 10.17487/RFC7033, September
@@ -1996,6 +2007,17 @@ McAdams                   Expires July 7, 2019                 [Page 35]
               Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
               September 2015, <https://www.rfc-editor.org/info/rfc7644>.
 
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 36]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
    [W3C.REC-html401-19991224]
               Raggett, D., Hors, A., and I. Jacobs, "HTML 4.01
               Specification", December 1999,
@@ -2007,16 +2029,6 @@ Appendix A.  Acknowledgements
    their contributions to this specification:
 
       TODO
-
-
-
-
-
-
-McAdams                   Expires July 7, 2019                 [Page 36]
-
-                            FastFed Core 1.0                    Jan 2019
-
 
 Appendix B.  Notices
 
@@ -2055,6 +2067,13 @@ Appendix B.  Notices
    patents, patent applications, or other proprietary rights that may
    cover technology that may be required to practice this specification.
 
+
+
+McAdams                   Expires July 7, 2019                 [Page 37]
+
+                            FastFed Core 1.0                    Jan 2019
+
+
 Appendix C.  Document History
 
    [[ To be removed from the final specification ]]
@@ -2069,4 +2088,41 @@ Author's Address
 
 
 
-McAdams                   Expires July 7, 2019                 [Page 37]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                   Expires July 7, 2019                 [Page 38]

@@ -269,13 +269,13 @@
 	<figure><artwork><![CDATA[
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
-     "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "jwks_uri": "https://idp.example.com/fastfed/keys",
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -336,9 +336,7 @@
 	  vary by organization and is outside the scope of this specification.
 	</t>
 	<t>
-	  It is anticipated that the majority of end-users will not know their
-	  FastFed URL and would find such a question to be confusing. Therefore,
-	  to simplify the experience, FastFed also supports automated discovery
+	  To simplify the experience, FastFed also supports automated discovery
 	  based upon an email address. If a user's Identity Provider supports
 	  it, the FastFed experience can be initiated simply by a user providing
 	  their email address to the Application
@@ -351,20 +349,7 @@
 	  are exchanged and a federation relationship becomes established.
 	</t>
 	<t>
-	  The FastFed Handshake is initiated by sending a request to the
-	  Application Provider with a parameter containing the FastFed URL of the
-	  Identity Provider.
-	</t>
-	<t>
-	  The handshake may be initiated by the Application Provider or the
-	  Identity Provider. The flow is the same for each, only varying by
-	  whether the Handshake endpoint is invoked by the Application
-	  Provider (by sending a request to itself) or by the Identity
-	  Provider.
-	</t>
-	<t>
-	  Upon receiving a handshake initiation request, the abstract flow
-	  follows these steps:
+	  The abstract flow follows these steps:
 	</t>
 	<t>
 	  <list style="numbers">
@@ -554,13 +539,13 @@
 	<t>
 	  Human-readable Metadata values and Metadata values that reference
 	  human-readable values MAY be represented in multiple languages and
-	  scripts. For example, values such as client_name and large_icon_uri 
+	  scripts. For example, values such as display_name and logo_uri 
 	  might have multiple locale-specific values for some Providers.
 	</t>
 	<t>
 	  To specify the languages and scripts, <xref
 	  target="RFC5646">BCP47</xref> [RFC5646] language tags are added to
-	  Client Metadata member names, delimited by a # character.
+	  Provider Metadata member names, delimited by a # character.
 	</t>
 	<t>
 	  If such a human-readable field is sent without a language tag, parties
@@ -577,7 +562,7 @@
 	<t>
 	  Provider Metadata enables Providers to advertise their capabilities
 	  and evaluate compatibility with other Providers by comparing
-	  capabilities. The metadata also contains the endpoint
+	  capabilities. The Metadata also contains the endpoint
 	  configuration needed to perform the FastFed Handshake.
 	</t>
 	<t>
@@ -698,9 +683,9 @@
 	      </t>
 	      
               <t hangText="handshake_signing_alg">
-                REQUIRED. A list of <xref target="RFC7515">JWS</xref>
-                [JWS] <spanx style="verb">alg</spanx> algorithms
-                <xref target="RFC7518">[JWA]</xref> for signing request objects
+                REQUIRED. A list of JWS <xref target="RFC7515"/>
+                 <spanx style="verb">alg</spanx> algorithms
+                <xref target="RFC7518"/> for signing request objects
                 within the FastFed Handshake. Providers SHOULD support RS256.
 	      </t>
 
@@ -718,66 +703,69 @@
 	    Common Provider Metadata is a structure with the following values:
 
 	    <list style="hanging">
-	      <t hangText="provider_uri">
-		REQUIRED. A Uniform Resource Identifier <xref target="RFC3986"/>
-		which uniquely identifies a Provider. Typically used as the
-		primary key for programmatic use cases that require storing and
-		retrieving Provider information.
+	      <t hangText="provider_domain_name">
+		REQUIRED. A Domain Name <xref target="RFC1034"/> for the
+		provider. Serves as a globally unique primary key for programmatic
+		use cases that require awareness of a distinct Provider
+		identity. An example is duplicate detection of FastFed
+		registrations where the combination
+		of <spanx style="verb">provider_domain_name</spanx> and
+		<spanx style="verb">tenant_id</spanx> can enable detection of a
+		duplicate operations. See
+		<xref target="ProviderMetadataEndpointValidation"/> for rules on
+		defining and validating
+		the <spanx style="verb">provider_domain_name</spanx>.
 	      </t>
 	      <t hangText="tenant_id">
                 REQUIRED. An opaque string representing a specific tenant within
                 the provider. The <spanx style="verb">tenant_id</spanx> must be
-                locally unique and never reassigned within the Provider.
+                locally unique within the Provider and never reassigned.
               </t>
-	      <t hangText="name">
-		REQUIRED. The name of the Provider, suitable for display to
-		end-users. The value SHOULD be the primary textual label by
-		which this Provider is normally displayed when presenting it to
-		end-users. If desired, representation of this value in different
-		languages and scripts is represented as described in <xref
-		target="MetadataLanguages"/>.
+	      <t hangText="display_name">
+		    REQUIRED. The name of the Provider suitable for display to
+		    end-users. The value SHOULD be the primary textual label by
+		    which this Provider is normally displayed when presenting it
+		    to end-users. If desired, representation of this value in
+		    different languages and scripts is represented as described
+		    in <xref target="MetadataLanguages"/>.
 	      </t>
-	      <t hangText="icons">
-		OPTIONAL. A structure containing URLs that reference an icon for
-		the Provider. The values must point to a valid image file. If
-		defined, these image specifications supercede any overlapping
-		image specification contained in the configuration metadata for
-		underlying protocols referenced by the FastFed Metadata; e.g. the
-		<spanx style="verb">logo_uri</spanx> defined in <xref
-		target="OpenID.Registration">OpenID Connect Dynamic Client
-		Registration 1.0</xref> [OpenID.Registration]
-		<vspace/><vspace/>
-		This structure has the following attributes:
+	      <t hangText="display_images">
+		    OPTIONAL. A structure containing URLs that reference icons
+		    and logos for the Provider. The values must point to a valid
+		    image file. If defined, these image specifications supercede
+		    any overlapping image specification contained in the
+		    configuration metadata for underlying protocols referenced
+		    by the FastFed Metadata; e.g. the
+		    <spanx style="verb">logo_uri</spanx> defined in
+		    <xref target="OpenID.Registration">OpenID Connect Dynamic
+		    Client Registration 1.0</xref>[OpenID.Registration]
+                    <vspace/><vspace/>
+                    This structure has the following attributes:
 		<list style="hanging">
-		  <t hangText="large_icon_uri">
-		    A URL that points to an image file that can be used as a
-		    tile in grid layouts or similar situations in which a larger
-		    icon delivers a preferable end-user experience. Image
-		    dimensions MUST NOT be smaller than 128x128 pixels and MUST
-		    NOT exceed 256x256 pixels. Images files SHOULD be in PNG
+		  <t hangText="icon_uri">
+		    OPTONAL. A URL that points to a square image file that can
+		    be used as a tile in grid layouts. Commonly used in
+		    scenarios where clicking the icon results in launching an
+		    instance of the application for the user. Image dimensions
+		    MUST be 180x180 pixels. Images files SHOULD be in PNG
 		    format, but Providers MAY accept alternative
 		    formats. Providers who consume and display the image MAY
 		    resize the image to a smaller dimension and/or convert to
-		    alternative formats.
-		    <vspace/>
-		    If desired, representation of this value in different
-		    languages and scripts is represented as described in
+		    alternative file formats.  <vspace/> If desired, representation
+		    of this value in different languages and scripts is
+		    represented as described in
 		    <xref target="MetadataLanguages"/>.
 		  </t>
-		  <t hangText="small_icon_uri">
-		      A URL that points to an image file for use in list
-		      layouts, as a favicon, or similar situations in which a
-		      small icon delivers a preferable end-user
-		      experience. Image dimensions MUST NOT be smaller than
-		      16x16 pixels and MUST NOT exceed 32x32 pixels. Images
-		      files SHOULD be in PNG format, but Providers MAY accept
-		      alternative formats. Providers who consume and display the
-		      image MAY resize the image to a smaller dimension and/or
-		      convert to alternative formats.
-		      <vspace/>
-		      If desired, representation of this value in different
-		      languages and scripts is represented as described in <xref
-		      target="MetadataLanguages" />.
+		  <t hangText="logo_uri">
+		    OPTIONAL. A URL that points to a logo file for the business
+		    or organization. Image dimensions must be 180x80
+		    pixels. Images files SHOULD be in PNG format, but Providers
+		    MAY accept alternative formats. Providers who consume and
+		    display the image MAY resize the image to a smaller
+		    dimension and/or convert to alternative file formats.  <vspace/>
+		    If desired, representation of this value in different
+		    languages and scripts is represented as described in
+		    <xref target="MetadataLanguages" />.
 		  </t>
 		</list>
 	      </t>
@@ -867,21 +855,20 @@
                   <t hangText="required_attributes">
                     A list of attributes which the Identity Provider MUST
                     release to the Application Provider. The value of the
-                    attributes MUST NOT be null or empty. In other words, the
-                    value must be defined and valid for the given schema.
+                    attributes MUST NOT be null or empty.
 
-		    <vspace/><vspace/>If the value is not defined for a given
-		    end-user, the Application Provider MUST reject the user for
-		    any authentication or provisioning activity using an HTTP
-		    4xx error message. To assist with debugging, the Identity
-		    Provider SHOULD signal to the end-user that the value is
-		    missing and is required by the Application. The means of
-		    doing so are outside the scope of the specification, but
-		    could include displaying an informative error message when
-		    the end-user attempts to SSO into the application, or making
-		    error logs available to the administrators of the Identity
-		    Provider if pre-provisioning fails due to the missing
-		    attributes.
+		    <vspace/><vspace/>If a required value is not defined for an
+		    end-user, the Application Provider MUST reject the end-user
+		    for any authentication or provisioning activity using an
+		    HTTP 4xx error message. To assist with debugging, the
+		    Identity Provider SHOULD signal to the end-user that the
+		    value is missing and is required by the Application. The
+		    means of doing so are outside the scope of the
+		    specification, but could include displaying an informative
+		    error message when the end-user attempts to SSO into the
+		    application, or making error logs available to the
+		    administrators of the Identity Provider if user provisioning
+		    fails due to the missing attributes.
 
 		    <vspace/><vspace/>When using SCIM schemas, the attributes
                     <spanx style="verb">id</spanx>
@@ -949,133 +936,195 @@
 	  otherwise limited to prevent a denial-of-service attack.
 	</t>
 
+	<section anchor="ProviderMetadataEndpointValidation"
+		 title="Endpoint Validation">
+	  <t>
+	    To prevent impersonanation of Providers, the value of
+	    the <spanx style="verb">provider_domain_name</spanx> returned in the
+	    Metadata (<xref target="CommonProviderMetadata"/>) MUST match the
+	    domain of the Metadata Endpoint.
+	  </t>
+	  <t>
+	    The Metadata Endpoint MAY be hosted at a subdomain of
+	    the <spanx style="verb">provider_domain_name</spanx>.
+	  </t>
+	  <t> 
+	    A TLS server certificate check MUST be performed when connecting
+	    to the Endpoint.
+          </t>   
+          <t>
+            The following is a non-normative example showing valid and invalid
+            Metadata Endpoints.
+          </t>
+  <figure><artwork><![CDATA[
+ For a Metadata document containing the following domain name:
+     {
+       "provider_domain_name": "idp.example.com",
+       ...
+     }
+ 
+ The name is valid if retrieved from any of these Endpoints:
+
+     https://idp.example.com/                 --> OK. Exact Match.
+     https://tenant-12345.idp.example.com/    --> OK. Suffix Match.
+     https://idp.example.com/fastfed/metadata --> OK. Exact Match + Path.
+
+ The name is invalid if retrieved from any of these Endpoints:
+ 
+     https://idp.example.com.otherdomain.ru/ --> INVALID. No suffix match.
+     https://example.com/                    --> INVALID. Incomplete match.
+     http://idp.example.com/                 --> INVALID. Not https.
+
+]]></artwork></figure>
+          <t>
+	    If the <spanx style="verb">provider_domain_name</spanx> is invalid, the FastFed
+	    Handshake MUST be halted as specified in <xref target="HandshakeHalt"/>.
+	  </t>
+	</section> <!-- Endpoint Validation-->
+
 	<section anchor="ProviderMetadataEndpointDiscovery"
 		 title="Endpoint Discovery">
-	  <t>
-            Discovering the location of a Provider Metadata Endpoint for a
-            specific end-user can be achieved through several means. The
-            RECOMMENDED method of discovery is via the user's email domain.
-          </t>
-	  <t>
-	    One standard mechanism to achieve this is via WebFinger
-	    <xref target="RFC7033"/>. A FastFed profile for
-	    WebFinger is defined below. However, WebFinger requires a webserver
-	    hosted at the root domain. For example, if a user's email address is
-	    <spanx style="verb">"user@company.com"</spanx>, the webfinger
-	    requests are sent to
-	    <spanx style="verb">"https://company.com/.well_known/webfinger"</spanx>.
-	  </t>
-	  <t>
-	    Administrators at large enterprises can experience organizational
-	    roadblocks when attempting to host this type of discovery endpoint
-	    at the root domain. This is because the root domain is often the
-	    publicly facing product or web presence for an organization and is
-	    maintained by different owners with security and operational
-	    privileges which the FastFed administrators may not normally
-	    possess.
-	  </t>
-	  <t>
-	    Therefore, to simplify adoption, FastFed also supports discovery 
-	    using subdomains. A well-defined prefix can be prepended to the
-	    domain name to retrieve the FastFed Provider Metadata.
-	  </t>
 
-	  <section anchor="ProviderMetadataEndpointDiscoverySubdomain"
-                   title="Email-based Discovery via Well-Known Subdomain">
-
-	    <t>
-	      If the user's email address is available to the Application
-              Provider, the Application Provider SHOULD attempt to discover the
-              Provider Metadata Endpoint using the email domain.
-	    </t>
-	    <t>
-	      The Endpoint location is determined by prefixing the email domain
-              with <spanx style="verb">"fastfed._well_known"</spanx>. For example, if the user email is
-              <spanx style="verb">"babs@example.com"</spanx>, the resulting
-              Endpoint location
-              is <spanx style="verb">"https://fastfed._well_known.example.com"</spanx>.
-            </t>
-	    <t>
-	      The validity of the endpoint is tested by performing a Read
-	      Request as defined in
-	      <xref target="ProviderMetadataEndpointRead"/>. An HTTP 200
-	      response indicates success and the FastFed handshake can proceed
-	      using the discovered information. Any other status codes SHOULD be
-	      treated as a failure. In the event of failure, discovery can
-	      fallback to alternative approaches described below.
-	    </t>
-	  </section>
 	  <section anchor="ProviderMetadataEndpointDiscoveryWebFinger"
 		   title="Email-based Discovery via WebFinger">
 
 	    <t>
-	      If the user's email address is available to the Application
-	      Provider, but discovery failed when using the Well-Known Subdomain
-	      described in
-	      <xref target="ProviderMetadataEndpointDiscoverySubdomain"/>, then
-	      the Application Provider SHOULD perform a WebFinger request to the
-	      email domain to determine if the Provider Metadata Location is
-	      automatically discoverable.
-	    </t>
-	    <t>
-	      FastFed uses the following <spanx style="verb">rel</spanx> value
-	      in WebFinger <xref target="RFC7033"/>
-	    </t>
-	    <texttable>
-	      <ttcol>RelType</ttcol>
-	      <ttcol>URI</ttcol>
-	      <c>FastFed Provider</c>
-	      <c>https://openid.net/specs/fastfed/1.0/provider</c>
-	    </texttable>
-	    <t>
-	      To start discovery of FastFed endpoints, the Application Provider
-	      makes an HTTP GET request to the email domain's WebFinger
-	      [RFC7033] endpoint with the <spanx style="verb">resource</spanx>
-	      value set to the user email address prepended with
-	      the <spanx style="verb">acct:</spanx> scheme
-	      <xref target="RFC7565"/>. All WebFinger communication MUST utilize
-	      TLS in the manner described in
-	      <xref target="HanshakeTLSRequirements"/>.
-	    </t>
-	    <t>
-	      The FastFed Provider Metadata location MUST be returned in the
-	      WebFinger response as the value of
-	      the <spanx style="verb">href</spanx> member of
-	      a <spanx style="verb">links</spanx> array element
-	      with <spanx style="verb">rel</spanx> member value
-	      <spanx style="verb">http://openid.net/specs/fastfed/1.0/provider</spanx>. (Per
-	      Section 7 of WebFinger <xref target="RFC7033"/>, obtaining the
-	      WebFinger response may first involve following some redirects.)
-	    </t>
-	    <t>
-	      The returned Issuer location MUST be a URI
-	      <xref target="RFC3986"/> with a scheme component that MUST be
-	      https, a host component, and optionally, port and path components
-	      and no query or fragment components. Note that the WebFinger
-	      request may return a metadata location hosted under a different
-	      domain than the user's email.
-	    </t>
-	    <t>
-	      The following non-normative example demonstrates the discovery of
-	      FastFed Provider Metadata
-	      for <spanx style="verb">jane@example.com</spanx>. The WebFinger
-	      parameters are as follows:
-	    </t>
-	    <texttable>
-	      <ttcol>WebFinger Parameter</ttcol>
-	      <ttcol>Value</ttcol>
-	      <c>resource</c>
-	      <c>acct:jane@example.com</c>
-	      <c>host</c>
-	      <c>example.com</c>
-	      <c>rel</c>
-	      <c>https://openid.net/specs/fastfed/1.0/provider</c>
-	    </texttable>
-	    <t>
-	      The Application Provider would make the following WebFinger
-	      request to discover the end-users Identity Provider Metadata location
-	      (with line wraps for display purposes only):
-	    </t>
+              Discovering the location of a Provider Metadata Endpoint for a
+              specific end-user can be achieved through several means. If the
+              user's email address is available to the Application Provider, the
+              RECOMMENDED method of discovery is via a WebFinger request to the
+              user's email domain.
+            </t>
+
+	    <section anchor="ProviderMetadataEndpointDiscoveryWebFingerEndpoint"
+                     title="WebFinger Endpoints">
+	      <t>
+		WebFinger traditionally requires a webserver hosted at the root
+		domain. For example, if a user's email address is
+		<spanx style="verb">"user@company.com"</spanx>, WebFinger
+		requests are sent to
+		<spanx style="verb">"https://company.com/.well_known/webfinger"</spanx>.
+              </t>
+              <t>
+		However, administrators at large enterprises can experience
+		organizational roadblocks when attempting to host this type of
+		discovery endpoint at the root domain. This is because the root
+		domain is often the publicly facing product or web presence for
+		an organization and is maintained by different owners with
+		security and operational privileges which FastFed administrators
+		may not normally possess.
+              </t>
+              <t>
+		Therefore, to simplify adoption, FastFed also supports WebFinger
+		discovery using subdomains. A well-defined prefix can be
+		prepended to the domain name to retrieve the FastFed Provider
+		Metadata.
+              </t>
+              <t>
+		The subdomain location is determined by prefixing the email domain
+		with <spanx style="verb">"webfinger._well_known"</spanx>. For
+		example, if the user email is
+		<spanx style="verb">"babs@example.com"</spanx>, the resulting
+		Webfinger endpoint
+		is <spanx style="verb">"https://webfinger._well_known.example.com"</spanx>.
+              </t>
+              <t>
+		Application Providers performing WebFinger discovery MUST first
+		attempt to read from the subdomain endpoint. If the response is
+		not an HTTP 200, the Application Provider MUST subsequently
+		attempt reading from the traditional WebFinger path at the root
+		domain. A non-normative example is illustrated in
+		<xref target="ProviderMetadataEndpointDiscoveryWebFingerQueries"/>.
+              </t>
+            </section> <!-- Webfinger Endpoints-->
+
+	    <section anchor="ProviderMetadataEndpointDiscoveryWebFingerQueries"
+                     title="WebFinger Queries">
+	      <t>
+		FastFed uses the following <spanx style="verb">rel</spanx> value
+		in WebFinger <xref target="RFC7033"/>
+	      </t>
+	      <texttable>
+		<ttcol>RelType</ttcol>
+		<ttcol>URI</ttcol>
+		<c>FastFed Provider</c>
+		<c>https://openid.net/specs/fastfed/1.0/provider</c>
+	      </texttable>
+	      <t>
+		To start discovery of FastFed endpoints, the Application Provider
+		makes an HTTP GET request to the email domain's WebFinger
+		[RFC7033] endpoint with the <spanx style="verb">resource</spanx>
+		value set to the user email address prepended with
+		the <spanx style="verb">acct:</spanx> scheme
+		<xref target="RFC7565"/>. All WebFinger communication MUST utilize
+		TLS in the manner described in
+		<xref target="HanshakeTLSRequirements"/>.
+	      </t>
+	      <t>
+		The FastFed Provider Metadata location MUST be returned in the
+		WebFinger response as the value of
+		the <spanx style="verb">href</spanx> member of
+		a <spanx style="verb">links</spanx> array element
+		with <spanx style="verb">rel</spanx> member value
+		<spanx style="verb">http://openid.net/specs/fastfed/1.0/provider</spanx>. (Per
+		Section 7 of WebFinger <xref target="RFC7033"/>, obtaining the
+		WebFinger response may first involve following some redirects.)
+	      </t>
+	      <t>
+		The returned Issuer location MUST be a URI
+		<xref target="RFC3986"/> with a scheme component that MUST be
+		https, a host component, and optionally, port and path components
+		and no query or fragment components. Note that the WebFinger
+		request may return a metadata location hosted under a different
+		domain than the user's email.
+	      </t>
+	      <t>
+		The following non-normative example demonstrates the discovery of
+		FastFed Provider Metadata
+		for <spanx style="verb">jane@example.com</spanx>. The WebFinger
+		parameters are as follows:
+	      </t>
+	      <texttable>
+		<ttcol>WebFinger Parameter</ttcol>
+		<ttcol>Value</ttcol>
+		<c>resource</c>
+		<c>acct:jane@example.com</c>
+		<c>host</c>
+		<c>example.com</c>
+		<c>rel</c>
+		<c>https://openid.net/specs/fastfed/1.0/provider</c>
+	      </texttable>
+	      <t>
+		The Application Provider would first make a WebFinger request to
+		the well-known subdomain endpoint (with line wraps for display
+		purposes only):
+	      </t>
+          <figure><artwork><![CDATA[
+  GET /
+    ?resource=acct%3Ajane%40example.com
+    &rel=http%3A%2F%2Fopenid.net%2Fspecs%2Ffastfed%2F1.0%2Fprovider
+    HTTP/1.1
+  Host: webfinger._well_known.example.com
+
+  HTTP/1.1 200 OK
+  Content-Type: application/jrd+json
+
+  {
+   "subject": "acct:jane@example.com",
+   "links":
+    [
+     {
+      "rel": "http://openid.net/specs/fastfed/1.0/provder",
+      "href": "https://tenant-12345.idp.example.com/fastfed"
+     }
+    ]
+  }
+]]></artwork></figure>
+              <t>
+		If the subdomain endpoint did not return an HTTP 200 response
+		code, the same query would be performed against the root domain
+		using the WebFinger path:
+              </t>
           <figure><artwork><![CDATA[
   GET /.well-known/webfinger
     ?resource=acct%3Ajane%40example.com
@@ -1097,7 +1146,8 @@
     ]
   }
 ]]></artwork></figure>
-	  </section>
+	    </section> <!--WebFinger Queries-->
+	  </section> <!-- WebFinger Discovery-->
 
           <section anchor="ProviderMetadataEndpointDiscoveryAlternative"
                    title="Alternative Discovery Mechanisms">
@@ -1118,8 +1168,8 @@
 	<section anchor="ProviderMetadataEndpointRead"
 		 title="Read Request">
 	  <t>
-	    Provider Metadata can be read by making an HTTP GET request to the
-	    Provider Metadata Endpoint.
+	    After the endpoint is discovered, Provider Metadata can be read by
+	    making an HTTP GET request to the Provider Metadata Endpoint.
 	  </t>
 	  <t>
 	    The following is a non-normative example read request:
@@ -1152,13 +1202,13 @@
  Content-Type: application/json
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
      "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -1364,7 +1414,7 @@
 	       title="Common Considerations">
 
 	<section anchor="HanshakeTLSRequirements"
-		 title="TLS Requirments">
+		 title="TLS Requirements">
 	  <t>
 	    All implementations MUST require the use of TLS for all FastFed
 	    Endpoints, including the Metadata Endpoints and FastFed Handshake
@@ -1436,78 +1486,32 @@ eifjccile	    parameters and values to the query component of a URL using the
 	       title="Handshake Flow">
 
 	<section anchor="HandshakeStart"
-		 title="Handshake Start at Application Provider">
+		 title="Handshake Initiation at Application Provider">
 
-	  <section anchor="HandshakeApplicationProviderStart"
-		   title="Application Provider Receives Start Request">
-	    
-   	    <t>
-	      The FastFed Handshake begins by sending an HTTP GET request to the
-	      Application Provider's <spanx
-	      style="verb">fastfed_handshake_start_uri</spanx>, as defined
-	      within the Application Provider Metadata per <xref
-	      target="ApplicationProviderMetadata"/>.
+	  <section anchor="HandshakeApplicationProviderPrerequisites"
+                   title="Prerequisites">
+	    <t>
+	      Prior to beginning the FastFed Handshake, the Application Provider
+	      MUST perform Endpoint Discovery
+	      (<xref target="ProviderMetadataEndpointDiscovery"/>) and
+	      successfully discover and validate
+	      (<xref target="ProviderMetadataEndpointValidation"/>) an Identity
+	      Provider Metadata Endpoint URI.
 	    </t>
 	    <t>
-	      The request contains the following parameters:
-	      <list style="hanging">
-		<t hangText="idp_metadata_uri">
-		  REQUIRED. The <xref
-		  target="ProviderMetadataEndpoint">Provider Metadata
-		  Endpoint</xref> for the Identity Provider with whom the
-		  handshake will be performed.
-		</t>
-	      </list>
-	    </t>
-	    <t>
-	      Request parameters are serialized using
-	      <xref target="HandshakeSerialization">URI Query String Serialization</xref>.
-	    </t>
-	    <t>
-	      Any entity may initiate the FastFed Handshake. As a reference to
-	      implementers, an Application Provider can initiate the handshake
-	      by sending a message to itself, using
-	      the <spanx style="verb">fastfed_handshake_start_uri</spanx> that
-	      is already known to the Application Provider. Alternatively, an
-	      Identity Provider can initiate the handshake by asking an
-	      Administrator for the FastFed URL of an Application Provider and
-	      then querying the endpoint to retrieve
-	      the <xref target="ApplicationProviderMetadata">Application
-	      Provider Metadata</xref> document which contains
-	      the <spanx style="verb">fastfed_handshake_start_uri</spanx>.
-	    </t>
-	    <t>
-	      The following is a non-normative example of a handshake initiation
-	      request:
-	    </t>
-	    <figure><artwork><![CDATA[
- GET /fastfed/handshake/start?idp_metadata_uri=https%3A%2F%2Fidp.example.com%2Ffastfed%2Fprovider-metadata HTTP/1.1
- Host: tenant-67890.app.example.com
-]]></artwork></figure>
-	  </section>
-
-	  <section anchor="HandshakeApplicationProviderAuthenticatesAdministrator"
-		   title="Application Provider Authenticates Administrator">
-	    <t>
-	      Upon receiving the handshake initiation request, the Application
-	      Provider MUST authenticate the Administrator and verify they are
-	      authorized to initiate the FastFed Handshake with the
-	      Identity Provider. The means of doing so are outside the scope of this
+	      The Application Provider MUST also authenticate the Administrator
+	      and verify they are authorized to initiate the FastFed
+	      Handshake. The means of doing so are outside the scope of this
 	      specification.
 	    </t>
-	    <t>
-	      If the Administrator cannot be authenticated, the FastFed Handshake
-	      MUST be halted.
-	    </t>
 	  </section>
-	  
+
 	  <section anchor="HandshakeApplicationProviderReadsIdentityProviderMetadata"
 		   title="Application Provider Reads Identity Provider Metadata">
 	    <t>
-	      Using the <spanx style="verb">idp_metadata_uri</spanx> sent as
-	      a parameter in the handshake request, the Application Provider queries
-	      the <xref target="ProviderMetadataEndpoint">
-	      Identity Provider Metadata Endpoint</xref>.
+	      The Application Provider queries
+	      the <xref target="ProviderMetadataEndpoint"> Identity Provider
+	      Metadata Endpoint</xref>.
 	    </t>
 	    <t>
 	      If the Identity Provider Metadata cannot be downloaded or is
@@ -1517,7 +1521,7 @@ eifjccile	    parameters and values to the query component of a URL using the
               If the tenant of the Application Provider already has an
               established federation relationship with the tenant of the
               Identity Provider, as determined by examining
-              the <spanx style="verb">provider_uri</spanx>
+              the <spanx style="verb">provider_domain_name</spanx>
               and <spanx style="verb">tenant_id</spanx> specified in the
               Identity Provider metadata, the Application Provider SHOULD alert
               the Administrator of a duplicate registration attempt.
@@ -1548,7 +1552,7 @@ eifjccile	    parameters and values to the query component of a URL using the
             </t>
             <t>
 	      The whitelisting record must capture
-	      the <spanx style="verb">entity_id</spanx>, <spanx style="verb">tenant_id</spanx>
+	      the <spanx style="verb">provider_domain_name</spanx>, <spanx style="verb">tenant_id</spanx>
 	      and the <spanx style="verb">jwks_uri</spanx> from the Identity
 	      Provider Metadata document. The keys from
 	      the <spanx style="verb">jwks_uri</spanx> will be used to validate
@@ -1590,18 +1594,6 @@ eifjccile	    parameters and values to the query component of a URL using the
 		  defined in Section 2 of <xref target="RFC7519">RFC 7519</xref>
 		  [JWT].
 		</t> 
-		<t hangText="state">
-		  OPTIONAL. Opaque value used to maintain state between the
-		  request to the Identity Provider and the callback to the
-		  Application Provider. The Application Provider MAY use this
-		  field to store any information that could be helpful later in
-		  the flow to correlate the callback from the Identity Provider
-		  with a pending whitelisted registration. The Application
-		  Provider SHOULD guard the value of this field with
-		  tamper-evident protections such as signing in order to detect
-		  if another party has manipulated the value prior to the
-		  callback.
-		</t>
 	      </list>
 	    </t>
 	    <t>
@@ -1625,7 +1617,7 @@ eifjccile	    parameters and values to the query component of a URL using the
  HTTP/1.1 302 Found
  Location: https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &expiration=1475878357
 ]]></artwork></figure>
 	    </section>
 	    
@@ -1666,7 +1658,7 @@ eifjccile	    parameters and values to the query component of a URL using the
  
  https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &expiration=1475878357
 ]]></artwork></figure>
 	     </section>
 
@@ -1683,7 +1675,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 	      as specified in Step
 	      <xref target="HandshakeApplicationProviderRedirect"
 	      format="counter"/>, the Identity Provider MUST authenticate the
-	      end-user and verify they are authorized to request a federation
+	      end-user and verify they are authorized to initiate a federation
 	      relationship with the Application Provider.
 	    </t>
 	    <t>
@@ -1713,12 +1705,18 @@ eifjccile	    parameters and values to the query component of a URL using the
 	    </t>
 	    <t>
 	      If the tenant of the Identity Provider already has an established
-	      federation relationship with the tenant of the Application
-	      Provider, as determined by examining
-	      the <spanx style="verb">provider_uri</spanx>
+	      or pending federation relationship with the tenant of the
+	      Application Provider, as determined by examining
+	      the <spanx style="verb">provider_domain_name</spanx>
 	      and <spanx style="verb">tenant_id</spanx> specified in the
-	      Application Provider metadata, the Identity Provider SHOULD alert
-	      the Administrator of a duplicate registration attempt.
+	      Application Provider Metadata, the Identity Provider SHOULD alert
+	      the Administrator of the existing configuration and display the
+	      current status of the relationship, such as whether the
+	      relationship is active or pending approval.  The Identity
+	      Provider MAY also allow the Administrator to proceed with
+	      modifying the existing configuration or creating a duplicate
+	      configuration. This is an implementation detail outside the scope
+	      of the specifiation.
 	    </t>
 	  </section>
 
@@ -1752,9 +1750,8 @@ eifjccile	    parameters and values to the query component of a URL using the
 	    </t>
             <t> 
 	      As a reference to implementers, consent could include displaying
-              a confirmation page. The Identity Provider may also alert the
-              Administrator of any risks with the Application Provider, such as
-              indicators of a potential phishing site.
+	      a verification page which summarizes the actions that will occur
+	      and asks the user to click a confirmation button.
             </t> 
 	  </section>
 
@@ -1795,8 +1792,8 @@ eifjccile	    parameters and values to the query component of a URL using the
 	      The JWT contains the following parameters:
 	      <list style="hanging">
 		<t hangText="iss">
-		  REQUIRED. The Identity Provider URI. MUST match
-		  the <spanx style="verb">provider_uri</spanx> in
+		  REQUIRED. The Identity Provider Domain Name. MUST match
+		  the <spanx style="verb">provider_domain_name</spanx> in
 		  the <xref target="IdentityProviderMetadata">Identity Provider
 		  Metadata</xref>.
 		</t>
@@ -1807,8 +1804,8 @@ eifjccile	    parameters and values to the query component of a URL using the
                   Metadata</xref>.
                 </t>
 		<t hangText="aud">
-		  REQUIRED. The Application Provider Entity ID. MUST match
-		  the <spanx style="verb">provider_uri</spanx> in
+		  REQUIRED. The Application Provider Domain Name. MUST match
+		  the <spanx style="verb">provider_domain_name</spanx> in
 		  the <xref target="ApplicationProviderMetadata">Application
 		  Provider Metadata</xref>.
 		</t>
@@ -1835,12 +1832,6 @@ eifjccile	    parameters and values to the query component of a URL using the
                   the <xref target="ProviderMetadataCapabilities">Provider
                   Capabilities</xref>.
                 </t>
-		<t hangText="state">
-		  REQUIRED if the handshake request from the Application
-		  Provider included the <spanx style="verb">state</spanx>
-		  parameter. Set to the value received from the Application
-		  Provider.
-		</t>
 		<t hangText="oauth_token">
 		  OPTIONAL. A structure containing an OAuth Access Token
 		  response as defined in Section 5.1 of the
@@ -1866,13 +1857,12 @@ eifjccile	    parameters and values to the query component of a URL using the
             </t>
             <figure><artwork><![CDATA[
  {
-  "iss": "https://idp.example.com",
+  "iss": "idp.example.com",
   "sub": "tenant-12345",
-  "aud": "https://app.example.com",
+  "aud": "app.example.com",
   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "state": "liK9x2fUOWoi1P0",
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -1920,7 +1910,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 		</t>
 		<t>
 		  Verify the <spanx style="verb">iss</spanx> attribute matches
-		  the whitelisted <spanx style="verb">provider_uri</spanx>
+		  the whitelisted <spanx style="verb">provider_domain_name</spanx>
 		  captured in
 		  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
 		</t>
@@ -1932,7 +1922,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 		</t>
 		<t>
 		  Verify the <spanx style="verb">aud</spanx> attribute matches
-		  the <spanx style="verb">provider_uri</spanx> specified
+		  the <spanx style="verb">provider_domain_name</spanx> specified
 		  in the
 		  <xref target="ApplicationProviderMetadata">Application
 		  Provider Metadata</xref>.
@@ -1978,7 +1968,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 	    <t>
 	      A successful response SHOULD use the HTTP 200 status code
 	      and return a JSON document <xref target="RFC4627"/> using
-	      the <spanx style="verb">application/jason</spanx> content type.
+	      the <spanx style="verb">application/json</spanx> content type.
 	    </t>
 	    <t>
               The JSON document contains the following attributes:
@@ -2072,6 +2062,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 
   <back>
     <references title="Normative References">
+      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.1034"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>

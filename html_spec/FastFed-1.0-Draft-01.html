@@ -395,31 +395,32 @@
 <link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Application Provider Metadata">
 <link href="#rfc.section.4" rel="Chapter" title="4 Metadata Endpoints">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Provider Metadata Endpoint">
-<link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 Endpoint Discovery">
-<link href="#rfc.section.4.1.1.1" rel="Chapter" title="4.1.1.1 Email-based Discovery via Well-Known Subdomain">
-<link href="#rfc.section.4.1.1.2" rel="Chapter" title="4.1.1.2 Email-based Discovery via WebFinger">
-<link href="#rfc.section.4.1.1.3" rel="Chapter" title="4.1.1.3 Alternative Discovery Mechanisms">
-<link href="#rfc.section.4.1.2" rel="Chapter" title="4.1.2 Read Request">
-<link href="#rfc.section.4.1.3" rel="Chapter" title="4.1.3 Read Response">
-<link href="#rfc.section.4.1.4" rel="Chapter" title="4.1.4 Metadata Refresh">
+<link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 Endpoint Validation">
+<link href="#rfc.section.4.1.2" rel="Chapter" title="4.1.2 Endpoint Discovery">
+<link href="#rfc.section.4.1.2.1" rel="Chapter" title="4.1.2.1 Email-based Discovery via WebFinger">
+<link href="#rfc.section.4.1.2.1.1" rel="Chapter" title="4.1.2.1.1 WebFinger Endpoints">
+<link href="#rfc.section.4.1.2.1.2" rel="Chapter" title="4.1.2.1.2 WebFinger Queries">
+<link href="#rfc.section.4.1.2.2" rel="Chapter" title="4.1.2.2 Alternative Discovery Mechanisms">
+<link href="#rfc.section.4.1.3" rel="Chapter" title="4.1.3 Read Request">
+<link href="#rfc.section.4.1.4" rel="Chapter" title="4.1.4 Read Response">
+<link href="#rfc.section.4.1.5" rel="Chapter" title="4.1.5 Metadata Refresh">
 <link href="#rfc.section.5" rel="Chapter" title="5 Provider Compatibility Evaluation">
 <link href="#rfc.section.5.1" rel="Chapter" title="5.1 Handling Empty Capabilities">
 <link href="#rfc.section.6" rel="Chapter" title="6 FastFed Handshake">
 <link href="#rfc.section.6.1" rel="Chapter" title="6.1 Common Considerations">
-<link href="#rfc.section.6.1.1" rel="Chapter" title="6.1.1 TLS Requirments">
+<link href="#rfc.section.6.1.1" rel="Chapter" title="6.1.1 TLS Requirements">
 <link href="#rfc.section.6.1.2" rel="Chapter" title="6.1.2 HTTP Redirects">
 <link href="#rfc.section.6.1.3" rel="Chapter" title="6.1.3 Query String Serialization">
 <link href="#rfc.section.6.1.4" rel="Chapter" title="6.1.4 Halting the Handshake">
 <link href="#rfc.section.6.2" rel="Chapter" title="6.2 Handshake Flow">
-<link href="#rfc.section.6.2.1" rel="Chapter" title="6.2.1 Handshake Start at Application Provider">
-<link href="#rfc.section.6.2.1.1" rel="Chapter" title="6.2.1.1 Application Provider Receives Start Request">
-<link href="#rfc.section.6.2.1.2" rel="Chapter" title="6.2.1.2 Application Provider Authenticates Administrator">
-<link href="#rfc.section.6.2.1.3" rel="Chapter" title="6.2.1.3 Application Provider Reads Identity Provider Metadata">
-<link href="#rfc.section.6.2.1.4" rel="Chapter" title="6.2.1.4 Application Provider Verifies Compatibility with Identity Provider">
-<link href="#rfc.section.6.2.1.5" rel="Chapter" title="6.2.1.5 Application Provider Whitelists the Identity Provider">
-<link href="#rfc.section.6.2.1.6" rel="Chapter" title="6.2.1.6 Application Provider Sends Request to the Identity Provider">
-<link href="#rfc.section.6.2.1.6.1" rel="Chapter" title="6.2.1.6.1 HTTP Redirect">
-<link href="#rfc.section.6.2.1.6.2" rel="Chapter" title="6.2.1.6.2 Alternative Channel">
+<link href="#rfc.section.6.2.1" rel="Chapter" title="6.2.1 Handshake Initiation at Application Provider">
+<link href="#rfc.section.6.2.1.1" rel="Chapter" title="6.2.1.1 Prerequisites">
+<link href="#rfc.section.6.2.1.2" rel="Chapter" title="6.2.1.2 Application Provider Reads Identity Provider Metadata">
+<link href="#rfc.section.6.2.1.3" rel="Chapter" title="6.2.1.3 Application Provider Verifies Compatibility with Identity Provider">
+<link href="#rfc.section.6.2.1.4" rel="Chapter" title="6.2.1.4 Application Provider Whitelists the Identity Provider">
+<link href="#rfc.section.6.2.1.5" rel="Chapter" title="6.2.1.5 Application Provider Sends Request to the Identity Provider">
+<link href="#rfc.section.6.2.1.5.1" rel="Chapter" title="6.2.1.5.1 HTTP Redirect">
+<link href="#rfc.section.6.2.1.5.2" rel="Chapter" title="6.2.1.5.2 Alternative Channel">
 <link href="#rfc.section.6.2.2" rel="Chapter" title="6.2.2 Handshake Receipt by Identity Provider">
 <link href="#rfc.section.6.2.2.1" rel="Chapter" title="6.2.2.1 Identity Provider Authenticates Administrator">
 <link href="#rfc.section.6.2.2.2" rel="Chapter" title="6.2.2.2 Identity Provider Reads Application Provider Metadata">
@@ -525,19 +526,23 @@
 </li>
 <ul><li>4.1.   <a href="#rfc.section.4.1">Provider Metadata Endpoint</a>
 </li>
-<ul><li>4.1.1.   <a href="#rfc.section.4.1.1">Endpoint Discovery</a>
+<ul><li>4.1.1.   <a href="#rfc.section.4.1.1">Endpoint Validation</a>
 </li>
-<ul><li>4.1.1.1.   <a href="#rfc.section.4.1.1.1">Email-based Discovery via Well-Known Subdomain</a>
+<li>4.1.2.   <a href="#rfc.section.4.1.2">Endpoint Discovery</a>
 </li>
-<li>4.1.1.2.   <a href="#rfc.section.4.1.1.2">Email-based Discovery via WebFinger</a>
+<ul><li>4.1.2.1.   <a href="#rfc.section.4.1.2.1">Email-based Discovery via WebFinger</a>
 </li>
-<li>4.1.1.3.   <a href="#rfc.section.4.1.1.3">Alternative Discovery Mechanisms</a>
+<ul><li>4.1.2.1.1.   <a href="#rfc.section.4.1.2.1.1">WebFinger Endpoints</a>
 </li>
-</ul><li>4.1.2.   <a href="#rfc.section.4.1.2">Read Request</a>
+<li>4.1.2.1.2.   <a href="#rfc.section.4.1.2.1.2">WebFinger Queries</a>
 </li>
-<li>4.1.3.   <a href="#rfc.section.4.1.3">Read Response</a>
+</ul><li>4.1.2.2.   <a href="#rfc.section.4.1.2.2">Alternative Discovery Mechanisms</a>
 </li>
-<li>4.1.4.   <a href="#rfc.section.4.1.4">Metadata Refresh</a>
+</ul><li>4.1.3.   <a href="#rfc.section.4.1.3">Read Request</a>
+</li>
+<li>4.1.4.   <a href="#rfc.section.4.1.4">Read Response</a>
+</li>
+<li>4.1.5.   <a href="#rfc.section.4.1.5">Metadata Refresh</a>
 </li>
 </ul></ul><li>5.   <a href="#rfc.section.5">Provider Compatibility Evaluation</a>
 </li>
@@ -547,7 +552,7 @@
 </li>
 <ul><li>6.1.   <a href="#rfc.section.6.1">Common Considerations</a>
 </li>
-<ul><li>6.1.1.   <a href="#rfc.section.6.1.1">TLS Requirments</a>
+<ul><li>6.1.1.   <a href="#rfc.section.6.1.1">TLS Requirements</a>
 </li>
 <li>6.1.2.   <a href="#rfc.section.6.1.2">HTTP Redirects</a>
 </li>
@@ -557,23 +562,21 @@
 </li>
 </ul><li>6.2.   <a href="#rfc.section.6.2">Handshake Flow</a>
 </li>
-<ul><li>6.2.1.   <a href="#rfc.section.6.2.1">Handshake Start at Application Provider</a>
+<ul><li>6.2.1.   <a href="#rfc.section.6.2.1">Handshake Initiation at Application Provider</a>
 </li>
-<ul><li>6.2.1.1.   <a href="#rfc.section.6.2.1.1">Application Provider Receives Start Request</a>
+<ul><li>6.2.1.1.   <a href="#rfc.section.6.2.1.1">Prerequisites</a>
 </li>
-<li>6.2.1.2.   <a href="#rfc.section.6.2.1.2">Application Provider Authenticates Administrator</a>
+<li>6.2.1.2.   <a href="#rfc.section.6.2.1.2">Application Provider Reads Identity Provider Metadata</a>
 </li>
-<li>6.2.1.3.   <a href="#rfc.section.6.2.1.3">Application Provider Reads Identity Provider Metadata</a>
+<li>6.2.1.3.   <a href="#rfc.section.6.2.1.3">Application Provider Verifies Compatibility with Identity Provider</a>
 </li>
-<li>6.2.1.4.   <a href="#rfc.section.6.2.1.4">Application Provider Verifies Compatibility with Identity Provider</a>
+<li>6.2.1.4.   <a href="#rfc.section.6.2.1.4">Application Provider Whitelists the Identity Provider</a>
 </li>
-<li>6.2.1.5.   <a href="#rfc.section.6.2.1.5">Application Provider Whitelists the Identity Provider</a>
+<li>6.2.1.5.   <a href="#rfc.section.6.2.1.5">Application Provider Sends Request to the Identity Provider</a>
 </li>
-<li>6.2.1.6.   <a href="#rfc.section.6.2.1.6">Application Provider Sends Request to the Identity Provider</a>
+<ul><li>6.2.1.5.1.   <a href="#rfc.section.6.2.1.5.1">HTTP Redirect</a>
 </li>
-<ul><li>6.2.1.6.1.   <a href="#rfc.section.6.2.1.6.1">HTTP Redirect</a>
-</li>
-<li>6.2.1.6.2.   <a href="#rfc.section.6.2.1.6.2">Alternative Channel</a>
+<li>6.2.1.5.2.   <a href="#rfc.section.6.2.1.5.2">Alternative Channel</a>
 </li>
 </ul></ul><li>6.2.2.   <a href="#rfc.section.6.2.2">Handshake Receipt by Identity Provider</a>
 </li>
@@ -688,13 +691,13 @@
 <pre>
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
-     "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "jwks_uri": "https://idp.example.com/fastfed/keys",
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -726,7 +729,7 @@
 <p id="rfc.section.2.2.p.3">And, two Endpoints for the FastFed Handshake </p>
 
 <ul>
-<li>FastFed Handshake Start Endpoint, hosted by the Identity Provider (<a href="#HandshakeApplicationProviderRedirectVia302" class="xref">Section 6.2.1.6.1</a>)</li>
+<li>FastFed Handshake Start Endpoint, hosted by the Identity Provider (<a href="#HandshakeApplicationProviderRedirectVia302" class="xref">Section 6.2.1.5.1</a>)</li>
 <li>FastFed Handshake Finish Endpoint, hosted by the Application Provider (<a href="#HandshakeRegistrationRequest" class="xref">Section 6.2.3.1</a>)</li>
 </ul>
 
@@ -736,14 +739,12 @@
 </h1>
 <p id="rfc.section.2.3.p.1">Discovery is the means by which Endpoint locations are determined. For example, when the administrator of an application wishes to enable SSO, the Application needs to know the administrator's Identity Provider Metadata Endpoint (e.g. "FastFed URL"). This is accomplished through Endpoint Discovery.  </p>
 <p id="rfc.section.2.3.p.2">The simplest discovery mechanism (though the least user-friendly) is for the end-user to manually paste their FastFed URL into a form field of the Application. The user may have discovered this value by consulting with an appropriate IT department in their organization, talking to peers, or reading internal documentation pages. This will vary by organization and is outside the scope of this specification.  </p>
-<p id="rfc.section.2.3.p.3">It is anticipated that the majority of end-users will not know their FastFed URL and would find such a question to be confusing. Therefore, to simplify the experience, FastFed also supports automated discovery based upon an email address. If a user's Identity Provider supports it, the FastFed experience can be initiated simply by a user providing their email address to the Application (<a href="#ProviderMetadataEndpointDiscovery" class="xref">Section 4.1.1</a>).  </p>
+<p id="rfc.section.2.3.p.3">To simplify the experience, FastFed also supports automated discovery based upon an email address. If a user's Identity Provider supports it, the FastFed experience can be initiated simply by a user providing their email address to the Application (<a href="#ProviderMetadataEndpointDiscovery" class="xref">Section 4.1.2</a>).  </p>
 <h1 id="rfc.section.2.4">
 <a href="#rfc.section.2.4">2.4.</a> <a href="#OverviewFastFedHandshake" id="OverviewFastFedHandshake">FastFed Handshake</a>
 </h1>
 <p id="rfc.section.2.4.p.1">The FastFed Handshake flow is the means by which Metadata documents are exchanged and a federation relationship becomes established.  </p>
-<p id="rfc.section.2.4.p.2">The FastFed Handshake is initiated by sending a request to the Application Provider with a parameter containing the FastFed URL of the Identity Provider.  </p>
-<p id="rfc.section.2.4.p.3">The handshake may be initiated by the Application Provider or the Identity Provider. The flow is the same for each, only varying by whether the Handshake endpoint is invoked by the Application Provider (by sending a request to itself) or by the Identity Provider.  </p>
-<p id="rfc.section.2.4.p.4">Upon receiving a handshake initiation request, the abstract flow follows these steps: </p>
+<p id="rfc.section.2.4.p.2">The abstract flow follows these steps: </p>
 <p></p>
 
 <ol>
@@ -832,13 +833,13 @@
 <h1 id="rfc.section.3.2">
 <a href="#rfc.section.3.2">3.2.</a> <a href="#MetadataLanguages" id="MetadataLanguages">Metadata Languages and Scripts</a>
 </h1>
-<p id="rfc.section.3.2.p.1">Human-readable Metadata values and Metadata values that reference human-readable values MAY be represented in multiple languages and scripts. For example, values such as client_name and large_icon_uri might have multiple locale-specific values for some Providers.  </p>
-<p id="rfc.section.3.2.p.2">To specify the languages and scripts, <a href="#RFC5646" class="xref">BCP47</a> [RFC5646] language tags are added to Client Metadata member names, delimited by a # character.  </p>
+<p id="rfc.section.3.2.p.1">Human-readable Metadata values and Metadata values that reference human-readable values MAY be represented in multiple languages and scripts. For example, values such as display_name and logo_uri might have multiple locale-specific values for some Providers.  </p>
+<p id="rfc.section.3.2.p.2">To specify the languages and scripts, <a href="#RFC5646" class="xref">BCP47</a> [RFC5646] language tags are added to Provider Metadata member names, delimited by a # character.  </p>
 <p id="rfc.section.3.2.p.3">If such a human-readable field is sent without a language tag, parties using it MUST NOT make any assumptions about the language, character set, or script of the string value, and the string value MUST be used as-is wherever it is presented in a user interface. To facilitate interoperability, it is RECOMMENDED that any human-readable fields sent without language tags contain values suitable for display on a wide variety of systems.  </p>
 <h1 id="rfc.section.3.3">
 <a href="#rfc.section.3.3">3.3.</a> <a href="#ProviderMetadata" id="ProviderMetadata">Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.p.1">Provider Metadata enables Providers to advertise their capabilities and evaluate compatibility with other Providers by comparing capabilities. The metadata also contains the endpoint configuration needed to perform the FastFed Handshake.  </p>
+<p id="rfc.section.3.3.p.1">Provider Metadata enables Providers to advertise their capabilities and evaluate compatibility with other Providers by comparing capabilities. The Metadata also contains the endpoint configuration needed to perform the FastFed Handshake.  </p>
 <p id="rfc.section.3.3.p.2">Provider Metadata is a structure with the following top-level attributes: </p>
 
 <dl>
@@ -872,7 +873,7 @@
 <p> When one schema extends another schema, Providers MUST list both schemas if they are capable of using either the extended or the base schema when integrating with federation partners. If the extended schema is mandatory, Providers MUST list only the extended schema.  </p>
 </dd>
 <dt>handshake_signing_alg</dt>
-<dd style="margin-left: 8">REQUIRED. A list of <a href="#RFC7515" class="xref">JWS</a> [JWS] <samp>alg</samp> algorithms <a href="#RFC7518" class="xref">[JWA]</a> for signing request objects within the FastFed Handshake. Providers SHOULD support RS256.  </dd>
+<dd style="margin-left: 8">REQUIRED. A list of JWS <a href="#RFC7515" class="xref">[RFC7515]</a> <samp>alg</samp> algorithms <a href="#RFC7518" class="xref">[RFC7518]</a> for signing request objects within the FastFed Handshake. Providers SHOULD support RS256.  </dd>
 </dl>
 
 <p> </p>
@@ -883,18 +884,18 @@
 <p id="rfc.section.3.3.2.p.2">Common Provider Metadata is a structure with the following values: </p>
 
 <dl>
-<dt>provider_uri</dt>
-<dd style="margin-left: 8">REQUIRED. A Uniform Resource Identifier <a href="#RFC3986" class="xref">[RFC3986]</a> which uniquely identifies a Provider. Typically used as the primary key for programmatic use cases that require storing and retrieving Provider information.  </dd>
+<dt>provider_domain_name</dt>
+<dd style="margin-left: 8">REQUIRED. A Domain Name <a href="#RFC1034" class="xref">[RFC1034]</a> for the provider. Serves as a globally unique primary key for programmatic use cases that require awareness of a distinct Provider identity. An example is duplicate detection of FastFed registrations where the combination of <samp>provider_domain_name</samp> and <samp>tenant_id</samp> can enable detection of a duplicate operations. See <a href="#ProviderMetadataEndpointValidation" class="xref">Section 4.1.1</a> for rules on defining and validating the <samp>provider_domain_name</samp>.  </dd>
 <dt>tenant_id</dt>
-<dd style="margin-left: 8">REQUIRED. An opaque string representing a specific tenant within the provider. The <samp>tenant_id</samp> must be locally unique and never reassigned within the Provider.  </dd>
-<dt>name</dt>
-<dd style="margin-left: 8">REQUIRED. The name of the Provider, suitable for display to end-users. The value SHOULD be the primary textual label by which this Provider is normally displayed when presenting it to end-users. If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
-<dt>icons</dt>
-<dd style="margin-left: 8">OPTIONAL. A structure containing URLs that reference an icon for the Provider. The values must point to a valid image file. If defined, these image specifications supercede any overlapping image specification contained in the configuration metadata for underlying protocols referenced by the FastFed Metadata; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a> [OpenID.Registration] <br><br> This structure has the following attributes: <dl>
-<dt>large_icon_uri</dt>
-<dd style="margin-left: 8">A URL that points to an image file that can be used as a tile in grid layouts or similar situations in which a larger icon delivers a preferable end-user experience. Image dimensions MUST NOT be smaller than 128x128 pixels and MUST NOT exceed 256x256 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
-<dt>small_icon_uri</dt>
-<dd style="margin-left: 8">A URL that points to an image file for use in list layouts, as a favicon, or similar situations in which a small icon delivers a preferable end-user experience. Image dimensions MUST NOT be smaller than 16x16 pixels and MUST NOT exceed 32x32 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dd style="margin-left: 8">REQUIRED. An opaque string representing a specific tenant within the provider. The <samp>tenant_id</samp> must be locally unique within the Provider and never reassigned.  </dd>
+<dt>display_name</dt>
+<dd style="margin-left: 8">REQUIRED. The name of the Provider suitable for display to end-users. The value SHOULD be the primary textual label by which this Provider is normally displayed when presenting it to end-users. If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dt>display_images</dt>
+<dd style="margin-left: 8">OPTIONAL. A structure containing URLs that reference icons and logos for the Provider. The values must point to a valid image file. If defined, these image specifications supercede any overlapping image specification contained in the configuration metadata for underlying protocols referenced by the FastFed Metadata; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a>[OpenID.Registration] <br><br> This structure has the following attributes: <dl>
+<dt>icon_uri</dt>
+<dd style="margin-left: 8">OPTONAL. A URL that points to a square image file that can be used as a tile in grid layouts. Commonly used in scenarios where clicking the icon results in launching an instance of the application for the user. Image dimensions MUST be 180x180 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dt>logo_uri</dt>
+<dd style="margin-left: 8">OPTIONAL. A URL that points to a logo file for the business or organization. Image dimensions must be 180x80 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
 </dl>
 <p> </p>
 </dd>
@@ -910,7 +911,7 @@
 
 <dl>
 <dt>fastfed_handshake_start_uri</dt>
-<dd style="margin-left: 8">REQUIRED. A URL which specifies the endpoint for the Identity Provider to receive a FastFed Handshake initiation request. See <a href="#HandshakeApplicationProviderRedirectVia302" class="xref">Section 6.2.1.6.1</a>.  </dd>
+<dd style="margin-left: 8">REQUIRED. A URL which specifies the endpoint for the Identity Provider to receive a FastFed Handshake initiation request. See <a href="#HandshakeApplicationProviderRedirectVia302" class="xref">Section 6.2.1.5.1</a>.  </dd>
 <dt>jwks_uri</dt>
 <dd style="margin-left: 8">REQUIRED. URL of the Identity Provider's JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a> document. This contains the signing key(s) the Application Provider uses to validate the signatures from the Identity Provider during the FastFed Handshake.  </dd>
 </dl>
@@ -927,7 +928,7 @@
 <dt>desired_user_attributes</dt>
 <dd style="margin-left: 8">REQUIRED. A structure describing the end-user attributes that the Application Provider desires from the Identity Provider. During the FastFed Handshake, Administrators have an opportunity to review and consent to the release of the desired attributes.  <br><br> Attributes MUST be specified using the attribute path syntax for the chosen user schema. For SCIM schemas, attributes are referenced using the SCIM PATH specification as defined in section Section 3.5.2 of the <a href="#RFC7644" class="xref">SCIM Protocol Specification</a> [RFC7644]. E.g. the SCIM formatted name is referenced as <samp>name.formatted</samp>.  <br><br> As per the SCIM specification, attribute paths MAY be fully qualified by prefixing with a schema URI. E.g. <samp>"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</samp>.  When no prefix is specified, the default SCIM Core schema is presumed.  <br><br>A trailing asterisk <samp>*</samp> wildcard at the end of an attribute name MAY be used for prefix matching. This can be useful when an application wants to receive user data without knowing in advance which attributes are defined or available for the user. For example, <samp>"urn:ietf:params:scim:schemas:*"</samp> would match attributes from any schema defined in the SCIM specifications. Similarly, the value <samp>"*"</samp> would match all attributes from any schema, including custom-defined schemas. The latter is effectively asking for a complete copy of the user object.  <br><br> The structure contains the following elements: <dl>
 <dt>required_attributes</dt>
-<dd style="margin-left: 8">A list of attributes which the Identity Provider MUST release to the Application Provider. The value of the attributes MUST NOT be null or empty. In other words, the value must be defined and valid for the given schema.  <br><br>If the value is not defined for a given end-user, the Application Provider MUST reject the user for any authentication or provisioning activity using an HTTP 4xx error message. To assist with debugging, the Identity Provider SHOULD signal to the end-user that the value is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to SSO into the application, or making error logs available to the administrators of the Identity Provider if pre-provisioning fails due to the missing attributes.  <br><br>When using SCIM schemas, the attributes <samp>id</samp> and <samp>userName</samp> are required and MUST always be released to the Application Provider. If these attributes are not explicitly specified in the list of <samp>required_attributes</samp>, they MUST be automatically added by the Identity Provider and henceforth available to the Application Provider.  </dd>
+<dd style="margin-left: 8">A list of attributes which the Identity Provider MUST release to the Application Provider. The value of the attributes MUST NOT be null or empty.  <br><br>If a required value is not defined for an end-user, the Application Provider MUST reject the end-user for any authentication or provisioning activity using an HTTP 4xx error message. To assist with debugging, the Identity Provider SHOULD signal to the end-user that the value is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to SSO into the application, or making error logs available to the administrators of the Identity Provider if user provisioning fails due to the missing attributes.  <br><br>When using SCIM schemas, the attributes <samp>id</samp> and <samp>userName</samp> are required and MUST always be released to the Application Provider. If these attributes are not explicitly specified in the list of <samp>required_attributes</samp>, they MUST be automatically added by the Identity Provider and henceforth available to the Application Provider.  </dd>
 <dt>optional_attributes</dt>
 <dd style="margin-left: 8">A list of attributes which the Identity Provider MAY release to the Application Provider. The application MUST remain functional if the attributes are undefined or if the Identity Provider chooses not to release the <samp>optional_attributes</samp>; albeit with minor degradations in user experience; e.g. falling back to labeling end-users with an opaque <samp>userName</samp> instead of a human-readable <samp>displayName</samp>.  <br><br>When using SCIM schemas, the attribute <samp>externalId</samp> is optional but encouraged to be used when available. If this attribute is not explicitly specified in the list of <samp>desired_attributes</samp>, it MUST be automatically added by the Identity Provider and henceforth available to the Application Provider whenever it is defined for a given user.  </dd>
 </dl>
@@ -946,23 +947,52 @@
 <p id="rfc.section.4.1.p.1">A request to this endpoint will return the Provider Metadata document defined in <a href="#ProviderMetadata" class="xref">Section 3.3</a>.  </p>
 <p id="rfc.section.4.1.p.2">The Provider Metadata Endpoint MUST be accessible to other Providers who are permitted to initiate a FastFed Handhake Flow with the entity.  Access to the Endpoint SHOULD NOT require Administrators to perform preconfiguration or preregistration of any form between the two Providers, except the necessary act of inputting the URL for the Provider Metadata Endpoint (a.k.a. "FastFed URL") to initiate the FastFed Handshake if the endpoint location is not discoverable through other means. Requests to the endpoint may be rate-limited or otherwise limited to prevent a denial-of-service attack.  </p>
 <h1 id="rfc.section.4.1.1">
-<a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#ProviderMetadataEndpointDiscovery" id="ProviderMetadataEndpointDiscovery">Endpoint Discovery</a>
+<a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#ProviderMetadataEndpointValidation" id="ProviderMetadataEndpointValidation">Endpoint Validation</a>
 </h1>
-<p id="rfc.section.4.1.1.p.1">Discovering the location of a Provider Metadata Endpoint for a specific end-user can be achieved through several means. The RECOMMENDED method of discovery is via the user's email domain.  </p>
-<p id="rfc.section.4.1.1.p.2">One standard mechanism to achieve this is via WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a>. A FastFed profile for WebFinger is defined below. However, WebFinger requires a webserver hosted at the root domain. For example, if a user's email address is <samp>"user@company.com"</samp>, the webfinger requests are sent to <samp>"https://company.com/.well_known/webfinger"</samp>.  </p>
-<p id="rfc.section.4.1.1.p.3">Administrators at large enterprises can experience organizational roadblocks when attempting to host this type of discovery endpoint at the root domain. This is because the root domain is often the publicly facing product or web presence for an organization and is maintained by different owners with security and operational privileges which the FastFed administrators may not normally possess.  </p>
-<p id="rfc.section.4.1.1.p.4">Therefore, to simplify adoption, FastFed also supports discovery using subdomains. A well-defined prefix can be prepended to the domain name to retrieve the FastFed Provider Metadata.  </p>
-<h1 id="rfc.section.4.1.1.1">
-<a href="#rfc.section.4.1.1.1">4.1.1.1.</a> <a href="#ProviderMetadataEndpointDiscoverySubdomain" id="ProviderMetadataEndpointDiscoverySubdomain">Email-based Discovery via Well-Known Subdomain</a>
+<p id="rfc.section.4.1.1.p.1">To prevent impersonanation of Providers, the value of the <samp>provider_domain_name</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.2</a>) MUST match the domain of the Metadata Endpoint.  </p>
+<p id="rfc.section.4.1.1.p.2">The Metadata Endpoint MAY be hosted at a subdomain of the <samp>provider_domain_name</samp>.  </p>
+<p id="rfc.section.4.1.1.p.3">A TLS server certificate check MUST be performed when connecting to the Endpoint.  </p>
+<p id="rfc.section.4.1.1.p.4">The following is a non-normative example showing valid and invalid Metadata Endpoints.  </p>
+<pre>
+ For a Metadata document containing the following domain name:
+     {
+       "provider_domain_name": "idp.example.com",
+       ...
+     }
+ 
+ The name is valid if retrieved from any of these Endpoints:
+
+     https://idp.example.com/                 --&gt; OK. Exact Match.
+     https://tenant-12345.idp.example.com/    --&gt; OK. Suffix Match.
+     https://idp.example.com/fastfed/metadata --&gt; OK. Exact Match + Path.
+
+ The name is invalid if retrieved from any of these Endpoints:
+ 
+     https://idp.example.com.otherdomain.ru/ --&gt; INVALID. No suffix match.
+     https://example.com/                    --&gt; INVALID. Incomplete match.
+     http://idp.example.com/                 --&gt; INVALID. Not https.
+
+</pre>
+<p id="rfc.section.4.1.1.p.5">If the <samp>provider_domain_name</samp> is invalid, the FastFed Handshake MUST be halted as specified in <a href="#HandshakeHalt" class="xref">Section 6.1.4</a>.  </p>
+<h1 id="rfc.section.4.1.2">
+<a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#ProviderMetadataEndpointDiscovery" id="ProviderMetadataEndpointDiscovery">Endpoint Discovery</a>
 </h1>
-<p id="rfc.section.4.1.1.1.p.1">If the user's email address is available to the Application Provider, the Application Provider SHOULD attempt to discover the Provider Metadata Endpoint using the email domain.  </p>
-<p id="rfc.section.4.1.1.1.p.2">The Endpoint location is determined by prefixing the email domain with <samp>"fastfed._well_known"</samp>. For example, if the user email is <samp>"babs@example.com"</samp>, the resulting Endpoint location is <samp>"https://fastfed._well_known.example.com"</samp>.  </p>
-<p id="rfc.section.4.1.1.1.p.3">The validity of the endpoint is tested by performing a Read Request as defined in <a href="#ProviderMetadataEndpointRead" class="xref">Section 4.1.2</a>. An HTTP 200 response indicates success and the FastFed handshake can proceed using the discovered information. Any other status codes SHOULD be treated as a failure. In the event of failure, discovery can fallback to alternative approaches described below.  </p>
-<h1 id="rfc.section.4.1.1.2">
-<a href="#rfc.section.4.1.1.2">4.1.1.2.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFinger" id="ProviderMetadataEndpointDiscoveryWebFinger">Email-based Discovery via WebFinger</a>
+<h1 id="rfc.section.4.1.2.1">
+<a href="#rfc.section.4.1.2.1">4.1.2.1.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFinger" id="ProviderMetadataEndpointDiscoveryWebFinger">Email-based Discovery via WebFinger</a>
 </h1>
-<p id="rfc.section.4.1.1.2.p.1">If the user's email address is available to the Application Provider, but discovery failed when using the Well-Known Subdomain described in <a href="#ProviderMetadataEndpointDiscoverySubdomain" class="xref">Section 4.1.1.1</a>, then the Application Provider SHOULD perform a WebFinger request to the email domain to determine if the Provider Metadata Location is automatically discoverable.  </p>
-<p id="rfc.section.4.1.1.2.p.2">FastFed uses the following <samp>rel</samp> value in WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a> </p>
+<p id="rfc.section.4.1.2.1.p.1">Discovering the location of a Provider Metadata Endpoint for a specific end-user can be achieved through several means. If the user's email address is available to the Application Provider, the RECOMMENDED method of discovery is via a WebFinger request to the user's email domain.  </p>
+<h1 id="rfc.section.4.1.2.1.1">
+<a href="#rfc.section.4.1.2.1.1">4.1.2.1.1.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFingerEndpoint" id="ProviderMetadataEndpointDiscoveryWebFingerEndpoint">WebFinger Endpoints</a>
+</h1>
+<p id="rfc.section.4.1.2.1.1.p.1">WebFinger traditionally requires a webserver hosted at the root domain. For example, if a user's email address is <samp>"user@company.com"</samp>, WebFinger requests are sent to <samp>"https://company.com/.well_known/webfinger"</samp>.  </p>
+<p id="rfc.section.4.1.2.1.1.p.2">However, administrators at large enterprises can experience organizational roadblocks when attempting to host this type of discovery endpoint at the root domain. This is because the root domain is often the publicly facing product or web presence for an organization and is maintained by different owners with security and operational privileges which FastFed administrators may not normally possess.  </p>
+<p id="rfc.section.4.1.2.1.1.p.3">Therefore, to simplify adoption, FastFed also supports WebFinger discovery using subdomains. A well-defined prefix can be prepended to the domain name to retrieve the FastFed Provider Metadata.  </p>
+<p id="rfc.section.4.1.2.1.1.p.4">The subdomain location is determined by prefixing the email domain with <samp>"webfinger._well_known"</samp>. For example, if the user email is <samp>"babs@example.com"</samp>, the resulting Webfinger endpoint is <samp>"https://webfinger._well_known.example.com"</samp>.  </p>
+<p id="rfc.section.4.1.2.1.1.p.5">Application Providers performing WebFinger discovery MUST first attempt to read from the subdomain endpoint. If the response is not an HTTP 200, the Application Provider MUST subsequently attempt reading from the traditional WebFinger path at the root domain. A non-normative example is illustrated in <a href="#ProviderMetadataEndpointDiscoveryWebFingerQueries" class="xref">Section 4.1.2.1.2</a>.  </p>
+<h1 id="rfc.section.4.1.2.1.2">
+<a href="#rfc.section.4.1.2.1.2">4.1.2.1.2.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFingerQueries" id="ProviderMetadataEndpointDiscoveryWebFingerQueries">WebFinger Queries</a>
+</h1>
+<p id="rfc.section.4.1.2.1.2.p.1">FastFed uses the following <samp>rel</samp> value in WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a> </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
 <thead><tr>
 <th class="left">RelType</th>
@@ -973,10 +1003,10 @@
 <td class="left">https://openid.net/specs/fastfed/1.0/provider</td>
 </tr></tbody>
 </table>
-<p id="rfc.section.4.1.1.2.p.3">To start discovery of FastFed endpoints, the Application Provider makes an HTTP GET request to the email domain's WebFinger [RFC7033] endpoint with the <samp>resource</samp> value set to the user email address prepended with the <samp>acct:</samp> scheme <a href="#RFC7565" class="xref">[RFC7565]</a>. All WebFinger communication MUST utilize TLS in the manner described in <a href="#HanshakeTLSRequirements" class="xref">Section 6.1.1</a>.  </p>
-<p id="rfc.section.4.1.1.2.p.4">The FastFed Provider Metadata location MUST be returned in the WebFinger response as the value of the <samp>href</samp> member of a <samp>links</samp> array element with <samp>rel</samp> member value <samp>http://openid.net/specs/fastfed/1.0/provider</samp>. (Per Section 7 of WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a>, obtaining the WebFinger response may first involve following some redirects.) </p>
-<p id="rfc.section.4.1.1.2.p.5">The returned Issuer location MUST be a URI <a href="#RFC3986" class="xref">[RFC3986]</a> with a scheme component that MUST be https, a host component, and optionally, port and path components and no query or fragment components. Note that the WebFinger request may return a metadata location hosted under a different domain than the user's email.  </p>
-<p id="rfc.section.4.1.1.2.p.6">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
+<p id="rfc.section.4.1.2.1.2.p.2">To start discovery of FastFed endpoints, the Application Provider makes an HTTP GET request to the email domain's WebFinger [RFC7033] endpoint with the <samp>resource</samp> value set to the user email address prepended with the <samp>acct:</samp> scheme <a href="#RFC7565" class="xref">[RFC7565]</a>. All WebFinger communication MUST utilize TLS in the manner described in <a href="#HanshakeTLSRequirements" class="xref">Section 6.1.1</a>.  </p>
+<p id="rfc.section.4.1.2.1.2.p.3">The FastFed Provider Metadata location MUST be returned in the WebFinger response as the value of the <samp>href</samp> member of a <samp>links</samp> array element with <samp>rel</samp> member value <samp>http://openid.net/specs/fastfed/1.0/provider</samp>. (Per Section 7 of WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a>, obtaining the WebFinger response may first involve following some redirects.) </p>
+<p id="rfc.section.4.1.2.1.2.p.4">The returned Issuer location MUST be a URI <a href="#RFC3986" class="xref">[RFC3986]</a> with a scheme component that MUST be https, a host component, and optionally, port and path components and no query or fragment components. Note that the WebFinger request may return a metadata location hosted under a different domain than the user's email.  </p>
+<p id="rfc.section.4.1.2.1.2.p.5">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
 <thead><tr>
 <th class="left">WebFinger Parameter</th>
@@ -997,7 +1027,29 @@
 </tr>
 </tbody>
 </table>
-<p id="rfc.section.4.1.1.2.p.7">The Application Provider would make the following WebFinger request to discover the end-users Identity Provider Metadata location (with line wraps for display purposes only): </p>
+<p id="rfc.section.4.1.2.1.2.p.6">The Application Provider would first make a WebFinger request to the well-known subdomain endpoint (with line wraps for display purposes only): </p>
+<pre>
+  GET /
+    ?resource=acct%3Ajane%40example.com
+    &amp;rel=http%3A%2F%2Fopenid.net%2Fspecs%2Ffastfed%2F1.0%2Fprovider
+    HTTP/1.1
+  Host: webfinger._well_known.example.com
+
+  HTTP/1.1 200 OK
+  Content-Type: application/jrd+json
+
+  {
+   "subject": "acct:jane@example.com",
+   "links":
+    [
+     {
+      "rel": "http://openid.net/specs/fastfed/1.0/provder",
+      "href": "https://tenant-12345.idp.example.com/fastfed"
+     }
+    ]
+  }
+</pre>
+<p id="rfc.section.4.1.2.1.2.p.7">If the subdomain endpoint did not return an HTTP 200 response code, the same query would be performed against the root domain using the WebFinger path: </p>
 <pre>
   GET /.well-known/webfinger
     ?resource=acct%3Ajane%40example.com
@@ -1019,39 +1071,39 @@
     ]
   }
 </pre>
-<h1 id="rfc.section.4.1.1.3">
-<a href="#rfc.section.4.1.1.3">4.1.1.3.</a> <a href="#ProviderMetadataEndpointDiscoveryAlternative" id="ProviderMetadataEndpointDiscoveryAlternative">Alternative Discovery Mechanisms</a>
+<h1 id="rfc.section.4.1.2.2">
+<a href="#rfc.section.4.1.2.2">4.1.2.2.</a> <a href="#ProviderMetadataEndpointDiscoveryAlternative" id="ProviderMetadataEndpointDiscoveryAlternative">Alternative Discovery Mechanisms</a>
 </h1>
-<p id="rfc.section.4.1.1.3.p.1">Application Providers MAY use other means of discovering the FastFed URL for an Identity Provider. This is an implementation detail.  </p>
-<p id="rfc.section.4.1.1.3.p.2">As a reference to implementers, one basic mechanism of discovery is asking the end-user to lookup the value within their Identity Provider's SSO documention and then paste the location into a form field.  </p>
-<h1 id="rfc.section.4.1.2">
-<a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#ProviderMetadataEndpointRead" id="ProviderMetadataEndpointRead">Read Request</a>
+<p id="rfc.section.4.1.2.2.p.1">Application Providers MAY use other means of discovering the FastFed URL for an Identity Provider. This is an implementation detail.  </p>
+<p id="rfc.section.4.1.2.2.p.2">As a reference to implementers, one basic mechanism of discovery is asking the end-user to lookup the value within their Identity Provider's SSO documention and then paste the location into a form field.  </p>
+<h1 id="rfc.section.4.1.3">
+<a href="#rfc.section.4.1.3">4.1.3.</a> <a href="#ProviderMetadataEndpointRead" id="ProviderMetadataEndpointRead">Read Request</a>
 </h1>
-<p id="rfc.section.4.1.2.p.1">Provider Metadata can be read by making an HTTP GET request to the Provider Metadata Endpoint.  </p>
-<p id="rfc.section.4.1.2.p.2">The following is a non-normative example read request: </p>
+<p id="rfc.section.4.1.3.p.1">After the endpoint is discovered, Provider Metadata can be read by making an HTTP GET request to the Provider Metadata Endpoint.  </p>
+<p id="rfc.section.4.1.3.p.2">The following is a non-normative example read request: </p>
 <pre>
   GET /fastfed/provider-metadata HTTP/1.1
   Accept: application/json
   Host: provider.example.com
 </pre>
-<h1 id="rfc.section.4.1.3">
-<a href="#rfc.section.4.1.3">4.1.3.</a> <a href="#ProviderMetadataEndpointResponse" id="ProviderMetadataEndpointResponse">Read Response</a>
+<h1 id="rfc.section.4.1.4">
+<a href="#rfc.section.4.1.4">4.1.4.</a> <a href="#ProviderMetadataEndpointResponse" id="ProviderMetadataEndpointResponse">Read Response</a>
 </h1>
-<p id="rfc.section.4.1.3.p.1">Upon a successful read operation, the server SHOULD return all available Provider Metadata.  </p>
-<p id="rfc.section.4.1.3.p.2">A successful response SHOULD use the HTTP 200 OK status code and return a JSON document <a href="#RFC4627" class="xref">[RFC4627]</a> using the application/json_content type with the Provider Metadata values as top-level members of the root JSON object.  </p>
-<p id="rfc.section.4.1.3.p.3">The following is a non-normative example read response (with line wraps within values for display purposes only): </p>
+<p id="rfc.section.4.1.4.p.1">Upon a successful read operation, the server SHOULD return all available Provider Metadata.  </p>
+<p id="rfc.section.4.1.4.p.2">A successful response SHOULD use the HTTP 200 OK status code and return a JSON document <a href="#RFC4627" class="xref">[RFC4627]</a> using the application/json_content type with the Provider Metadata values as top-level members of the root JSON object.  </p>
+<p id="rfc.section.4.1.4.p.3">The following is a non-normative example read response (with line wraps within values for display purposes only): </p>
 <pre>
  HTTP/1.1 200 OK
  Content-Type: application/json
  {
    "identity_provider": {
-     "provider_uri": "https://idp.example.com",
+     "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
-     "name": "My Identity Provider",
      "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "icons": {
-       "large_icon_uri": "https://idp.example.com/images/tile.png",
-       "small_icon_uri": "https://idp.example.com/images/favicon.png"
+     "display_name": "Example Identity Provider",
+     "display_images": {
+       "logo_uri": "https://idp.example.com/images/logo.png",
+       "icon_uri": "https://idp.example.com/images/icon.png"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -1071,12 +1123,12 @@
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  } 
 </pre>
-<h1 id="rfc.section.4.1.4">
-<a href="#rfc.section.4.1.4">4.1.4.</a> <a href="#MetadataRefresh" id="MetadataRefresh">Metadata Refresh</a>
+<h1 id="rfc.section.4.1.5">
+<a href="#rfc.section.4.1.5">4.1.5.</a> <a href="#MetadataRefresh" id="MetadataRefresh">Metadata Refresh</a>
 </h1>
-<p id="rfc.section.4.1.4.p.1">Provider Metadata contains URLs that point to other objects, such as icon image files. Providers MAY locally cache the object values.  </p>
-<p id="rfc.section.4.1.4.p.2">Cached information MUST be periodically refreshed. The following describes the responsibilities of metadata publishers and consumers to enable refresh activities.  </p>
-<p id="rfc.section.4.1.4.p.3">The following applies to a publisher of metadata information, such as an image file: </p>
+<p id="rfc.section.4.1.5.p.1">Provider Metadata contains URLs that point to other objects, such as icon image files. Providers MAY locally cache the object values.  </p>
+<p id="rfc.section.4.1.5.p.2">Cached information MUST be periodically refreshed. The following describes the responsibilities of metadata publishers and consumers to enable refresh activities.  </p>
+<p id="rfc.section.4.1.5.p.3">The following applies to a publisher of metadata information, such as an image file: </p>
 
 <ul>
 <li>MAY periodically alter the content of objects referenced by a URL.  </li>
@@ -1090,7 +1142,7 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.4.1.4.p.4">The following requirements apply to a consumer of metadata information: </p>
+<p id="rfc.section.4.1.5.p.4">The following requirements apply to a consumer of metadata information: </p>
 
 <ul>
 <li>MUST re-query the URLs at least once every 24 hours to check if a new version of the object is available to replace a local copy.  </li>
@@ -1147,7 +1199,7 @@
 <a href="#rfc.section.6.1">6.1.</a> <a href="#HandshakeCommon" id="HandshakeCommon">Common Considerations</a>
 </h1>
 <h1 id="rfc.section.6.1.1">
-<a href="#rfc.section.6.1.1">6.1.1.</a> <a href="#HanshakeTLSRequirements" id="HanshakeTLSRequirements">TLS Requirments</a>
+<a href="#rfc.section.6.1.1">6.1.1.</a> <a href="#HanshakeTLSRequirements" id="HanshakeTLSRequirements">TLS Requirements</a>
 </h1>
 <p id="rfc.section.6.1.1.p.1">All implementations MUST require the use of TLS for all FastFed Endpoints, including the Metadata Endpoints and FastFed Handshake Endpoints.  </p>
 <p id="rfc.section.6.1.1.p.2">Which TLS version(s) ought to be implemented will vary over time, and depends on the widespread deployment and known security vulnerabilities at the time of implementation. To protect against information disclosure and tampering, confidentiality protection MUST be applied using TLS with a ciphersuite that provides confidentiality and integrity protection.  </p>
@@ -1170,91 +1222,70 @@
 <a href="#rfc.section.6.2">6.2.</a> <a href="#HandshakeFlow" id="HandshakeFlow">Handshake Flow</a>
 </h1>
 <h1 id="rfc.section.6.2.1">
-<a href="#rfc.section.6.2.1">6.2.1.</a> <a href="#HandshakeStart" id="HandshakeStart">Handshake Start at Application Provider</a>
+<a href="#rfc.section.6.2.1">6.2.1.</a> <a href="#HandshakeStart" id="HandshakeStart">Handshake Initiation at Application Provider</a>
 </h1>
 <h1 id="rfc.section.6.2.1.1">
-<a href="#rfc.section.6.2.1.1">6.2.1.1.</a> <a href="#HandshakeApplicationProviderStart" id="HandshakeApplicationProviderStart">Application Provider Receives Start Request</a>
+<a href="#rfc.section.6.2.1.1">6.2.1.1.</a> <a href="#HandshakeApplicationProviderPrerequisites" id="HandshakeApplicationProviderPrerequisites">Prerequisites</a>
 </h1>
-<p id="rfc.section.6.2.1.1.p.1">The FastFed Handshake begins by sending an HTTP GET request to the Application Provider's <samp>fastfed_handshake_start_uri</samp>, as defined within the Application Provider Metadata per <a href="#ApplicationProviderMetadata" class="xref">Section 3.3.4</a>.  </p>
-<p id="rfc.section.6.2.1.1.p.2">The request contains the following parameters: </p>
-
-<dl>
-<dt>idp_metadata_uri</dt>
-<dd style="margin-left: 8">REQUIRED. The <a href="#ProviderMetadataEndpoint" class="xref">Provider Metadata Endpoint</a> for the Identity Provider with whom the handshake will be performed.  </dd>
-</dl>
-
-<p> </p>
-<p id="rfc.section.6.2.1.1.p.3">Request parameters are serialized using <a href="#HandshakeSerialization" class="xref">URI Query String Serialization</a>.  </p>
-<p id="rfc.section.6.2.1.1.p.4">Any entity may initiate the FastFed Handshake. As a reference to implementers, an Application Provider can initiate the handshake by sending a message to itself, using the <samp>fastfed_handshake_start_uri</samp> that is already known to the Application Provider. Alternatively, an Identity Provider can initiate the handshake by asking an Administrator for the FastFed URL of an Application Provider and then querying the endpoint to retrieve the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> document which contains the <samp>fastfed_handshake_start_uri</samp>.  </p>
-<p id="rfc.section.6.2.1.1.p.5">The following is a non-normative example of a handshake initiation request: </p>
-<pre>
- GET /fastfed/handshake/start?idp_metadata_uri=https%3A%2F%2Fidp.example.com%2Ffastfed%2Fprovider-metadata HTTP/1.1
- Host: tenant-67890.app.example.com
-</pre>
+<p id="rfc.section.6.2.1.1.p.1">Prior to beginning the FastFed Handshake, the Application Provider MUST perform Endpoint Discovery (<a href="#ProviderMetadataEndpointDiscovery" class="xref">Section 4.1.2</a>) and successfully discover and validate (<a href="#ProviderMetadataEndpointValidation" class="xref">Section 4.1.1</a>) an Identity Provider Metadata Endpoint URI.  </p>
+<p id="rfc.section.6.2.1.1.p.2">The Application Provider MUST also authenticate the Administrator and verify they are authorized to initiate the FastFed Handshake. The means of doing so are outside the scope of this specification.  </p>
 <h1 id="rfc.section.6.2.1.2">
-<a href="#rfc.section.6.2.1.2">6.2.1.2.</a> <a href="#HandshakeApplicationProviderAuthenticatesAdministrator" id="HandshakeApplicationProviderAuthenticatesAdministrator">Application Provider Authenticates Administrator</a>
+<a href="#rfc.section.6.2.1.2">6.2.1.2.</a> <a href="#HandshakeApplicationProviderReadsIdentityProviderMetadata" id="HandshakeApplicationProviderReadsIdentityProviderMetadata">Application Provider Reads Identity Provider Metadata</a>
 </h1>
-<p id="rfc.section.6.2.1.2.p.1">Upon receiving the handshake initiation request, the Application Provider MUST authenticate the Administrator and verify they are authorized to initiate the FastFed Handshake with the Identity Provider. The means of doing so are outside the scope of this specification.  </p>
-<p id="rfc.section.6.2.1.2.p.2">If the Administrator cannot be authenticated, the FastFed Handshake MUST be halted.  </p>
+<p id="rfc.section.6.2.1.2.p.1">The Application Provider queries the <a href="#ProviderMetadataEndpoint" class="xref">Identity Provider Metadata Endpoint</a>.  </p>
+<p id="rfc.section.6.2.1.2.p.2">If the Identity Provider Metadata cannot be downloaded or is missing required elements, the FastFed Handshake MUST be halted.  </p>
+<p id="rfc.section.6.2.1.2.p.3">If the tenant of the Application Provider already has an established federation relationship with the tenant of the Identity Provider, as determined by examining the <samp>provider_domain_name</samp> and <samp>tenant_id</samp> specified in the Identity Provider metadata, the Application Provider SHOULD alert the Administrator of a duplicate registration attempt.  </p>
 <h1 id="rfc.section.6.2.1.3">
-<a href="#rfc.section.6.2.1.3">6.2.1.3.</a> <a href="#HandshakeApplicationProviderReadsIdentityProviderMetadata" id="HandshakeApplicationProviderReadsIdentityProviderMetadata">Application Provider Reads Identity Provider Metadata</a>
+<a href="#rfc.section.6.2.1.3">6.2.1.3.</a> <a href="#HandshakeApplicationProviderVerifiesCompatibilityWithIdentityProvider" id="HandshakeApplicationProviderVerifiesCompatibilityWithIdentityProvider">Application Provider Verifies Compatibility with Identity Provider</a>
 </h1>
-<p id="rfc.section.6.2.1.3.p.1">Using the <samp>idp_metadata_uri</samp> sent as a parameter in the handshake request, the Application Provider queries the <a href="#ProviderMetadataEndpoint" class="xref">Identity Provider Metadata Endpoint</a>.  </p>
-<p id="rfc.section.6.2.1.3.p.2">If the Identity Provider Metadata cannot be downloaded or is missing required elements, the FastFed Handshake MUST be halted.  </p>
-<p id="rfc.section.6.2.1.3.p.3">If the tenant of the Application Provider already has an established federation relationship with the tenant of the Identity Provider, as determined by examining the <samp>provider_uri</samp> and <samp>tenant_id</samp> specified in the Identity Provider metadata, the Application Provider SHOULD alert the Administrator of a duplicate registration attempt.  </p>
+<p id="rfc.section.6.2.1.3.p.1">The Application Provider MUST compare its Provider Metadata against the Identity Provider Metadata in order to verify compatibility, as described in <a href="#ProviderCompatibilityEvaluation" class="xref">Section 5</a>.  </p>
+<p id="rfc.section.6.2.1.3.p.2">If the Providers are incompatible, the FastFed Handshake MUST be halted.  </p>
 <h1 id="rfc.section.6.2.1.4">
-<a href="#rfc.section.6.2.1.4">6.2.1.4.</a> <a href="#HandshakeApplicationProviderVerifiesCompatibilityWithIdentityProvider" id="HandshakeApplicationProviderVerifiesCompatibilityWithIdentityProvider">Application Provider Verifies Compatibility with Identity Provider</a>
+<a href="#rfc.section.6.2.1.4">6.2.1.4.</a> <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" id="HandshakeApplicationProviderWhitelistsIdentityProvider">Application Provider Whitelists the Identity Provider</a>
 </h1>
-<p id="rfc.section.6.2.1.4.p.1">The Application Provider MUST compare its Provider Metadata against the Identity Provider Metadata in order to verify compatibility, as described in <a href="#ProviderCompatibilityEvaluation" class="xref">Section 5</a>.  </p>
-<p id="rfc.section.6.2.1.4.p.2">If the Providers are incompatible, the FastFed Handshake MUST be halted.  </p>
+<p id="rfc.section.6.2.1.4.p.1">The Application Provider whitelists that the tenant of the Identity Provider is permitted to create a federation relationship with the instance of the Application. This whitelisting will be utilized later in the handshake when the Identity Provider calls back to the Application Provider to complete the registration.  </p>
+<p id="rfc.section.6.2.1.4.p.2">The whitelisting record must capture the <samp>provider_domain_name</samp>, <samp>tenant_id</samp> and the <samp>jwks_uri</samp> from the Identity Provider Metadata document. The keys from the <samp>jwks_uri</samp> will be used to validate message signatures and confirm the authenticity of subsequent handshake messages from whitelisted providers.  </p>
+<p id="rfc.section.6.2.1.4.p.3">The representation of the whitelisting record is an implementation detail.  </p>
+<p id="rfc.section.6.2.1.4.p.4">If the handshake is never completed, whitelisting records SHOULD expire after a reasonable amount of time. The amount of time is an implementation detail. As a reference to implementors, some enterprises require multiple different parties to approve a new application for single sign-in. These approvals may take days or weeks to acquire.  </p>
 <h1 id="rfc.section.6.2.1.5">
-<a href="#rfc.section.6.2.1.5">6.2.1.5.</a> <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" id="HandshakeApplicationProviderWhitelistsIdentityProvider">Application Provider Whitelists the Identity Provider</a>
+<a href="#rfc.section.6.2.1.5">6.2.1.5.</a> <a href="#HandshakeApplicationProviderRedirect" id="HandshakeApplicationProviderRedirect">Application Provider Sends Request to the Identity Provider</a>
 </h1>
-<p id="rfc.section.6.2.1.5.p.1">The Application Provider whitelists that the tenant of the Identity Provider is permitted to create a federation relationship with the instance of the Application. This whitelisting will be utilized later in the handshake when the Identity Provider calls back to the Application Provider to complete the registration.  </p>
-<p id="rfc.section.6.2.1.5.p.2">The whitelisting record must capture the <samp>entity_id</samp>, <samp>tenant_id</samp> and the <samp>jwks_uri</samp> from the Identity Provider Metadata document. The keys from the <samp>jwks_uri</samp> will be used to validate message signatures and confirm the authenticity of subsequent handshake messages from whitelisted providers.  </p>
-<p id="rfc.section.6.2.1.5.p.3">The representation of the whitelisting record is an implementation detail.  </p>
-<p id="rfc.section.6.2.1.5.p.4">If the handshake is never completed, whitelisting records SHOULD expire after a reasonable amount of time. The amount of time is an implementation detail. As a reference to implementors, some enterprises require multiple different parties to approve a new application for single sign-in. These approvals may take days or weeks to acquire.  </p>
-<h1 id="rfc.section.6.2.1.6">
-<a href="#rfc.section.6.2.1.6">6.2.1.6.</a> <a href="#HandshakeApplicationProviderRedirect" id="HandshakeApplicationProviderRedirect">Application Provider Sends Request to the Identity Provider</a>
-</h1>
-<p id="rfc.section.6.2.1.6.p.1">If the preceding steps were successful, the Application Provider responds by issuing a request to the Identity Provider containing the following parameters: </p>
+<p id="rfc.section.6.2.1.5.p.1">If the preceding steps were successful, the Application Provider responds by issuing a request to the Identity Provider containing the following parameters: </p>
 
 <dl>
 <dt>app_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. The location of the Provider Metadata for the Application Provider.  </dd>
 <dt>expiration</dt>
 <dd style="margin-left: 8">OPTIONAL. The date/time when the Application Provider will consider the whitelisted pending registration to be expired and the administrator must restart the FastFed Handshake. This value is provided as a convenience to the Identity Provider so that it may be aware of the deadline for completing the flow. Its value MUST be a number containing a NumericDate as defined in Section 2 of <a href="#RFC7519" class="xref">RFC 7519</a> [JWT].  </dd>
-<dt>state</dt>
-<dd style="margin-left: 8">OPTIONAL. Opaque value used to maintain state between the request to the Identity Provider and the callback to the Application Provider. The Application Provider MAY use this field to store any information that could be helpful later in the flow to correlate the callback from the Identity Provider with a pending whitelisted registration. The Application Provider SHOULD guard the value of this field with tamper-evident protections such as signing in order to detect if another party has manipulated the value prior to the callback.  </dd>
 </dl>
 
 <p> </p>
-<p id="rfc.section.6.2.1.6.p.2">The request can be transmitted through the following mechanisms.  </p>
-<h1 id="rfc.section.6.2.1.6.1">
-<a href="#rfc.section.6.2.1.6.1">6.2.1.6.1.</a> <a href="#HandshakeApplicationProviderRedirectVia302" id="HandshakeApplicationProviderRedirectVia302">HTTP Redirect</a>
+<p id="rfc.section.6.2.1.5.p.2">The request can be transmitted through the following mechanisms.  </p>
+<h1 id="rfc.section.6.2.1.5.1">
+<a href="#rfc.section.6.2.1.5.1">6.2.1.5.1.</a> <a href="#HandshakeApplicationProviderRedirectVia302" id="HandshakeApplicationProviderRedirectVia302">HTTP Redirect</a>
 </h1>
-<p id="rfc.section.6.2.1.6.1.p.1">An Application Provider MAY issue an HTTP 302 redirect to the <samp>fastfed_handshake_start_uri</samp> specified in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a> with the request parameters encoded using <a href="#HandshakeSerialization" class="xref">Query String Serialization</a>.  </p>
-<p id="rfc.section.6.2.1.6.1.p.2">The following is a non-normative example of a response (with line wraps within values for display purposes only): </p>
+<p id="rfc.section.6.2.1.5.1.p.1">An Application Provider MAY issue an HTTP 302 redirect to the <samp>fastfed_handshake_start_uri</samp> specified in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a> with the request parameters encoded using <a href="#HandshakeSerialization" class="xref">Query String Serialization</a>.  </p>
+<p id="rfc.section.6.2.1.5.1.p.2">The following is a non-normative example of a response (with line wraps within values for display purposes only): </p>
 <pre>
  HTTP/1.1 302 Found
  Location: https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &amp;state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &amp;expiration=1475878357
 </pre>
-<h1 id="rfc.section.6.2.1.6.2">
-<a href="#rfc.section.6.2.1.6.2">6.2.1.6.2.</a> <a href="#HandshakeApplicationProviderRedirectViaOtherChannel" id="HandshakeApplicationProviderRedirectViaOtherChannel">Alternative Channel</a>
+<h1 id="rfc.section.6.2.1.5.2">
+<a href="#rfc.section.6.2.1.5.2">6.2.1.5.2.</a> <a href="#HandshakeApplicationProviderRedirectViaOtherChannel" id="HandshakeApplicationProviderRedirectViaOtherChannel">Alternative Channel</a>
 </h1>
-<p id="rfc.section.6.2.1.6.2.p.1">In some circumstances, the end-user who is initiating the FastFed Handshake at the Application Provider may not be a valid end-user in the Identity Provider. This could occur, for example, when one organization is inviting members of a different organization to collaborate in a shared instance of an application.  </p>
-<p id="rfc.section.6.2.1.6.2.p.2">If the Application Provider has reason to believe that the end-user initiating the FastFed Handshake may not exist in the given Identity Provider, then the request message MAY be transmitted through alternate channels. Such channels may include, but are not limited to, email and instant messaging.  </p>
-<p id="rfc.section.6.2.1.6.2.p.3">The request message is conveyed as a URL with the host value set to the <samp>fastfed_handshake_start_uri</samp> specified in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a> and the request parameters encoded using <a href="#HandshakeSerialization" class="xref">Query String Serialization</a>.  </p>
-<p id="rfc.section.6.2.1.6.2.p.4">The following is a non-normative example of a message (with line wraps within values for display purposes only): </p>
+<p id="rfc.section.6.2.1.5.2.p.1">In some circumstances, the end-user who is initiating the FastFed Handshake at the Application Provider may not be a valid end-user in the Identity Provider. This could occur, for example, when one organization is inviting members of a different organization to collaborate in a shared instance of an application.  </p>
+<p id="rfc.section.6.2.1.5.2.p.2">If the Application Provider has reason to believe that the end-user initiating the FastFed Handshake may not exist in the given Identity Provider, then the request message MAY be transmitted through alternate channels. Such channels may include, but are not limited to, email and instant messaging.  </p>
+<p id="rfc.section.6.2.1.5.2.p.3">The request message is conveyed as a URL with the host value set to the <samp>fastfed_handshake_start_uri</samp> specified in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a> and the request parameters encoded using <a href="#HandshakeSerialization" class="xref">Query String Serialization</a>.  </p>
+<p id="rfc.section.6.2.1.5.2.p.4">The following is a non-normative example of a message (with line wraps within values for display purposes only): </p>
 <pre>
  Hello Jane,
  Please click this link to finish setting up single sign-on with us.
  
  https://tenant-12345.idp.example.com/fastfed/handshake/start?
    app_metadata_uri=https%3A%2F%2Ftenant-67890.app.example.com%2Ffastfed%2Fprovider-metadata
-   &amp;state=vk2j35ijlkt2j2oij3ti2jtkltkl2n4kl2n
+   &amp;expiration=1475878357
 </pre>
 <h1 id="rfc.section.6.2.2">
 <a href="#rfc.section.6.2.2">6.2.2.</a> <a href="#HandshakeReceiptByIdentityProvider" id="HandshakeReceiptByIdentityProvider">Handshake Receipt by Identity Provider</a>
@@ -1262,7 +1293,7 @@
 <h1 id="rfc.section.6.2.2.1">
 <a href="#rfc.section.6.2.2.1">6.2.2.1.</a> <a href="#HandshakeIdentityProviderAuthenticatesAdministrator" id="HandshakeIdentityProviderAuthenticatesAdministrator">Identity Provider Authenticates Administrator</a>
 </h1>
-<p id="rfc.section.6.2.2.1.p.1">Upon receiving a handshake message from the Application Provider as specified in Step <a href="#HandshakeApplicationProviderRedirect" class="xref">6.2.1.6</a>, the Identity Provider MUST authenticate the end-user and verify they are authorized to request a federation relationship with the Application Provider.  </p>
+<p id="rfc.section.6.2.2.1.p.1">Upon receiving a handshake message from the Application Provider as specified in Step <a href="#HandshakeApplicationProviderRedirect" class="xref">6.2.1.5</a>, the Identity Provider MUST authenticate the end-user and verify they are authorized to initiate a federation relationship with the Application Provider.  </p>
 <p id="rfc.section.6.2.2.1.p.2">If the end-user cannot be authenticated, the FastFed Handshake MUST be halted.  </p>
 <p id="rfc.section.6.2.2.1.p.3">If the end-user is authenticated but not permitted to complete the registration process, an Identity Provider MAY pause the handshake flow at any point beyond this step, capture the registration information for approval by a different Adminstrator, and thereafter finish the remaining steps of the FastFed handshake.  </p>
 <h1 id="rfc.section.6.2.2.2">
@@ -1270,7 +1301,7 @@
 </h1>
 <p id="rfc.section.6.2.2.2.p.1">Using the <samp>app_metadata_uri</samp> sent as a parameter in the handshake request, the Identity Provider queries the <a href="#ProviderMetadataEndpoint" class="xref">Application Provider Metadata Endpoint</a>.  </p>
 <p id="rfc.section.6.2.2.2.p.2">If the Application Provider Metadata cannot be downloaded or is missing required elements, the FastFed Handshake must be halted.  </p>
-<p id="rfc.section.6.2.2.2.p.3">If the tenant of the Identity Provider already has an established federation relationship with the tenant of the Application Provider, as determined by examining the <samp>provider_uri</samp> and <samp>tenant_id</samp> specified in the Application Provider metadata, the Identity Provider SHOULD alert the Administrator of a duplicate registration attempt.  </p>
+<p id="rfc.section.6.2.2.2.p.3">If the tenant of the Identity Provider already has an established or pending federation relationship with the tenant of the Application Provider, as determined by examining the <samp>provider_domain_name</samp> and <samp>tenant_id</samp> specified in the Application Provider Metadata, the Identity Provider SHOULD alert the Administrator of the existing configuration and display the current status of the relationship, such as whether the relationship is active or pending approval.  The Identity Provider MAY also allow the Administrator to proceed with modifying the existing configuration or creating a duplicate configuration. This is an implementation detail outside the scope of the specifiation.  </p>
 <h1 id="rfc.section.6.2.2.3">
 <a href="#rfc.section.6.2.2.3">6.2.2.3.</a> <a href="#HandshakeIdentityProviderVerifiesCompatibility" id="HandshakeIdentityProviderVerifiesCompatibility">Identity Provider Verifies Compatibility</a>
 </h1>
@@ -1281,7 +1312,7 @@
 <a href="#rfc.section.6.2.2.4">6.2.2.4.</a> <a href="#HandshakeIdentityProviderObtainsConsent" id="HandshakeIdentityProviderObtainsConsent">Identity Provider Obtains Consent from Administrator</a>
 </h1>
 <p id="rfc.section.6.2.2.4.p.1">The Identity Provider MUST obtain explicit consent from an Administrator to enable federation with the Application Provider.  </p>
-<p id="rfc.section.6.2.2.4.p.2">As a reference to implementers, consent could include displaying a confirmation page. The Identity Provider may also alert the Administrator of any risks with the Application Provider, such as indicators of a potential phishing site.  </p>
+<p id="rfc.section.6.2.2.4.p.2">As a reference to implementers, consent could include displaying a verification page which summarizes the actions that will occur and asks the user to click a confirmation button.  </p>
 <h1 id="rfc.section.6.2.3">
 <a href="#rfc.section.6.2.3">6.2.3.</a> <a href="#HandshakeFinalization" id="HandshakeFinalization">Handshake Finalization</a>
 </h1>
@@ -1295,19 +1326,17 @@
 
 <dl>
 <dt>iss</dt>
-<dd style="margin-left: 8">REQUIRED. The Identity Provider URI. MUST match the <samp>provider_uri</samp> in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a>.  </dd>
+<dd style="margin-left: 8">REQUIRED. The Identity Provider Domain Name. MUST match the <samp>provider_domain_name</samp> in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a>.  </dd>
 <dt>sub</dt>
 <dd style="margin-left: 8">REQUIRED. The Identity Provider Tenant ID. MUST match the <samp>tenant_id</samp> in the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a>.  </dd>
 <dt>aud</dt>
-<dd style="margin-left: 8">REQUIRED. The Application Provider Entity ID. MUST match the <samp>provider_uri</samp> in the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </dd>
+<dd style="margin-left: 8">REQUIRED. The Application Provider Domain Name. MUST match the <samp>provider_domain_name</samp> in the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </dd>
 <dt>authentication_profiles</dt>
 <dd style="margin-left: 8">OPTIONAL. A list containing the SSO authentication protocols to be enabled for sign-in between the Identity Provider and the Application Provider, chosen from the list of <samp>authentication_profiles</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
 <dt>provisioning_profile</dt>
 <dd style="margin-left: 8">OPTIONAL. A list containing the user provisioning profiles to be enabled by the Identity Provider and Application Provider, chosen from the list of <samp>provisioning_profiles</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
 <dt>schema</dt>
 <dd style="margin-left: 8">REQUIRED. A string value containing the user schema to be used by the Identity Provider and Application Provider, chosen from the list of <samp>schemas</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
-<dt>state</dt>
-<dd style="margin-left: 8">REQUIRED if the handshake request from the Application Provider included the <samp>state</samp> parameter. Set to the value received from the Application Provider.  </dd>
 <dt>oauth_token</dt>
 <dd style="margin-left: 8">OPTIONAL. A structure containing an OAuth Access Token response as defined in Section 5.1 of the <a href="#RFC6749" class="xref">OAuth 2.0 Authorization Framework</a>.  Some protocols may require the exchange of OAuth tokens to gate access to endpoints. The FastFed Profile for a given protocol will specify whether such tokens are required.  </dd>
 </dl>
@@ -1317,13 +1346,12 @@
 <p id="rfc.section.6.2.3.1.p.6">The following is a non-normative example of the contents of a registration request message, prior to serialization: </p>
 <pre>
  {
-  "iss": "https://idp.example.com",
+  "iss": "idp.example.com",
   "sub": "tenant-12345",
-  "aud": "https://app.example.com",
+  "aud": "app.example.com",
   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "state": "liK9x2fUOWoi1P0",
   "oauth_token": {
     "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
     "token_type": "bearer",
@@ -1357,10 +1385,10 @@
 <p id="rfc.section.6.2.3.2.p.1">Upon receiving the registration request from the Identity Provider, the Application Provider MUST perform the following verification steps: </p>
 
 <ul>
-<li>Verify the JWT signature using the JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a> at the <samp>jwks_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.5</a>.  </li>
-<li>Verify the <samp>iss</samp> attribute matches the whitelisted <samp>provider_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.5</a>.  </li>
-<li>Verify the <samp>sub</samp> attribute matches the whitelisted <samp>tenant_id</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.5</a>.  </li>
-<li>Verify the <samp>aud</samp> attribute matches the <samp>provider_uri</samp> specified in the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </li>
+<li>Verify the JWT signature using the JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a> at the <samp>jwks_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
+<li>Verify the <samp>iss</samp> attribute matches the whitelisted <samp>provider_domain_name</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
+<li>Verify the <samp>sub</samp> attribute matches the whitelisted <samp>tenant_id</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
+<li>Verify the <samp>aud</samp> attribute matches the <samp>provider_domain_name</samp> specified in the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </li>
 <li>If the Application Provider has applied an expiration date to the FastFed handshake flow, verify the expiration date has not been exceeded.  </li>
 </ul>
 
@@ -1372,7 +1400,7 @@
 <a href="#rfc.section.6.2.3.3">6.2.3.3.</a> <a href="#HandshakeRegistrationResponse" id="HandshakeRegistrationResponse">Application Provider Sends Registration Response</a>
 </h1>
 <p id="rfc.section.6.2.3.3.p.1">If the registration is successful, the Application Provider responds with protocol-specific attributes needed by the Identity Provider to fully complete the registration.  </p>
-<p id="rfc.section.6.2.3.3.p.2">A successful response SHOULD use the HTTP 200 status code and return a JSON document <a href="#RFC4627" class="xref">[RFC4627]</a> using the <samp>application/jason</samp> content type.  </p>
+<p id="rfc.section.6.2.3.3.p.2">A successful response SHOULD use the HTTP 200 status code and return a JSON document <a href="#RFC4627" class="xref">[RFC4627]</a> using the <samp>application/json</samp> content type.  </p>
 <p id="rfc.section.6.2.3.3.p.3">The JSON document contains the following attributes: </p>
 
 <dl>
@@ -1437,6 +1465,11 @@
 <td class="reference"><b id="OpenID.Registration">[OpenID.Registration]</b></td>
 <td class="top">
 <a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a> and <a title="Microsoft">M. Jones</a>, "<a href="http://openid.net/specs/openid-connect-registration-1_0.html">OpenID Connect Dynamic Client Registration 1.0</a>", November 2014.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC1034">[RFC1034]</b></td>
+<td class="top">
+<a>Mockapetris, P.</a>, "<a href="https://tools.ietf.org/html/rfc1034">Domain names - concepts and facilities</a>", STD 13, RFC 1034, DOI 10.17487/RFC1034, November 1987.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>
