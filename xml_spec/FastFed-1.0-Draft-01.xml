@@ -31,7 +31,7 @@
       </address>
     </author>
 
-    <date day="3" month="Jan" year="2019" />
+    <date day="27" month="August" year="2019" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -272,10 +272,11 @@
      "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
      "jwks_uri": "https://idp.example.com/fastfed/keys",
-     "display_name": "Example Identity Provider",
-     "display_images": {
+     "display_settings": {
+       "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
-       "icon_uri": "https://idp.example.com/images/icon.png"
+       "icon_uri": "https://idp.example.com/images/icon.png",
+       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -693,6 +694,69 @@
 	  </t>
 	</section> <!-- End of Capabilities -->
 
+	<section anchor="DisplaySettings"
+		 title="Display Settings">
+              <t hangText="display_settings">
+                Display Settings contains the names, icons, logos, and licenses
+                for a Provider. It is included in the Metadata for both
+                Identity Providers and Application Providers.<vspace/><vspace/>If
+                defined, these values supercede any overlapping specifications
+                from underlying protocols; e.g. the
+                <spanx style="verb">logo_uri</spanx> defined in
+                <xref target="OpenID.Registration">OpenID Connect Dynamic
+                Client Registration 1.0</xref> [OpenID.Registration]
+                <vspace/><vspace/>
+		Display Settings are represented as a structure with the following attributes:
+                <list style="hanging">
+                  <t hangText="display_name">
+                    REQUIRED. The name of the Provider suitable for display to
+                    end-users. The value SHOULD be the primary textual label by
+                    which this Provider is normally displayed when presenting it
+                    to end-users. If desired, representation of this value in
+                    different languages and scripts is represented as described
+                    in <xref target="MetadataLanguages"/>.
+                  </t>
+                  <t hangText="icon_uri">
+                    OPTONAL. A URL that points to a square image file that can
+                    be used as a tile in grid layouts. Commonly used in
+                    scenarios where clicking the icon results in launching an
+                    instance of the application for the user. Image dimensions
+                    MUST be 180x180 pixels. Image files SHOULD be in PNG
+                    format, but Providers MAY accept alternative
+                    formats. Providers who consume and display the image MAY
+                    resize the image to a smaller dimension and/or convert to
+                    alternative file formats.  <vspace/> If desired,
+                    representation
+                    of this value in different languages and scripts is
+                    represented as described in
+                    <xref target="MetadataLanguages"/>.
+                  </t>
+                  <t hangText="logo_uri">
+                    OPTIONAL. A URL that points to a logo file for the business
+                    or organization. Image dimensions must be 180x80
+                    pixels. Image files SHOULD be in PNG format, but Providers
+                    MAY accept alternative formats. Providers who consume and
+                    display the image MAY resize the image to a smaller
+                    dimension and/or convert to alternative file formats.
+                    <vspace/>
+                    If desired, representation of this value in different
+                    languages and scripts is represented as described in
+                    <xref target="MetadataLanguages" />.
+                  </t>
+                  <t hangText="license">
+                    REQUIRED. A URL that points to a license granting use of the
+                    display name, icons, and logos. If the license is
+                    unrecognized by a participant in the FastFed flows, the
+                    participant MUST halt the FastFed Handshake as specified in
+                    <xref target="HandshakeHalt"/>. To maximize
+                    interoperability, all Providers are encouraged to use an
+                    existing FastFed license such as
+                    <spanx style="verb">"https://openid.net/intellectual-property/licenses/fastfed/1.0/"</spanx>.
+                  </t>
+                </list>
+              </t>
+	</section> <!-- End DisplaySettings-->
+
 	<section anchor="CommonProviderMetadata"
 		 title="Common Provider Metadata">
 	  <t>
@@ -705,7 +769,7 @@
 	    <list style="hanging">
 	      <t hangText="provider_domain_name">
 		REQUIRED. A Domain Name <xref target="RFC1034"/> for the
-		provider. Serves as a globally unique primary key for programmatic
+		Provider. Serves as a globally unique primary key for programmatic
 		use cases that require awareness of a distinct Provider
 		identity. An example is duplicate detection of FastFed
 		registrations where the combination
@@ -718,56 +782,12 @@
 	      </t>
 	      <t hangText="tenant_id">
                 REQUIRED. An opaque string representing a specific tenant within
-                the provider. The <spanx style="verb">tenant_id</spanx> must be
+                the Provider. The <spanx style="verb">tenant_id</spanx> must be
                 locally unique within the Provider and never reassigned.
               </t>
-	      <t hangText="display_name">
-		    REQUIRED. The name of the Provider suitable for display to
-		    end-users. The value SHOULD be the primary textual label by
-		    which this Provider is normally displayed when presenting it
-		    to end-users. If desired, representation of this value in
-		    different languages and scripts is represented as described
-		    in <xref target="MetadataLanguages"/>.
-	      </t>
-	      <t hangText="display_images">
-		    OPTIONAL. A structure containing URLs that reference icons
-		    and logos for the Provider. The values must point to a valid
-		    image file. If defined, these image specifications supercede
-		    any overlapping image specification contained in the
-		    configuration metadata for underlying protocols referenced
-		    by the FastFed Metadata; e.g. the
-		    <spanx style="verb">logo_uri</spanx> defined in
-		    <xref target="OpenID.Registration">OpenID Connect Dynamic
-		    Client Registration 1.0</xref>[OpenID.Registration]
-                    <vspace/><vspace/>
-                    This structure has the following attributes:
-		<list style="hanging">
-		  <t hangText="icon_uri">
-		    OPTONAL. A URL that points to a square image file that can
-		    be used as a tile in grid layouts. Commonly used in
-		    scenarios where clicking the icon results in launching an
-		    instance of the application for the user. Image dimensions
-		    MUST be 180x180 pixels. Images files SHOULD be in PNG
-		    format, but Providers MAY accept alternative
-		    formats. Providers who consume and display the image MAY
-		    resize the image to a smaller dimension and/or convert to
-		    alternative file formats.  <vspace/> If desired, representation
-		    of this value in different languages and scripts is
-		    represented as described in
-		    <xref target="MetadataLanguages"/>.
-		  </t>
-		  <t hangText="logo_uri">
-		    OPTIONAL. A URL that points to a logo file for the business
-		    or organization. Image dimensions must be 180x80
-		    pixels. Images files SHOULD be in PNG format, but Providers
-		    MAY accept alternative formats. Providers who consume and
-		    display the image MAY resize the image to a smaller
-		    dimension and/or convert to alternative file formats.  <vspace/>
-		    If desired, representation of this value in different
-		    languages and scripts is represented as described in
-		    <xref target="MetadataLanguages" />.
-		  </t>
-		</list>
+	      <t hangText="display_settings">
+		REQUIRED. A structure describing the display settings of the
+		Provider, defined in <xref target="DisplaySettings"/>.
 	      </t>
 	      <t hangText="capabilities">
 		REQUIRED. A structure describing the capabilities of the
@@ -971,9 +991,9 @@
 
  The name is invalid if retrieved from any of these Endpoints:
  
-     https://idp.example.com.otherdomain.ru/ --> INVALID. No suffix match.
-     https://example.com/                    --> INVALID. Incomplete match.
-     http://idp.example.com/                 --> INVALID. Not https.
+     https://idp.example.com.otherdomain.com/ --> INVALID. No suffix match.
+     https://example.com/                     --> INVALID. Incomplete match.
+     http://idp.example.com/                  --> INVALID. Not https.
 
 ]]></artwork></figure>
           <t>
@@ -1205,10 +1225,11 @@
      "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
      "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "display_name": "Example Identity Provider",
-     "display_images": {
+     "display_settings": {
+       "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
-       "icon_uri": "https://idp.example.com/images/icon.png"
+       "icon_uri": "https://idp.example.com/images/icon.png",
+       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -1590,7 +1611,7 @@ eifjccile	    parameters and values to the query component of a URL using the
 		  and the administrator must restart the FastFed Handshake. This
 		  value is provided as a convenience to the Identity Provider so
 		  that it may be aware of the deadline for completing the
-		  flow. Its value MUST be a number containing a NumericDate as
+		  flow. The value MUST be a number representing a NumericDate as
 		  defined in Section 2 of <xref target="RFC7519">RFC 7519</xref>
 		  [JWT].
 		</t> 
@@ -1903,9 +1924,9 @@ eifjccile	    parameters and values to the query component of a URL using the
 	      verification steps: 
 	      <list style="symbols">
 		<t>
-		  Verify the JWT signature using the JSON Web Key Set <xref target="RFC7517">[JWK]</xref>
-		  at the <spanx style="verb">jwks_uri</spanx>
-		  captured in
+		  Verify the JWT signature using the current JSON Web Key
+		  Set <xref target="RFC7517">[JWK]</xref> hosted at
+		  the <spanx style="verb">jwks_uri</spanx> captured in
 		  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
 		</t>
 		<t>
@@ -1955,6 +1976,29 @@ eifjccile	    parameters and values to the query component of a URL using the
 	      accept single sign-on requests and user provisioning activities
 	      from the Identity Provider using the protocols specified in the
 	      request.
+	    </t>
+	    <t>
+              Due transient failures, it is possible that an Identity Provider
+              may send a registration request but fail to receive, or process,
+              the response from the Application Provider. When this occurs, the
+              Identity Provider SHOULD retry the request. If the Application
+              Provider receives a duplicate request, it MUST return the same
+              response that was returned in the original request, as defined in
+              <xref target="HandshakeRegistrationResponse"/>.
+	    </t>
+	    <t>
+	      As a reference to implementors, a duplicate request may be
+              identified by noting that the information supplied in the request,
+              such as the <spanx style="verb">provider_domain_name</spanx>
+              and <spanx style="verb">tenant_id</spanx>, match an existing,
+              completed, registration.
+            </t>
+	    <t>
+	      When a duplicate is detected, the Application Provider SHOULD skip
+	      validation of the expiration_date and the FastFed compatibility
+	      evaluation (<xref target="ProviderCompatibilityEvaluation"/>), as
+	      these checks are either unnecessary or inapplicable to an already
+	      completed registration.
 	    </t>
 	  </section>
 
