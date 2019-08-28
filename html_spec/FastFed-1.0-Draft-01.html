@@ -390,9 +390,10 @@
 <link href="#rfc.section.3.2" rel="Chapter" title="3.2 Metadata Languages and Scripts">
 <link href="#rfc.section.3.3" rel="Chapter" title="3.3 Provider Metadata">
 <link href="#rfc.section.3.3.1" rel="Chapter" title="3.3.1 Capabilities">
-<link href="#rfc.section.3.3.2" rel="Chapter" title="3.3.2 Common Provider Metadata">
-<link href="#rfc.section.3.3.3" rel="Chapter" title="3.3.3 Identity Provider Metadata">
-<link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Application Provider Metadata">
+<link href="#rfc.section.3.3.2" rel="Chapter" title="3.3.2 Display Settings">
+<link href="#rfc.section.3.3.3" rel="Chapter" title="3.3.3 Common Provider Metadata">
+<link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Identity Provider Metadata">
+<link href="#rfc.section.3.3.5" rel="Chapter" title="3.3.5 Application Provider Metadata">
 <link href="#rfc.section.4" rel="Chapter" title="4 Metadata Endpoints">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Provider Metadata Endpoint">
 <link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 Endpoint Validation">
@@ -445,7 +446,7 @@
 
   <meta name="dct.creator" content="McAdams, D." />
   <meta name="dct.identifier" content="urn:ietf:id:fastfed-01" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-03" />
+  <meta name="dct.issued" scheme="ISO8601" content="2019-08-27" />
   <meta name="dct.abstract" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
   <meta name="description" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
 
@@ -466,7 +467,7 @@
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">Jan 3, 2019</td>
+<td class="right">August 27, 2019</td>
 </tr>
 
     	
@@ -516,11 +517,13 @@
 </li>
 <ul><li>3.3.1.   <a href="#rfc.section.3.3.1">Capabilities</a>
 </li>
-<li>3.3.2.   <a href="#rfc.section.3.3.2">Common Provider Metadata</a>
+<li>3.3.2.   <a href="#rfc.section.3.3.2">Display Settings</a>
 </li>
-<li>3.3.3.   <a href="#rfc.section.3.3.3">Identity Provider Metadata</a>
+<li>3.3.3.   <a href="#rfc.section.3.3.3">Common Provider Metadata</a>
 </li>
-<li>3.3.4.   <a href="#rfc.section.3.3.4">Application Provider Metadata</a>
+<li>3.3.4.   <a href="#rfc.section.3.3.4">Identity Provider Metadata</a>
+</li>
+<li>3.3.5.   <a href="#rfc.section.3.3.5">Application Provider Metadata</a>
 </li>
 </ul></ul><li>4.   <a href="#rfc.section.4">Metadata Endpoints</a>
 </li>
@@ -694,10 +697,11 @@
      "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
      "jwks_uri": "https://idp.example.com/fastfed/keys",
-     "display_name": "Example Identity Provider",
-     "display_images": {
+     "display_settings": {
+       "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
-       "icon_uri": "https://idp.example.com/images/icon.png"
+       "icon_uri": "https://idp.example.com/images/icon.png",
+       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -844,9 +848,9 @@
 
 <dl>
 <dt>identity_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.3</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.4</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
 <dt>application_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.4</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.5</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
 </dl>
 
 <p> </p>
@@ -878,36 +882,44 @@
 
 <p> </p>
 <h1 id="rfc.section.3.3.2">
-<a href="#rfc.section.3.3.2">3.3.2.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+<a href="#rfc.section.3.3.2">3.3.2.</a> <a href="#DisplaySettings" id="DisplaySettings">Display Settings</a>
 </h1>
-<p id="rfc.section.3.3.2.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
-<p id="rfc.section.3.3.2.p.2">Common Provider Metadata is a structure with the following values: </p>
+<p id="rfc.section.3.3.2.p.1">Display Settings contains the names, icons, logos, and licenses for a Provider. It is included in the Metadata for both Identity Providers and Application Providers.<br><br>If defined, these values supercede any overlapping specifications from underlying protocols; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a> [OpenID.Registration] <br><br> Display Settings are represented as a structure with the following attributes: </p>
+
+<dl>
+<dt>display_name</dt>
+<dd style="margin-left: 8">REQUIRED. The name of the Provider suitable for display to end-users. The value SHOULD be the primary textual label by which this Provider is normally displayed when presenting it to end-users. If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dt>icon_uri</dt>
+<dd style="margin-left: 8">OPTONAL. A URL that points to a square image file that can be used as a tile in grid layouts. Commonly used in scenarios where clicking the icon results in launching an instance of the application for the user. Image dimensions MUST be 180x180 pixels. Image files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dt>logo_uri</dt>
+<dd style="margin-left: 8">OPTIONAL. A URL that points to a logo file for the business or organization. Image dimensions must be 180x80 pixels. Image files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
+<dt>license</dt>
+<dd style="margin-left: 8">REQUIRED. A URL that points to a license granting use of the display name, icons, and logos. If the license is unrecognized by a participant in the FastFed flows, the participant MUST halt the FastFed Handshake as specified in <a href="#HandshakeHalt" class="xref">Section 6.1.4</a>. To maximize interoperability, all Providers are encouraged to use an existing FastFed license such as <samp>"https://openid.net/intellectual-property/licenses/fastfed/1.0/"</samp>.  </dd>
+</dl>
+
+<p> </p>
+<h1 id="rfc.section.3.3.3">
+<a href="#rfc.section.3.3.3">3.3.3.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+</h1>
+<p id="rfc.section.3.3.3.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
+<p id="rfc.section.3.3.3.p.2">Common Provider Metadata is a structure with the following values: </p>
 
 <dl>
 <dt>provider_domain_name</dt>
-<dd style="margin-left: 8">REQUIRED. A Domain Name <a href="#RFC1034" class="xref">[RFC1034]</a> for the provider. Serves as a globally unique primary key for programmatic use cases that require awareness of a distinct Provider identity. An example is duplicate detection of FastFed registrations where the combination of <samp>provider_domain_name</samp> and <samp>tenant_id</samp> can enable detection of a duplicate operations. See <a href="#ProviderMetadataEndpointValidation" class="xref">Section 4.1.1</a> for rules on defining and validating the <samp>provider_domain_name</samp>.  </dd>
+<dd style="margin-left: 8">REQUIRED. A Domain Name <a href="#RFC1034" class="xref">[RFC1034]</a> for the Provider. Serves as a globally unique primary key for programmatic use cases that require awareness of a distinct Provider identity. An example is duplicate detection of FastFed registrations where the combination of <samp>provider_domain_name</samp> and <samp>tenant_id</samp> can enable detection of a duplicate operations. See <a href="#ProviderMetadataEndpointValidation" class="xref">Section 4.1.1</a> for rules on defining and validating the <samp>provider_domain_name</samp>.  </dd>
 <dt>tenant_id</dt>
-<dd style="margin-left: 8">REQUIRED. An opaque string representing a specific tenant within the provider. The <samp>tenant_id</samp> must be locally unique within the Provider and never reassigned.  </dd>
-<dt>display_name</dt>
-<dd style="margin-left: 8">REQUIRED. The name of the Provider suitable for display to end-users. The value SHOULD be the primary textual label by which this Provider is normally displayed when presenting it to end-users. If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
-<dt>display_images</dt>
-<dd style="margin-left: 8">OPTIONAL. A structure containing URLs that reference icons and logos for the Provider. The values must point to a valid image file. If defined, these image specifications supercede any overlapping image specification contained in the configuration metadata for underlying protocols referenced by the FastFed Metadata; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a>[OpenID.Registration] <br><br> This structure has the following attributes: <dl>
-<dt>icon_uri</dt>
-<dd style="margin-left: 8">OPTONAL. A URL that points to a square image file that can be used as a tile in grid layouts. Commonly used in scenarios where clicking the icon results in launching an instance of the application for the user. Image dimensions MUST be 180x180 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
-<dt>logo_uri</dt>
-<dd style="margin-left: 8">OPTIONAL. A URL that points to a logo file for the business or organization. Image dimensions must be 180x80 pixels. Images files SHOULD be in PNG format, but Providers MAY accept alternative formats. Providers who consume and display the image MAY resize the image to a smaller dimension and/or convert to alternative file formats.  <br> If desired, representation of this value in different languages and scripts is represented as described in <a href="#MetadataLanguages" class="xref">Section 3.2</a>.  </dd>
-</dl>
-<p> </p>
-</dd>
+<dd style="margin-left: 8">REQUIRED. An opaque string representing a specific tenant within the Provider. The <samp>tenant_id</samp> must be locally unique within the Provider and never reassigned.  </dd>
+<dt>display_settings</dt>
+<dd style="margin-left: 8">REQUIRED. A structure describing the display settings of the Provider, defined in <a href="#DisplaySettings" class="xref">Section 3.3.2</a>.  </dd>
 <dt>capabilities</dt>
 <dd style="margin-left: 8">REQUIRED. A structure describing the capabilities of the Provider, defined in <a href="#ProviderMetadataCapabilities" class="xref">Section 3.3.1</a>.  </dd>
 </dl>
 
 <p> </p>
-<h1 id="rfc.section.3.3.3">
-<a href="#rfc.section.3.3.3">3.3.3.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
+<h1 id="rfc.section.3.3.4">
+<a href="#rfc.section.3.3.4">3.3.4.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.3.p.1">Identity Provider Metadata is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
+<p id="rfc.section.3.3.4.p.1">Identity Provider Metadata is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
 
 <dl>
 <dt>fastfed_handshake_start_uri</dt>
@@ -917,10 +929,10 @@
 </dl>
 
 <p> </p>
-<h1 id="rfc.section.3.3.4">
-<a href="#rfc.section.3.3.4">3.3.4.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
+<h1 id="rfc.section.3.3.5">
+<a href="#rfc.section.3.3.5">3.3.5.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.4.p.1">Application Provider Metadata is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
+<p id="rfc.section.3.3.5.p.1">Application Provider Metadata is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
 
 <dl>
 <dt>fastfed_handshake_finish_uri</dt>
@@ -949,7 +961,7 @@
 <h1 id="rfc.section.4.1.1">
 <a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#ProviderMetadataEndpointValidation" id="ProviderMetadataEndpointValidation">Endpoint Validation</a>
 </h1>
-<p id="rfc.section.4.1.1.p.1">To prevent impersonanation of Providers, the value of the <samp>provider_domain_name</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.2</a>) MUST match the domain of the Metadata Endpoint.  </p>
+<p id="rfc.section.4.1.1.p.1">To prevent impersonanation of Providers, the value of the <samp>provider_domain_name</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.3</a>) MUST match the domain of the Metadata Endpoint.  </p>
 <p id="rfc.section.4.1.1.p.2">The Metadata Endpoint MAY be hosted at a subdomain of the <samp>provider_domain_name</samp>.  </p>
 <p id="rfc.section.4.1.1.p.3">A TLS server certificate check MUST be performed when connecting to the Endpoint.  </p>
 <p id="rfc.section.4.1.1.p.4">The following is a non-normative example showing valid and invalid Metadata Endpoints.  </p>
@@ -968,9 +980,9 @@
 
  The name is invalid if retrieved from any of these Endpoints:
  
-     https://idp.example.com.otherdomain.ru/ --&gt; INVALID. No suffix match.
-     https://example.com/                    --&gt; INVALID. Incomplete match.
-     http://idp.example.com/                 --&gt; INVALID. Not https.
+     https://idp.example.com.otherdomain.com/ --&gt; INVALID. No suffix match.
+     https://example.com/                     --&gt; INVALID. Incomplete match.
+     http://idp.example.com/                  --&gt; INVALID. Not https.
 
 </pre>
 <p id="rfc.section.4.1.1.p.5">If the <samp>provider_domain_name</samp> is invalid, the FastFed Handshake MUST be halted as specified in <a href="#HandshakeHalt" class="xref">Section 6.1.4</a>.  </p>
@@ -1100,10 +1112,11 @@
      "provider_domain_name": "idp.example.com",
      "tenant_id": "tenant-12345",
      "jwks_uri": "https://cloudprovider.com/fastfed/keys",
-     "display_name": "Example Identity Provider",
-     "display_images": {
+     "display_settings": {
+       "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
-       "icon_uri": "https://idp.example.com/images/icon.png"
+       "icon_uri": "https://idp.example.com/images/icon.png",
+       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
      }
      "capabilities": {
        "authentication_profiles": [
@@ -1256,7 +1269,7 @@
 <dt>app_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. The location of the Provider Metadata for the Application Provider.  </dd>
 <dt>expiration</dt>
-<dd style="margin-left: 8">OPTIONAL. The date/time when the Application Provider will consider the whitelisted pending registration to be expired and the administrator must restart the FastFed Handshake. This value is provided as a convenience to the Identity Provider so that it may be aware of the deadline for completing the flow. Its value MUST be a number containing a NumericDate as defined in Section 2 of <a href="#RFC7519" class="xref">RFC 7519</a> [JWT].  </dd>
+<dd style="margin-left: 8">OPTIONAL. The date/time when the Application Provider will consider the whitelisted pending registration to be expired and the administrator must restart the FastFed Handshake. This value is provided as a convenience to the Identity Provider so that it may be aware of the deadline for completing the flow. The value MUST be a number representing a NumericDate as defined in Section 2 of <a href="#RFC7519" class="xref">RFC 7519</a> [JWT].  </dd>
 </dl>
 
 <p> </p>
@@ -1385,7 +1398,7 @@
 <p id="rfc.section.6.2.3.2.p.1">Upon receiving the registration request from the Identity Provider, the Application Provider MUST perform the following verification steps: </p>
 
 <ul>
-<li>Verify the JWT signature using the JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a> at the <samp>jwks_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
+<li>Verify the JWT signature using the current JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a> hosted at the <samp>jwks_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
 <li>Verify the <samp>iss</samp> attribute matches the whitelisted <samp>provider_domain_name</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
 <li>Verify the <samp>sub</samp> attribute matches the whitelisted <samp>tenant_id</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 6.2.1.4</a>.  </li>
 <li>Verify the <samp>aud</samp> attribute matches the <samp>provider_domain_name</samp> specified in the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </li>
@@ -1396,6 +1409,9 @@
 <p id="rfc.section.6.2.3.2.p.2">In addition, the Application Provider MUST re-verify that the capabilities chosen by the Identity Provider successfully pass the FastFed compatibility evaluation (<a href="#ProviderCompatibilityEvaluation" class="xref">Section 5</a>), based upon the metadata documents previously exchanged during the FastFed handshake.  </p>
 <p id="rfc.section.6.2.3.2.p.3">If verification succeeds, the Application Provider MUST perform any actions necessary to establish the federation relationship for the specific <samp>authentication_profile</samp> and <samp>provisioning_profile</samp> indicated in the registration request. These actions are defined in the FastFed Profile for each protocol.  </p>
 <p id="rfc.section.6.2.3.2.p.4">At the end of this step, the Application Provider MUST be ready to accept single sign-on requests and user provisioning activities from the Identity Provider using the protocols specified in the request.  </p>
+<p id="rfc.section.6.2.3.2.p.5">Due transient failures, it is possible that an Identity Provider may send a registration request but fail to receive, or process, the response from the Application Provider. When this occurs, the Identity Provider SHOULD retry the request. If the Application Provider receives a duplicate request, it MUST return the same response that was returned in the original request, as defined in <a href="#HandshakeRegistrationResponse" class="xref">Section 6.2.3.3</a>.  </p>
+<p id="rfc.section.6.2.3.2.p.6">As a reference to implementors, a duplicate request may be identified by noting that the information supplied in the request, such as the <samp>provider_domain_name</samp> and <samp>tenant_id</samp>, match an existing, completed, registration.  </p>
+<p id="rfc.section.6.2.3.2.p.7">When a duplicate is detected, the Application Provider SHOULD skip validation of the expiration_date and the FastFed compatibility evaluation (<a href="#ProviderCompatibilityEvaluation" class="xref">Section 5</a>), as these checks are either unnecessary or inapplicable to an already completed registration.  </p>
 <h1 id="rfc.section.6.2.3.3">
 <a href="#rfc.section.6.2.3.3">6.2.3.3.</a> <a href="#HandshakeRegistrationResponse" id="HandshakeRegistrationResponse">Application Provider Sends Registration Response</a>
 </h1>
