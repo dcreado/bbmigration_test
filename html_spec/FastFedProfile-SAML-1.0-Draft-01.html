@@ -561,26 +561,20 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.1.p.3">If the SAML Metadata document is access controlled, the Identity Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Application Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
-<p id="rfc.section.3.1.p.4">The following is a non-normative example of the contents of a registration request message prior to serialization: </p>
+<p id="rfc.section.3.1.p.3">The following is a non-normative example of the contents of a registration request message prior to serialization: </p>
 <pre>
  {
-  "iss": "https://idp.example.com",
-  "sub": "tenant-12345",
-  "aud": "https://app.example.com",
-  "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
-  "authentication_profiles": [
-    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
-  ],
-  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-    "saml_metatadata_uri": "https://tenant-12345.cloudprovider.com/saml-metadata.xml",
-  },
-  "oauth_token": {
-    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-    "token_type": "bearer",
-    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
-    "expires_in": 3600 
-  }
+   "iss": "https://idp.example.com",
+   "sub": "tenant-12345",
+   "aud": "https://app.example.com",
+   "exp": 1234567890,
+   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "authentication_profiles": [
+     "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+   ],
+   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+     "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+   }
  }
 </pre>
 <h1 id="rfc.section.3.2">
@@ -597,20 +591,12 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.2.p.3">If the SAML Metadata document is access controlled, the Application Provider MAY also include a value for <samp>oauth_token</samp> as defined in Section 6.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. If this value is provided, the Identity Provider MUST present the access_token as a Bearer Token when querying the SAML Metadata URL.  </p>
-<p id="rfc.section.3.2.p.4">The following is a non-normative example of the contents of a registration response message: </p>
+<p id="rfc.section.3.2.p.3">The following is a non-normative example of the contents of a registration response message: </p>
 <pre>
  {
-  "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-    "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml",
-    "include_attributes_in_saml_response": true
-  },
-  "oauth_token": {
-    "access_token": "MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3",
-    "token_type": "bearer",
-    "refresh_token": "IwOGYzYTlmM2YxOTQ5MGE3YmNmMDFkNTVk",
-    "expires_in": 3600
-  }
+   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+     "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+   }
  }
 </pre>
 <h1 id="rfc.section.4">
