@@ -384,9 +384,13 @@
 <link href="#rfc.section.4" rel="Chapter" title="4 Interoperability Requirements">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Identity Provider Requirements">
 <link href="#rfc.section.4.2" rel="Chapter" title="4.2 Application Provider Requirements">
-<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations">
-<link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations">
-<link href="#rfc.references" rel="Chapter" title="7 Normative References">
+<link href="#rfc.section.5" rel="Chapter" title="5 Authentication Example">
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 Identity Provider       Shares Public Key">
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 Application Provider Shares SCIM and OAuth Endpoints">
+<link href="#rfc.section.5.3" rel="Chapter" title="5.3 Identity Provider Acquires an OAuth Access Token">
+<link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations">
+<link href="#rfc.section.7" rel="Chapter" title="7 IANA Considerations">
+<link href="#rfc.references" rel="Chapter" title="8 Normative References">
 <link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements">
 <link href="#rfc.appendix.B" rel="Chapter" title="B Notices">
 <link href="#rfc.appendix.C" rel="Chapter" title="C Document History">
@@ -457,11 +461,19 @@
 </li>
 <li>4.2.   <a href="#rfc.section.4.2">Application Provider Requirements</a>
 </li>
-</ul><li>5.   <a href="#rfc.section.5">Security Considerations</a>
+</ul><li>5.   <a href="#rfc.section.5">Authentication Example</a>
 </li>
-<li>6.   <a href="#rfc.section.6">IANA Considerations</a>
+<ul><li>5.1.   <a href="#rfc.section.5.1">Identity Provider       Shares Public Key</a>
 </li>
-<li>7.   <a href="#rfc.references">Normative References</a>
+<li>5.2.   <a href="#rfc.section.5.2">Application Provider Shares SCIM and OAuth Endpoints</a>
+</li>
+<li>5.3.   <a href="#rfc.section.5.3">Identity Provider Acquires an OAuth Access Token</a>
+</li>
+</ul><li>6.   <a href="#rfc.section.6">Security Considerations</a>
+</li>
+<li>7.   <a href="#rfc.section.7">IANA Considerations</a>
+</li>
+<li>8.   <a href="#rfc.references">Normative References</a>
 </li>
 <li>Appendix A.   <a href="#rfc.appendix.A">Acknowledgements</a>
 </li>
@@ -526,12 +538,12 @@
 <h1 id="rfc.section.3.1">
 <a href="#rfc.section.3.1">3.1.</a> <a href="#FastFedHandshakeRegistrationRequest" id="FastFedHandshakeRegistrationRequest">FastFed Registration Request</a>
 </h1>
-<p id="rfc.section.3.1.p.1">This specification extends the contents of the FastFed Registration Request (Section 7.2.3.1 of <a href="#FastFed.Core" class="xref">FastFord Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</samp>.  </p>
+<p id="rfc.section.3.1.p.1">This specification extends the contents of the FastFed Registration Request (Section 7.2.3.1 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</samp>.  </p>
 <p id="rfc.section.3.1.p.2">The structure contains the following attributes: </p>
 
 <dl>
-<dt>provider_authentication</dt>
-<dd style="margin-left: 8">REQUIRED. A structure containing the authentication keys necessary to authenticate the provisioning provider, as defined in Section 3.3.3 of <a href="#FastFed.Core" class="xref">FastFord Core</a>.  <br><br>The authentication keys MAY be the same as those defined in the Identity Provider's FastFed Metadata. Alternatively, SCIM provisioning may be delegated to a distinct sub-system which authenticates with its own key materials. The declaration of protocol-specific authentication materials enables both scenarios.  </dd>
+<dt>provider_identity</dt>
+<dd style="margin-left: 8">REQUIRED. A structure containing the contact information and authentication keys necessary to authenticate the provisioning provider, as defined in Section 3.3.3 of <a href="#FastFed.Core" class="xref">FastFed Core</a>.  <br><br>The <samp>provider_identity</samp> MAY be the same party who hosted the FastFed Handshake (and is defined in the Identity Provider FastFed Metadata). Alternatively, SCIM provisioning may be delegated to a distinct sub-system which authenticates with its own identity and key materials. By specifying a protocol-specific <samp>provider_identity</samp> for SCIM provisioning, both scenarios are supported.  </dd>
 </dl>
 
 <p> </p>
@@ -547,8 +559,13 @@
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "provider_authentication": {
-       "jwks_uri": "https://provisioning.example.com/keys"
+     "provider_identity": {
+       "jwks_uri": "https://provisioning.example.com/keys",
+       "contact_information": {
+         "organization": "Example Inc.",
+         "phone": "+1-800-555-5555",
+         "email": "support@example.com"
+       }
      }
    }
  }
@@ -556,7 +573,7 @@
 <h1 id="rfc.section.3.2">
 <a href="#rfc.section.3.2">3.2.</a> <a href="#FastFedHandshakeRegistrationResponse" id="FastFedHandshakeRegistrationResponse">FastFed Registration Response</a>
 </h1>
-<p id="rfc.section.3.2.p.1">This specification extends the contents of the FastFed Registration Response (Section 7.2.3.3 of <a href="#FastFed.Core" class="xref">FastFord Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</samp>.  </p>
+<p id="rfc.section.3.2.p.1">This specification extends the contents of the FastFed Registration Response (Section 7.2.3.3 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) with a structure sharing the same name as the profile: <samp>"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</samp>.  </p>
 <p id="rfc.section.3.2.p.2">The structure contains the following attributes: </p>
 
 <dl>
@@ -594,7 +611,7 @@
 
 <ul>
 <li>MUST implement the required functionality of a SCIM Client as defined in <a href="#RFC7643" class="xref">[RFC7643]</a> and <a href="#RFC7644" class="xref">[RFC7644]</a>.  </li>
-<li>MUST authenticate to the SCIM endpoint using an OAuth <samp>access_token</samp>. The token must be attained using the mechanisms defined in Section 6.6 of the <a href="#FastFed.Core" class="xref">FastFord Core</a> specification. The keyId used to attain the OAuth token must exist in the keys hosted at the <samp>jwks_uri</samp> specified by the SCIM <samp>provider_authentication</samp> in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a>.  </li>
+<li>MUST authenticate to the SCIM endpoint using an OAuth <samp>access_token</samp>. The token must be attained using the mechanisms defined in Section 6.6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification. The keyId used to attain the OAuth token must exist in the keys hosted at the <samp>jwks_uri</samp> specified by the SCIM <samp>provider_authentication</samp> in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a>.  </li>
 <li>For each end-user that is authorized to access the Application: <ul>
 <li>SHOULD replicate end-user information to the Application Provider within 60 minutes of an active end-user being created or updated.  <br><br> The Identity Provider MAY use any combination of the following operations to provision user information: <ul>
 <li>Create account via <em>POST /Users</em>
@@ -637,7 +654,7 @@
 <ul>
 <li>MUST implement the required functionality of a SCIM Service Provider as defined in <a href="#RFC7643" class="xref">[RFC7643]</a> and <a href="#RFC7644" class="xref">[RFC7644]</a>.  </li>
 <li>MUST support authentication via OAuth <samp>access_tokens</samp>.  </li>
-<li>MUST provide an OAuth authorization server capable of issuing tokens as defined in Section 6.6 of the <a href="#FastFed.Core" class="xref">FastFord Core</a> specification. OAuth tokens MUST only be issued if the token request is signed using a keyId which exists in the key set hosted at the <samp>jwks_uri</samp> specified by the SCIM <samp>provider_authentication</samp> in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a>.  </li>
+<li>MUST provide an OAuth authorization server capable of issuing tokens as defined in Section 6.6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification. OAuth tokens MUST only be issued if the token request is signed using a keyId which exists in the key set hosted at the <samp>jwks_uri</samp> specified by the SCIM <samp>provider_authentication</samp> in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a>.  </li>
 <li>MUST support the following operations: <ul>
 <li>Create account via <em>POST /Users</em>
 </li>
@@ -659,15 +676,124 @@
 
 <p> </p>
 <h1 id="rfc.section.5">
-<a href="#rfc.section.5">5.</a> <a href="#Security" id="Security">Security Considerations</a>
+<a href="#rfc.section.5">5.</a> <a href="#AuthenticationExample" id="AuthenticationExample">Authentication Example</a>
 </h1>
-<p id="rfc.section.5.p.1">TODO </p>
+<p id="rfc.section.5.p.1">The following examples illustrate how an Identity Provider authenticates to a SCIM endpoint to perform SCIM provisioning activities.  </p>
+<p id="rfc.section.5.p.2">The examples below adhere to the authentication requirements defined in Section 6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification ("Provider Authentication Methods"), as well as the additional SCIM profile requirements defined in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a> and <a href="#FastFedHandshakeRegistrationResponse" class="xref">Section 3.2</a> of this specification.  </p>
+<h1 id="rfc.section.5.1">
+<a href="#rfc.section.5.1">5.1.</a> <a href="#IdentityProviderSharesPublicKey" id="IdentityProviderSharesPublicKey">Identity Provider       Shares Public Key</a>
+</h1>
+<p id="rfc.section.5.1.p.1">As a first-step, the Identity Provider shares a public key with the Application Provider in the form of a JSON Web key Set <a href="#RFC7517" class="xref">[JWK]</a>. This occurs during the FastFed Handhshake (see "jwks_uri", below) and is described in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.1</a> of this specification.  </p>
+<pre>
+ {
+   "iss": "https://idp.example.com",
+   "sub": "tenant-12345",
+   "aud": "https://app.example.com",
+   "exp": 1234567890,
+   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "provisioning_profiles": [
+     "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+   ],
+   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+     "provider_identity": {
+       "jwks_uri": "https://provisioning.example.com/keys",
+       "contact_information": {
+         "organization": "Example Inc.",
+         "phone": "+1-800-555-5555",
+         "email": "support@example.com"
+       }
+     }
+   }
+ }
+</pre>
+<p id="rfc.section.5.1.p.2">Upon receiving this information, the Application Provider may internally perform an OAuth client registration in order to capture the provider's contact information and <samp>jwks_uri</samp>, and authorize the Provider to perform SCIM provisioning activities. This is an implementation detail. FastFed does not require the exchange of an OAuth clientID.  </p>
+<h1 id="rfc.section.5.2">
+<a href="#rfc.section.5.2">5.2.</a> <a href="#ApplicationProviderSharesEndpoints" id="ApplicationProviderSharesEndpoints">Application Provider Shares SCIM and OAuth Endpoints</a>
+</h1>
+<p id="rfc.section.5.2.p.1">Subsequently in the FastFed Handshake, the Application Provider returns SCIM and OAuth metadata back to the Identity Provider. This is described in <a href="#FastFedHandshakeRegistrationResponse" class="xref">Section 3.2</a> of this specification.  </p>
+<pre>
+ {
+   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+     "scim_service_uri": "https://tenant-56789.app.example.com/scim"
+     "oauth_metadata": {
+       "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+       "token_endpoint": "https://tenant-56789.app.example.com/oauth",
+       "scope": "scim"
+     }
+   }
+ }
+</pre>
+<h1 id="rfc.section.5.3">
+<a href="#rfc.section.5.3">5.3.</a> <a href="#IdentityProviderAcquiresOAuthToken" id="IdentityProviderAcquiresOAuthToken">Identity Provider Acquires an OAuth Access Token</a>
+</h1>
+<p id="rfc.section.5.3.p.1">After the FastFed Handshake is complete and the Identity Provider is ready to begin calling the SCIM endpoint, it must first acquire an OAuth <samp>access_token</samp>. This will be used to authenticate to the SCIM endpoint.  </p>
+<p id="rfc.section.5.3.p.2">The <samp>access_token</samp> is acquired by using the JWT Authorization Grant Type. This grant type is defined in <a href="#RFC7523" class="xref">RFC 7523</a>, and its usage within FastFed is specified in Section 6.6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification.  </p>
+<p id="rfc.section.5.3.p.3">In essence, the Identity Provider sends a signed JWT to the OAuth endpoint hosted by the Application Provider. If the JWT is valid and is signed by an authorized party, then an OAuth access_token is returned.  </p>
+<p id="rfc.section.5.3.p.4">This is illustrated in the following steps. First, a JWT is constructed with the following contents: </p>
+<pre>
+ {                                                                                                                 
+   "iss": "idp.example.com",                                                                                       
+   "sub": "tenant-12345",                                                                                          
+   "aud": "app.example.com",                                                                                       
+   "exp": 1234567890,            
+ }
+</pre>
+<p id="rfc.section.5.3.p.5">Next, a request is made to the OAuth token endpoint, using the signed and serialized JWT as the value of the <samp>assertion</samp>.  </p>
+<pre>
+ {
+     POST /oauth HTTP/1.1
+     Host: tenant-56789.app.example.com
+     Content-Type: application/x-www-form-urlencoded
+
+     grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer
+     &amp;assertion=eyJhbGciOiJFUzI1NiIsImtpZCI6IjE2In0.
+     eyJpc3Mi[...omitted for brevity...].
+     J9l-ZhwP[...omitted for brevity...]
+ }
+</pre>
+<p id="rfc.section.5.3.p.6">In response, an OAuth token is returned: </p>
+<pre>
+     HTTP/1.1 200 OK
+     Content-Type: application/json;charset=UTF-8
+     Cache-Control: no-store
+     Pragma: no-cache
+
+     {
+       "access_token":"2YotnFZFEjr1zCsicMWpAA",
+       "token_type":"Bearer",
+       "expires_in":3600
+     }
+</pre>
+<p id="rfc.section.5.3.p.7">The token is used to authenticate to the SCIM endpoint: </p>
+<pre>
+   POST scim/Users  HTTP/1.1
+   Host: tenant-56789.app.example.com
+   Accept: application/scim+json
+   Content-Type: application/scim+json
+   Authorization: Bearer 2YotnFZFEjr1zCsicMWpAA
+   Content-Length: ...
+
+   {
+     "schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],
+     "userName":"bjensen",
+     "externalId":"bjensen",
+     "name":{
+       "formatted":"Ms. Barbara J Jensen III",
+       "familyName":"Jensen",
+       "givenName":"Barbara"
+     }
+</pre>
+<p id="rfc.section.5.3.p.8">When the access token expires, the SCIM service returns an HTTP 401 response code. The JWT Authorization Grant flow may then be re-executed to acquire a new access token.  </p>
 <h1 id="rfc.section.6">
-<a href="#rfc.section.6">6.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
+<a href="#rfc.section.6">6.</a> <a href="#Security" id="Security">Security Considerations</a>
 </h1>
 <p id="rfc.section.6.p.1">TODO </p>
+<h1 id="rfc.section.7">
+<a href="#rfc.section.7">7.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
+</h1>
+<p id="rfc.section.7.p.1">TODO </p>
 <h1 id="rfc.references">
-<a href="#rfc.references">7.</a> Normative References</h1>
+<a href="#rfc.references">8.</a> Normative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="FastFed.Core">[FastFed.Core]</b></td>
@@ -733,6 +859,16 @@
 <td class="reference"><b id="RFC6750">[RFC6750]</b></td>
 <td class="top">
 <a>Jones, M.</a> and <a>D. Hardt</a>, "<a href="https://tools.ietf.org/html/rfc6750">The OAuth 2.0 Authorization Framework: Bearer Token Usage</a>", RFC 6750, DOI 10.17487/RFC6750, October 2012.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7517">[RFC7517]</b></td>
+<td class="top">
+<a>Jones, M.</a>, "<a href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>", RFC 7517, DOI 10.17487/RFC7517, May 2015.</td>
+</tr>
+<tr>
+<td class="reference"><b id="RFC7523">[RFC7523]</b></td>
+<td class="top">
+<a>Jones, M.</a>, <a>Campbell, B.</a> and <a>C. Mortimore</a>, "<a href="https://tools.ietf.org/html/rfc7523">JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants</a>", RFC 7523, DOI 10.17487/RFC7523, May 2015.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC7643">[RFC7643]</b></td>
