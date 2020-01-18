@@ -94,9 +94,70 @@
           the
           <xref target="FastFed.Core">FastFed Core</xref> specification.
 	</t>
+	<t>
+	  The
+	  terms <spanx style="verb">"SCIM"</spanx>, <spanx style="verb">"SCIM
+	  client"</spanx>, and <spanx style="verb">"SCIM service"</spanx> refer
+	  to the terminology defined in <xref target="RFC7644">RFC 7644</xref>.
+	</t> 
       </section>
     </section>
+
+    <section anchor="Overview"
+             title="Overview">
     
+      <section anchor="RolesAndResponsibilities"
+               title="Roles and Responsibilities">
+	<t>
+	  In this profile, the Identity Provider plays the role of a SCIM
+	  client, pushing user and group information to the
+	  Application Provider who acts as the SCIM service.
+	</t>
+	<t>
+	  The result is to maintain a copy of appropriate user and group
+	  information in the Application by communicating, via calls the to the
+	  SCIM APIs, the creation, update, and
+	  deletion of these records.
+	</t>
+	<t>
+	  The Identity Provider may also query the Application Provider for user
+	  and group information to detect drift between the two parties that
+	  requires repair.
+	</t>
+	<t>
+	  To perform these reponsibilities, this specification defines the
+	  subset of SCIM capabilities that each party must implement to fulfill
+	  the FastFed interoperability requirements.
+	</t>
+      </section>
+	
+      <section anchor="ClientAuthentication" 
+	       title="Client Authentication">
+	<t>
+	  SCIM <xref target="RFC7644"/> does not prescribe a mechanism for client
+          authentication to the SCIM service. However, for interoperability
+          purposes, it is necessary for Providers to agree on an authentication
+          method. To fill the gap, this specification prescribes an
+          OAuth 2.0 authentication profile for SCIM services, while also leaving
+          extension points available for alternative authentication methods.
+	</t>
+	<t>
+	  As described in Section 6 of
+	  the <xref target="FastFed.Core">FastFed Core</xref> specification, the
+	  use of assymetric key pairs is preferred over long-lived shared
+	  secrets. As a result, this profile uses <xref target="RFC7523">RFC 7523</xref>
+	  which defines a mechanism to exchange a signed JWT for an OAuth 2.0 access token.
+	</t>
+	<t>
+	  An end-to-end example of using <xref target="RFC7523">RFC
+	  7523</xref> for SCIM authentication is provided in
+	  <xref target="AuthenticationExample"/>.
+	</t>
+      </section>
+    </section> <!-- End of Overview -->
+
+    <section anchor="ProtocolExtensions" title="Protocol Extensions">
+
     <section anchor="FastFedMetadata" title="FastFed Metadata">
       <t>
         This specification extends the <xref target="FastFed.Core">FastFed
@@ -155,26 +216,33 @@
           This specification extends the contents of the FastFed Registration
           Request (Section 7.2.3.1 of <xref target="FastFed.Core">FastFed
           Core</xref>) with a structure sharing the same name as the
-          profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>.
+          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>.
         </t>
         <t>
           The structure contains the following attributes:
           <list style="hanging">
-            <t hangText="provider_identity">
-              REQUIRED. A structure containing the contact information and
-              authentication keys necessary to authenticate the provisioning
+            <t hangText="provider_contact_information">
+              REQUIRED. A structure containing the contact information for the provisioning
               provider, as defined in Section 3.3.3
               of <xref target="FastFed.Core">FastFed Core</xref>.
 
-	      <vspace/><vspace/>The <spanx style="verb">provider_identity</spanx>
-              MAY be the same party who hosted the FastFed Handshake (and is
+	      <vspace/><vspace/>The <spanx style="verb">provider_contact_information</spanx>
+              MAY be the same party who hosted the FastFed Handshake (as
               defined in the Identity Provider FastFed Metadata). Alternatively,
               SCIM provisioning may be delegated to a distinct sub-system which
               authenticates with its own identity and key materials. By
-              specifying a
-              protocol-specific <spanx style="verb">provider_identity</spanx>
+              specifying
+              protocol-specific <spanx style="verb">provider_contact_information</spanx>
               for SCIM provisioning, both scenarios are supported.
             </t>
+	    <t hangText="provider_authentication_methods">
+	      REQUIRED. A list of supported authentication methods for client
+	      authentication to the SCIM service, along with any additional
+	      metadata specified by each method. Providers SHOULD support the
+	      JWT Profile for OAuth-2.0 (defined in
+	      <xref target="FastFedHandshakeRegistrationRequestOAuth"/>) and MAY
+	      support additional methods.
+	    </t>
           </list>
         </t>
         <t>
@@ -183,26 +251,83 @@
         </t>
         <figure><artwork><![CDATA[
  {
-   "iss": "https://idp.example.com",
-   "sub": "tenant-12345",
-   "aud": "https://app.example.com",
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
    "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "provider_identity": {
-       "jwks_uri": "https://provisioning.example.com/keys",
-       "contact_information": {
-         "organization": "Example Inc.",
-         "phone": "+1-800-555-5555",
-         "email": "support@example.com"
+     "provider_contact_information": {
+       "organization": "Example Inc.",
+       "phone": "+1-800-555-5555",
+       "email": "support@example.com"
+     },
+     "provider_authentication_methods": {
+        ...protocol-specific values...
+     }
+   }
+ }
+]]></artwork></figure>
+
+	<section anchor="FastFedHandshakeRegistrationRequestOAuth"
+               title="Usage of the OAuth-2.0 JWT Profile">
+	  <t>
+	    Support for this authentication method is indicated by including an attribute
+	    in the <spanx style="verb">provider_authentication_methods</spanx>
+	    with the following name:
+	    <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile"</spanx>
+	  </t>
+	  <t>
+	    The value of the attribute is a structure with the following contents:
+
+	    <list style="hanging">
+              <t hangText="jwks_uri">
+		REQUIRED. URL of the SCIM client's JSON Web Key
+                Set <xref target="RFC7517">[JWK]</xref> containing the signing
+                key(s) used by the Provider.
+		
+		<vspace/><vspace/>If the same entity hosts both the FastFed
+		Handshake and performs SCIM provisioning, then the same
+		<spanx style="verb">jwks_uri</spanx> MAY be used for both
+		purposes. Alternatively, if SCIM provisioning is delegated to a
+		distinct sub-system which authenticates with its own key
+		materials, then a different key set can be used. By specifying a
+		protocol-specific <spanx style="verb">jwks_uri</spanx> for SCIM
+		provisioning, both scenarios are supported.
+              </t>
+	    </list>
+	  </t>
+          <t>
+            The following is a non-normative example of the contents of a
+            registration request message containing this authentication method:
+          </t>
+          <figure><artwork><![CDATA[
+ {
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
+   "exp": 1234567890,
+   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "provisioning_profiles": [
+     "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+   ],
+   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+     "provider_contact_information": {
+       "organization": "Example Inc.",
+       "phone": "+1-800-555-5555",
+       "email": "support@example.com"
+     },
+     "provider_authentication_methods": {
+       "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
+         "jwks_uri": "https://provisioning.example.com/keys"
        }
      }
    }
  }
 ]]></artwork></figure>
+	</section>
+
       </section>
 
       <section anchor="FastFedHandshakeRegistrationResponse" 
@@ -211,7 +336,7 @@
           This specification extends the contents of the FastFed Registration
           Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
           Core</xref>) with a structure sharing the same name as the
-          profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>.
+          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>
 	</t>
 	<t>
 	  The structure contains the following attributes:
@@ -220,14 +345,10 @@
               REQUIRED. Contains the URL of the Application Provider's
               SCIM Endpoint.
             </t>
-	    <t hangText="oauth_metadata">
-              REQUIRED. A structure containing the OAuth metadata for
-              authenticating to the SCIM endpoint, as defined in Section 6.6 of
-              <xref target="FastFed.Core">FastFed Core</xref>.
-	      
-	      <vspace/><vspace/> The OAuth scope returned in this structure MUST
-	      authorize the SCIM client to perform all provisioning activity
-	      specified by this profile.
+	    <t hangText="provider_authentication_method">
+              REQUIRED. Contains the URN of the chosen authentication method,
+              selected by the Application Provider from amongst the set of compatible
+              methods shared by both the Identity Provider and the Application Provider.
             </t>
           </list>
         </t>
@@ -238,18 +359,66 @@
         <figure><artwork><![CDATA[
  {
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "scim_service_uri": "https://tenant-56789.app.example.com/scim"
-     "oauth_metadata": { 
-       "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "provider_authentication_method": ...
+   }
+ }
+]]></artwork></figure>
+
+	<section anchor="FastFedHandshakeRegistrationResponseOAuth"
+		 title="Usage of the OAuth-2.0 JWT Profile">
+	  
+	  <t>
+	    The selection of this authentication method is indicated by setting the
+            value of <spanx style="verb">provider_authentication_method</spanx>
+            to be:
+
+            <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile"</spanx>
+          </t>
+          <t>
+            In addition, a structure with the same name as this URN is included
+            in the response. The structure contains the following contents:
+
+            <list style="hanging">
+              <t hangText="token_endpoint">
+		REQUIRED. Contains the URL of the Application Provider's
+		OAuth 2.0 token endpoint.
+	      </t>
+	      <t hangText="scope">
+		REQUIRED. Contains the OAuth scope parameter to be provided to the
+		OAuth 2.0 token endpoint when requesting an access token. The
+		OAuth scope MUST authorize the SCIM client to perform all
+		provisioning activity specified by this profile.
+	      </t>
+	    </list>
+	  </t>
+          <t>
+            The following is a non-normative example of the contents of a
+            registration response message using the OAuth 2.0 JWT Profile:
+          </t>
+          <figure><artwork><![CDATA[
+ {
+   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
+     "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
        "token_endpoint": "https://tenant-56789.app.example.com/oauth",
        "scope": "scim"
      }
    }
  }
 ]]></artwork></figure>
+	  <t>
+	    See <xref target="AuthenticationExample"/> for an end-to-end example
+	    of authenticating via the OAuth 2.0 JWT profile.
+	  </t>
+	</section>
+
       </section>
 
     </section> <!-- End of FastFed Handshake Extensions -->
+
+    </section> <!-- End of Protocol Extensions -->
 
     <section anchor="Interoperability"
 	     title="Interoperability Requirements">
@@ -284,15 +453,9 @@
              defined in <xref target="RFC7643"/> and <xref target="RFC7644"/>.
            </t>
 	   <t>
-	     MUST authenticate to the SCIM endpoint using an OAuth
-	     <spanx style="verb">access_token</spanx>. The token must be
-	     attained using the mechanisms defined in Section 6.6 of
-	     the <xref target="FastFed.Core">FastFed Core</xref>
-	     specification. The keyId used to attain the OAuth token must exist
-	     in the keys hosted at the <spanx style="verb">jwks_uri</spanx>
-	     specified by the
-	     SCIM <spanx style="verb">provider_authentication</spanx> in
-	     <xref target="FastFedHandshakeRegistrationRequest"/>.
+	     MUST authenticate to the SCIM endpoint using the method negotiated
+	     during the FastFed registration exchange.
+	     (<xref target="FastFedHandshakeRegistrationRequest"/> and <xref target="FastFedHandshakeRegistrationResponse"/>).
 	   </t>
            <t>
 	     For each end-user that is authorized to access the Application:
@@ -318,7 +481,7 @@
                </t>
                <t> 
 		 SHOULD replicate end-user deactivation to the Application
-                 within 15 minutes of the user being deactivated within the
+                 within 5 minutes of the user being deactivated within the
                  Identity Provider.  <vspace/><vspace/> The Identity Provider
                  MAY use any combination of the following operations to
                  deactivate users in the Application:
@@ -358,19 +521,11 @@
              <xref target="RFC7644"/>.
            </t>
            <t>
-             MUST support authentication via
-	     OAuth <spanx style="verb">access_tokens</spanx>.
+             MUST authenticate the client using the method negotiated
+             during the FastFed registration exchange.
+             (<xref target="FastFedHandshakeRegistrationRequest"/> and
+             <xref target="FastFedHandshakeRegistrationResponse"/>).
 	   </t>
-	   <t>
-	     MUST provide an OAuth authorization server capable of issuing
-             tokens as defined in Section 6.6 of
-             the <xref target="FastFed.Core">FastFed Core</xref>
-             specification. OAuth tokens MUST only be issued if the token
-             request is signed using a keyId which exists in the key set hosted
-             at the <spanx style="verb">jwks_uri</spanx> specified by the
-             SCIM <spanx style="verb">provider_authentication</spanx> in
-             <xref target="FastFedHandshakeRegistrationRequest"/>.
-           </t>
            <t> 
 	     MUST support the following operations:
              <list style="symbols">
@@ -392,7 +547,7 @@
              for the end-user to use the Application, even if that end-user has
              an active session with an expiration date in the future. The
              revocation mechanism is an implementation detail and outside the
-             scope of this specification. Revocation should occur within 15
+             scope of this specification. Revocation should occur within 5
              minutes of receiving the deactivation.
            </t>
          </list>
@@ -400,20 +555,18 @@
      </section>
     </section> <!-- End of Interoperability -->  
 
-  <section anchor="AuthenticationExample" title="Authentication Example">
+  <section anchor="AuthenticationExample" 
+	   title="Example Usage of the OAuth 2.0 JWT Profile">
     <t>
-      The following examples illustrate how an Identity Provider authenticates
-      to a SCIM endpoint to perform SCIM provisioning activities.
+      The following end-to-end example illustrates the message flows when using
+      the authentication method
+<spanx style="verb">"urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile"</spanx>.
     </t>
     <t>
-      The examples below adhere to the authentication requirements
-      defined in Section 6 of the <xref target="FastFed.Core">FastFed
-      Core</xref> specification ("Provider Authentication Methods"), as well as
-      the additional SCIM profile requirements defined in
-      <xref target="FastFedHandshakeRegistrationRequest"/> and
-      <xref target="FastFedHandshakeRegistrationResponse"/> of this
-      specification.
+      This method enables a SCIM client to invoke a SCIM service using OAuth access tokens derived from
+      public/private key pairs.
     </t>
+
     <section anchor="IdentityProviderSharesPublicKey" title="Identity Provider
       Shares Public Key">
       <t>
@@ -426,21 +579,22 @@
       </t>
 <figure><artwork><![CDATA[
  {
-   "iss": "https://idp.example.com",
-   "sub": "tenant-12345",
-   "aud": "https://app.example.com",
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
    "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "provider_identity": {
-       "jwks_uri": "https://provisioning.example.com/keys",
-       "contact_information": {
-         "organization": "Example Inc.",
-         "phone": "+1-800-555-5555",
-         "email": "support@example.com"
+     "provider_contact_information": {
+       "organization": "Example Inc.",
+       "phone": "+1-800-555-5555",
+       "email": "support@example.com"
+     },
+     "provider_authentication_methods": {
+       "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
+         "jwks_uri": "https://provisioning.example.com/keys"
        }
      }
    }
@@ -467,9 +621,9 @@
 <figure><artwork><![CDATA[
  {
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "scim_service_uri": "https://tenant-56789.app.example.com/scim"
-     "oauth_metadata": {
-       "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
+     "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
        "token_endpoint": "https://tenant-56789.app.example.com/oauth",
        "scope": "scim"
      }
@@ -487,16 +641,16 @@
 	to authenticate to the SCIM endpoint.
       </t>
       <t>
-	The <spanx style="verb">access_token</spanx> is acquired by using the JWT
-	Authorization Grant Type. This grant type is defined
-	in <xref target="RFC7523">RFC 7523</xref>, and its usage within FastFed is
-	specified in Section 6.6 of the <xref target="FastFed.Core">FastFed
-	Core</xref> specification. 
+	The <spanx style="verb">access_token</spanx> is acquired by using the
+	JWT Authorization Grant Type. This grant type is defined
+	in <xref target="RFC7523">RFC 7523</xref>, and its usage within FastFed
+	is specified in Section 6.6 of the <xref target="FastFed.Core">FastFed
+	Core</xref> specification.
       </t>
       <t>
 	In essence, the Identity Provider sends a signed JWT to the OAuth
 	endpoint hosted by the Application Provider. If the JWT is valid and is
-	signed by an authorized party, then an OAuth access_token is returned.
+	signed by an authorized party, an OAuth access_token is returned.
       </t>
       <t>
 	This is illustrated in the following steps. First, a JWT is constructed
@@ -504,9 +658,8 @@
       </t>
 <figure><artwork><![CDATA[
  {                                                                                                                 
-   "iss": "idp.example.com",                                                                                       
-   "sub": "tenant-12345",                                                                                          
-   "aud": "app.example.com",                                                                                       
+   "iss": "https://tenant-12345.idp.example.com",                                                                                       
+   "aud": "https://tenant-56789.app.example.com",                                                                                       
    "exp": 1234567890,            
  }
 ]]></artwork></figure>
@@ -542,8 +695,14 @@
        "expires_in":3600
      }
 ]]></artwork></figure>
+
+    </section> <!-- End of Identity Provider Fetches OAuth Access Token -->
+    
+    <section anchor="IdentityProviderUsesOAuthToken"
+             title="Identity Provider Uses the OAuth Access Token">
+      
       <t>
-	The token is used to authenticate to the SCIM endpoint:
+	Finally, the token can be used to authenticate to the SCIM endpoint:
       </t>
 <figure><artwork><![CDATA[
    POST scim/Users  HTTP/1.1
@@ -568,7 +727,7 @@
       code. The JWT Authorization Grant flow may then be re-executed to acquire
       a new access token.
 </t>
-    </section> <!-- End of Identity Provider Fetches OAuth Access Token -->
+    </section> <!-- End of Identity Provider Uses OAuth Access Token -->
   </section>
         
   <section anchor="Security" title="Security Considerations">
