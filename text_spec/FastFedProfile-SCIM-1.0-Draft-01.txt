@@ -4,18 +4,18 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                         August 27, 2019
+                                                        January 20, 2020
 
 
-            FastFed Profile for SCIM Provisioning - draft 01
-                              fastfed-1_0
+          FastFed Profile for SCIM 2.0 Provisioning - draft 01
+                       fastfedprofile-scim-1_0-01
 
 Abstract
 
    This specification defines the requirements to implement the FastFed
-   Profile for SCIM Full Lifecycle provisioning.  This profile supports
-   continual provisioning, update, and deprovisioning of end-users
-   between the Identity Provider and Application Provider.
+   Profile for SCIM 2.0 Full Lifecycle provisioning.  This profile
+   supports continual provisioning, update, and deprovisioning of end-
+   users between the Identity Provider and Application Provider.
 
 Table of Contents
 
@@ -43,25 +43,25 @@ Table of Contents
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .  13
    7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  13
    8.  Normative References  . . . . . . . . . . . . . . . . . . . .  13
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  15
-   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  15
-   Appendix C.  Document History . . . . . . . . . . . . . . . . . .  16
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  16
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  13
+   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  14
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  14
 
 
 
 
 
 
-McAdams                 Expires February 28, 2020               [Page 1]
+
+McAdams                   Expires July 23, 2020                 [Page 1]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
 1.  Introduction
 
    This specification defines the functionality which a provider must
-   implement to satisfy the FastFed Profile for SCIM Full Lifecycle
+   implement to satisfy the FastFed Profile for SCIM 2.0 Full Lifecycle
    provisioning.
 
    It consists of the following extensions to the FastFed Core
@@ -109,16 +109,16 @@ McAdams                 Expires February 28, 2020               [Page 1]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 2]
+McAdams                   Expires July 23, 2020                 [Page 2]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
    The Identity Provider may also query the Application Provider for
    user and group information to detect drift between the two parties
    that requires repair.
 
-   To perform these reponsibilities, this specification defines the
+   To perform these responsibilities, this specification defines the
    subset of SCIM capabilities that each party must implement to fulfill
    the FastFed interoperability requirements.
 
@@ -132,7 +132,7 @@ McAdams                 Expires February 28, 2020               [Page 2]
    extension points available for alternative authentication methods.
 
    As described in Section 6 of the FastFed Core [FastFed.Core]
-   specification, the use of assymetric key pairs is preferred over
+   specification, the use of asymmetric key pairs is preferred over
    long-lived shared secrets.  As a result, this profile uses RFC 7523
    [RFC7523] which defines a mechanism to exchange a signed JWT for an
    OAuth 2.0 access token.
@@ -165,9 +165,9 @@ McAdams                 Expires February 28, 2020               [Page 2]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 3]
+McAdams                   Expires July 23, 2020                 [Page 3]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
 3.2.  FastFed Handshake
@@ -221,16 +221,16 @@ McAdams                 Expires February 28, 2020               [Page 3]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 4]
+McAdams                   Expires July 23, 2020                 [Page 4]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
     {
       "iss": "https://tenant-12345.idp.example.com",
       "aud": "https://tenant-67890.app.example.com",
       "exp": 1234567890,
-      "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+      "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
       "provisioning_profiles": [
         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
       ],
@@ -277,16 +277,16 @@ McAdams                 Expires February 28, 2020               [Page 4]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 5]
+McAdams                   Expires July 23, 2020                 [Page 5]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
  {
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -333,9 +333,9 @@ McAdams                 Expires February 28, 2020               [Page 5]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 6]
+McAdams                   Expires July 23, 2020                 [Page 6]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
 3.2.2.1.  Usage of the OAuth-2.0 JWT Profile
@@ -379,7 +379,7 @@ McAdams                 Expires February 28, 2020               [Page 6]
    usage in a wide variety of circumstances.
 
    However, a consequence of the flexibility is that two Providers may
-   find themselves incompabitible despite sharing the same protocols.
+   find themselves incompatible despite sharing the same protocols.
 
    To deliver the simplified experience that is the goal of FastFed, it
    is important that two FastFed-enabled Providers have confidence that
@@ -389,9 +389,9 @@ McAdams                 Expires February 28, 2020               [Page 6]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 7]
+McAdams                   Expires July 23, 2020                 [Page 7]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
    The following sections describe the subset of the SCIM Protocol
@@ -445,14 +445,14 @@ McAdams                 Expires February 28, 2020               [Page 7]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 8]
+McAdams                   Expires July 23, 2020                 [Page 8]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
          +  Filtering based on _"userName eq"_
 
-      *  SHOULD populuate the "groups" attribute on a SCIM User object
+      *  SHOULD populate the "groups" attribute on a SCIM User object
          with a list of groups to which the user belongs.  As specified
          in the SCIM Core Schema [RFC7643], a user can belong to a group
          either through direct membership, through nested groups, or
@@ -501,9 +501,9 @@ McAdams                 Expires February 28, 2020               [Page 8]
 
 
 
-McAdams                 Expires February 28, 2020               [Page 9]
+McAdams                   Expires July 23, 2020                 [Page 9]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
    This method enables a SCIM client to invoke a SCIM service using
@@ -513,15 +513,14 @@ McAdams                 Expires February 28, 2020               [Page 9]
 
    As a first-step, the Identity Provider shares a public key with the
    Application Provider in the form of a JSON Web key Set [JWK]
-   [RFC7517].  This occurs during the FastFed Handhshake (see
-   "jwks_uri", below) and is described in Section 3.2.1 of this
-   specification.
+   [RFC7517].  This occurs during the FastFed Handshake (see "jwks_uri",
+   below) and is described in Section 3.2.1 of this specification.
 
  {
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -557,9 +556,10 @@ McAdams                 Expires February 28, 2020               [Page 9]
 
 
 
-McAdams                 Expires February 28, 2020              [Page 10]
+
+McAdams                   Expires July 23, 2020                [Page 10]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
  {
@@ -613,9 +613,9 @@ McAdams                 Expires February 28, 2020              [Page 10]
 
 
 
-McAdams                 Expires February 28, 2020              [Page 11]
+McAdams                   Expires July 23, 2020                [Page 11]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
     {
@@ -669,9 +669,9 @@ McAdams                 Expires February 28, 2020              [Page 11]
 
 
 
-McAdams                 Expires February 28, 2020              [Page 12]
+McAdams                   Expires July 23, 2020                [Page 12]
 
-                  FastFed Profile for SCIM Provisioning      August 2019
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
 
 
 6.  Security Considerations
@@ -688,77 +688,10 @@ McAdams                 Expires February 28, 2020              [Page 12]
               McAdams, K., "FastFed Core", June 2018,
               <http://example.com>.
 
-   [OpenID.Core]
-              Sakimura, N., Bradley, J., Jones, M., de Medeiros, B., and
-              C. Mortimore, "OpenID Connect Core 1.0", November 2014,
-              <http://openid.net/specs/openid-connect-core-1_0.html>.
-
-   [OpenID.Discovery]
-              Sakimura, N., Bradley, J., Jones, M., and E. Jay, "OpenID
-              Connect Discovery 1.0", November 2014,
-              <http://openid.net/specs/
-              openid-connect-discovery-1_0.html>.
-
-   [OpenID.Registration]
-              Sakimura, N., Bradley, J., and M. Jones, "OpenID Connect
-              Dynamic Client Registration 1.0", November 2014,
-              <http://openid.net/specs/
-              openid-connect-registration-1_0.html>.
-
-   [OpenID.SCIMProfile]
-              Hunt, P. and C. Mortimore, "OpenID Connect Profile for
-              SCIM Services [DRAFT]", June 2016,
-              <http://openid.net/specs/
-              openid-connect-scim-profile-1_0.html>.
-
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-   [RFC2616]  Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
-              Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
-              Transfer Protocol -- HTTP/1.1", RFC 2616,
-              DOI 10.17487/RFC2616, June 1999,
-              <https://www.rfc-editor.org/info/rfc2616>.
-
-
-
-
-McAdams                 Expires February 28, 2020              [Page 13]
-
-                  FastFed Profile for SCIM Provisioning      August 2019
-
-
-   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
-              Resource Identifier (URI): Generic Syntax", STD 66,
-              RFC 3986, DOI 10.17487/RFC3986, January 2005,
-              <https://www.rfc-editor.org/info/rfc3986>.
-
-   [RFC4627]  Crockford, D., "The application/json Media Type for
-              JavaScript Object Notation (JSON)", RFC 4627,
-              DOI 10.17487/RFC4627, July 2006,
-              <https://www.rfc-editor.org/info/rfc4627>.
-
-   [RFC5646]  Phillips, A., Ed. and M. Davis, Ed., "Tags for Identifying
-              Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
-              September 2009, <https://www.rfc-editor.org/info/rfc5646>.
-
-   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
-              Verification of Domain-Based Application Service Identity
-              within Internet Public Key Infrastructure Using X.509
-              (PKIX) Certificates in the Context of Transport Layer
-              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
-              2011, <https://www.rfc-editor.org/info/rfc6125>.
-
-   [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
-              RFC 6749, DOI 10.17487/RFC6749, October 2012,
-              <https://www.rfc-editor.org/info/rfc6749>.
-
-   [RFC6750]  Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
-              Framework: Bearer Token Usage", RFC 6750,
-              DOI 10.17487/RFC6750, October 2012,
-              <https://www.rfc-editor.org/info/rfc6750>.
 
    [RFC7517]  Jones, M., "JSON Web Key (JWK)", RFC 7517,
               DOI 10.17487/RFC7517, May 2015,
@@ -779,24 +712,23 @@ McAdams                 Expires February 28, 2020              [Page 13]
               Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
               September 2015, <https://www.rfc-editor.org/info/rfc7644>.
 
-
-
-McAdams                 Expires February 28, 2020              [Page 14]
-
-                  FastFed Profile for SCIM Provisioning      August 2019
-
-
-   [W3C.REC-html401-19991224]
-              Raggett, D., Hors, A., and I. Jacobs, "HTML 4.01
-              Specification", December 1999,
-              <https://www.w3.org/TR/1999/REC-html401-19991224>.
-
 Appendix A.  Acknowledgements
 
    The OpenID Community would like to thank the following people for
    their contributions to this specification:
 
       TODO
+
+
+
+
+
+
+
+McAdams                   Expires July 23, 2020                [Page 13]
+
+                FastFed Profile for SCIM 2.0 Provisioning   January 2020
+
 
 Appendix B.  Notices
 
@@ -835,17 +767,6 @@ Appendix B.  Notices
    patents, patent applications, or other proprietary rights that may
    cover technology that may be required to practice this specification.
 
-
-
-McAdams                 Expires February 28, 2020              [Page 15]
-
-                  FastFed Profile for SCIM Provisioning      August 2019
-
-
-Appendix C.  Document History
-
-   [[ To be removed from the final specification ]]
-
 Author's Address
 
    Darin K. McAdams
@@ -860,37 +781,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                 Expires February 28, 2020              [Page 16]
+McAdams                   Expires July 23, 2020                [Page 14]

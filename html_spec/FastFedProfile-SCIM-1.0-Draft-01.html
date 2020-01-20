@@ -5,7 +5,7 @@
 <head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 
-  <title>FastFed Profile for SCIM Provisioning - draft 01</title>
+  <title>FastFed Profile for SCIM 2.0 Provisioning - draft 01</title>
 
   <style type="text/css" title="Xml2Rfc (sans serif)">
   /*<![CDATA[*/
@@ -400,7 +400,6 @@
 <link href="#rfc.references" rel="Chapter" title="8 Normative References">
 <link href="#rfc.appendix.A" rel="Chapter" title="A Acknowledgements">
 <link href="#rfc.appendix.B" rel="Chapter" title="B Notices">
-<link href="#rfc.appendix.C" rel="Chapter" title="C Document History">
 <link href="#rfc.authors" rel="Chapter">
 
 
@@ -408,10 +407,10 @@
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="McAdams, D." />
-  <meta name="dct.identifier" content="urn:ietf:id:fastfed-1_0" />
-  <meta name="dct.issued" scheme="ISO8601" content="2019-08-27" />
-  <meta name="dct.abstract" content="This specification defines the requirements to implement the FastFed Profile for SCIM Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  " />
-  <meta name="description" content="This specification defines the requirements to implement the FastFed Profile for SCIM Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  " />
+  <meta name="dct.identifier" content="urn:ietf:id:fastfedprofile-scim-1_0-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-01-20" />
+  <meta name="dct.abstract" content="This specification defines the requirements to implement the FastFed Profile for SCIM 2.0 Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  " />
+  <meta name="description" content="This specification defines the requirements to implement the FastFed Profile for SCIM 2.0 Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  " />
 
 </head>
 
@@ -430,18 +429,18 @@
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">August 27, 2019</td>
+<td class="right">January 20, 2020</td>
 </tr>
 
     	
     </tbody>
   </table>
 
-  <p class="title">FastFed Profile for SCIM Provisioning - draft 01<br />
-  <span class="filename">fastfed-1_0</span></p>
+  <p class="title">FastFed Profile for SCIM 2.0 Provisioning - draft 01<br />
+  <span class="filename">fastfedprofile-scim-1_0-01</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
-<p>This specification defines the requirements to implement the FastFed Profile for SCIM Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  </p>
+<p>This specification defines the requirements to implement the FastFed Profile for SCIM 2.0 Full Lifecycle provisioning. This profile supports continual provisioning, update, and deprovisioning of end-users between the Identity Provider and Application Provider.  </p>
 
   
   <hr class="noprint" />
@@ -500,8 +499,6 @@
 </li>
 <li>Appendix B.   <a href="#rfc.appendix.B">Notices</a>
 </li>
-<li>Appendix C.   <a href="#rfc.appendix.C">Document History</a>
-</li>
 <li><a href="#rfc.authors">Author's Address</a>
 </li>
 
@@ -511,7 +508,7 @@
   <h1 id="rfc.section.1">
 <a href="#rfc.section.1">1.</a> <a href="#Introduction" id="Introduction">Introduction</a>
 </h1>
-<p id="rfc.section.1.p.1">This specification defines the functionality which a provider must implement to satisfy the FastFed Profile for SCIM Full Lifecycle provisioning.  </p>
+<p id="rfc.section.1.p.1">This specification defines the functionality which a provider must implement to satisfy the FastFed Profile for SCIM 2.0 Full Lifecycle provisioning.  </p>
 <p id="rfc.section.1.p.2">It consists of the following extensions to the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification: </p>
 
 <ul>
@@ -539,12 +536,12 @@
 <p id="rfc.section.2.1.p.1">In this profile, the Identity Provider plays the role of a SCIM client, pushing user and group information to the Application Provider who acts as the SCIM service.  </p>
 <p id="rfc.section.2.1.p.2">The result is to maintain a copy of appropriate user and group information in the Application by communicating, via calls the to the SCIM APIs, the creation, update, and deletion of these records.  </p>
 <p id="rfc.section.2.1.p.3">The Identity Provider may also query the Application Provider for user and group information to detect drift between the two parties that requires repair.  </p>
-<p id="rfc.section.2.1.p.4">To perform these reponsibilities, this specification defines the subset of SCIM capabilities that each party must implement to fulfill the FastFed interoperability requirements.  </p>
+<p id="rfc.section.2.1.p.4">To perform these responsibilities, this specification defines the subset of SCIM capabilities that each party must implement to fulfill the FastFed interoperability requirements.  </p>
 <h1 id="rfc.section.2.2">
 <a href="#rfc.section.2.2">2.2.</a> <a href="#ClientAuthentication" id="ClientAuthentication">Client Authentication</a>
 </h1>
 <p id="rfc.section.2.2.p.1">SCIM <a href="#RFC7644" class="xref">[RFC7644]</a> does not prescribe a mechanism for client authentication to the SCIM service. However, for interoperability purposes, it is necessary for Providers to agree on an authentication method. To fill the gap, this specification prescribes an OAuth 2.0 authentication profile for SCIM services, while also leaving extension points available for alternative authentication methods.  </p>
-<p id="rfc.section.2.2.p.2">As described in Section 6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification, the use of assymetric key pairs is preferred over long-lived shared secrets. As a result, this profile uses <a href="#RFC7523" class="xref">RFC 7523</a> which defines a mechanism to exchange a signed JWT for an OAuth 2.0 access token.  </p>
+<p id="rfc.section.2.2.p.2">As described in Section 6 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification, the use of asymmetric key pairs is preferred over long-lived shared secrets. As a result, this profile uses <a href="#RFC7523" class="xref">RFC 7523</a> which defines a mechanism to exchange a signed JWT for an OAuth 2.0 access token.  </p>
 <p id="rfc.section.2.2.p.3">An end-to-end example of using <a href="#RFC7523" class="xref">RFC 7523</a> for SCIM authentication is provided in <a href="#AuthenticationExample" class="xref">Section 5</a>.  </p>
 <h1 id="rfc.section.3">
 <a href="#rfc.section.3">3.</a> <a href="#ProtocolExtensions" id="ProtocolExtensions">Protocol Extensions</a>
@@ -596,7 +593,7 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -630,7 +627,7 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -703,7 +700,7 @@
 <a href="#rfc.section.4">4.</a> <a href="#Interoperability" id="Interoperability">Interoperability Requirements</a>
 </h1>
 <p id="rfc.section.4.p.1">Each identity standard defines a set of optional features to enable usage in a wide variety of circumstances.  </p>
-<p id="rfc.section.4.p.2">However, a consequence of the flexibility is that two Providers may find themselves incompabitible despite sharing the same protocols.  </p>
+<p id="rfc.section.4.p.2">However, a consequence of the flexibility is that two Providers may find themselves incompatible despite sharing the same protocols.  </p>
 <p id="rfc.section.4.p.3">To deliver the simplified experience that is the goal of FastFed, it is important that two FastFed-enabled Providers have confidence that they can interoperate when sharing the same protocols.  </p>
 <p id="rfc.section.4.p.4">The following sections describe the subset of the SCIM Protocol specifications that Providers MUST implement to be FastFed Compatible for this profile. Providers MAY support additional functionality, but MUST NOT require the additional functionality when configuring federation with another Provider using the FastFed specifications.  </p>
 <h1 id="rfc.section.4.1">
@@ -741,7 +738,7 @@
 </ul>
 <p> </p>
 </li>
-<li>SHOULD populuate the <samp>groups</samp> attribute on a SCIM User object with a list of groups to which the user belongs. As specified in the SCIM Core Schema <a href="#RFC7643" class="xref">[RFC7643]</a>, a user can belong to a group either through direct membership, through nested groups, or dynamically calculated.  </li>
+<li>SHOULD populate the <samp>groups</samp> attribute on a SCIM User object with a list of groups to which the user belongs. As specified in the SCIM Core Schema <a href="#RFC7643" class="xref">[RFC7643]</a>, a user can belong to a group either through direct membership, through nested groups, or dynamically calculated.  </li>
 </ul>
 <p> </p>
 </li>
@@ -784,13 +781,13 @@
 <h1 id="rfc.section.5.1">
 <a href="#rfc.section.5.1">5.1.</a> <a href="#IdentityProviderSharesPublicKey" id="IdentityProviderSharesPublicKey">Identity Provider       Shares Public Key</a>
 </h1>
-<p id="rfc.section.5.1.p.1">As a first-step, the Identity Provider shares a public key with the Application Provider in the form of a JSON Web key Set <a href="#RFC7517" class="xref">[JWK]</a>. This occurs during the FastFed Handhshake (see "jwks_uri", below) and is described in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.2.1</a> of this specification.  </p>
+<p id="rfc.section.5.1.p.1">As a first-step, the Identity Provider shares a public key with the Application Provider in the form of a JSON Web key Set <a href="#RFC7517" class="xref">[JWK]</a>. This occurs during the FastFed Handshake (see "jwks_uri", below) and is described in <a href="#FastFedHandshakeRegistrationRequest" class="xref">Section 3.2.1</a> of this specification.  </p>
 <pre>
  {
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -905,64 +902,9 @@
 <a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Core</a>", June 2018.</td>
 </tr>
 <tr>
-<td class="reference"><b id="OpenID.Core">[OpenID.Core]</b></td>
-<td class="top">
-<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a>, <a title="Microsoft">Jones, M.</a>, <a title="Google">de Medeiros, B.</a> and <a title="Salesforce">C. Mortimore</a>, "<a href="http://openid.net/specs/openid-connect-core-1_0.html">OpenID Connect Core 1.0</a>", November 2014.</td>
-</tr>
-<tr>
-<td class="reference"><b id="OpenID.Discovery">[OpenID.Discovery]</b></td>
-<td class="top">
-<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a>, <a title="Microsoft">Jones, M.</a> and <a title="Illumila">E. Jay</a>, "<a href="http://openid.net/specs/openid-connect-discovery-1_0.html">OpenID Connect Discovery 1.0</a>", November 2014.</td>
-</tr>
-<tr>
-<td class="reference"><b id="OpenID.Registration">[OpenID.Registration]</b></td>
-<td class="top">
-<a title="Nomura Research Institute, Ltd.">Sakimura, N.</a>, <a title="Ping Identity">Bradley, J.</a> and <a title="Microsoft">M. Jones</a>, "<a href="http://openid.net/specs/openid-connect-registration-1_0.html">OpenID Connect Dynamic Client Registration 1.0</a>", November 2014.</td>
-</tr>
-<tr>
-<td class="reference"><b id="OpenID.SCIMProfile">[OpenID.SCIMProfile]</b></td>
-<td class="top">
-<a title="Oracle">Hunt, P.</a> and <a title="Salesforce">C. Mortimore</a>, "<a href="http://openid.net/specs/openid-connect-scim-profile-1_0.html">OpenID Connect Profile for SCIM Services [DRAFT]</a>", June 2016.</td>
-</tr>
-<tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>
 <td class="top">
 <a>Bradner, S.</a>, "<a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, DOI 10.17487/RFC2119, March 1997.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC2616">[RFC2616]</b></td>
-<td class="top">
-<a>Fielding, R.</a>, <a>Gettys, J.</a>, <a>Mogul, J.</a>, <a>Frystyk, H.</a>, <a>Masinter, L.</a>, <a>Leach, P.</a> and <a>T. Berners-Lee</a>, "<a href="https://tools.ietf.org/html/rfc2616">Hypertext Transfer Protocol -- HTTP/1.1</a>", RFC 2616, DOI 10.17487/RFC2616, June 1999.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC3986">[RFC3986]</b></td>
-<td class="top">
-<a>Berners-Lee, T.</a>, <a>Fielding, R.</a> and <a>L. Masinter</a>, "<a href="https://tools.ietf.org/html/rfc3986">Uniform Resource Identifier (URI): Generic Syntax</a>", STD 66, RFC 3986, DOI 10.17487/RFC3986, January 2005.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC4627">[RFC4627]</b></td>
-<td class="top">
-<a>Crockford, D.</a>, "<a href="https://tools.ietf.org/html/rfc4627">The application/json Media Type for JavaScript Object Notation (JSON)</a>", RFC 4627, DOI 10.17487/RFC4627, July 2006.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC5646">[RFC5646]</b></td>
-<td class="top">
-<a>Phillips, A.</a> and <a>M. Davis</a>, "<a href="https://tools.ietf.org/html/rfc5646">Tags for Identifying Languages</a>", BCP 47, RFC 5646, DOI 10.17487/RFC5646, September 2009.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC6125">[RFC6125]</b></td>
-<td class="top">
-<a>Saint-Andre, P.</a> and <a>J. Hodges</a>, "<a href="https://tools.ietf.org/html/rfc6125">Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)</a>", RFC 6125, DOI 10.17487/RFC6125, March 2011.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC6749">[RFC6749]</b></td>
-<td class="top">
-<a>Hardt, D.</a>, "<a href="https://tools.ietf.org/html/rfc6749">The OAuth 2.0 Authorization Framework</a>", RFC 6749, DOI 10.17487/RFC6749, October 2012.</td>
-</tr>
-<tr>
-<td class="reference"><b id="RFC6750">[RFC6750]</b></td>
-<td class="top">
-<a>Jones, M.</a> and <a>D. Hardt</a>, "<a href="https://tools.ietf.org/html/rfc6750">The OAuth 2.0 Authorization Framework: Bearer Token Usage</a>", RFC 6750, DOI 10.17487/RFC6750, October 2012.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC7517">[RFC7517]</b></td>
@@ -984,11 +926,6 @@
 <td class="top">
 <a>Hunt, P.</a>, <a>Grizzle, K.</a>, <a>Ansari, M.</a>, <a>Wahlstroem, E.</a> and <a>C. Mortimore</a>, "<a href="https://tools.ietf.org/html/rfc7644">System for Cross-domain Identity Management: Protocol</a>", RFC 7644, DOI 10.17487/RFC7644, September 2015.</td>
 </tr>
-<tr>
-<td class="reference"><b id="W3C.REC-html401-19991224">[W3C.REC-html401-19991224]</b></td>
-<td class="top">
-<a title="W3C">Raggett, D.</a>, <a title="W3C">Hors, A.</a> and <a title="W3C">I. Jacobs</a>, "<a href="https://www.w3.org/TR/1999/REC-html401-19991224">HTML 4.01 Specification</a>", December 1999.</td>
-</tr>
 </tbody></table>
 <h1 id="rfc.appendix.A">
 <a href="#rfc.appendix.A">Appendix A.</a> <a href="#Acknowledgements" id="Acknowledgements">Acknowledgements</a>
@@ -1005,10 +942,6 @@
 <p id="rfc.section.B.p.1">Copyright (c) 2017 The OpenID Foundation.</p>
 <p id="rfc.section.B.p.2">The OpenID Foundation (OIDF) grants to any Contributor, developer, implementer, or other interested party a non-exclusive, royalty free, worldwide copyright license to reproduce, prepare derivative works from, distribute, perform and display, this Implementers Draft or Final Specification solely for the purposes of (i) developing specifications, and (ii) implementing Implementers Drafts and Final Specifications based on such documents, provided that attribution be made to the OIDF as the source of the material, but that such attribution does not indicate an endorsement by the OIDF.</p>
 <p id="rfc.section.B.p.3">The technology described in this specification was made available from contributions from various sources, including members of the OpenID Foundation and others. Although the OpenID Foundation has taken steps to help ensure that the technology is available for distribution, it takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the implementation or use of the technology described in this specification or the extent to which any license under such rights might or might not be available; neither does it represent that it has made any independent effort to identify any such rights. The OpenID Foundation and the contributors to this specification make no (and hereby expressly disclaim any) warranties (express, implied, or otherwise), including implied warranties of merchantability, non-infringement, fitness for a particular purpose, or title, related to this specification, and the entire risk as to implementing this specification is assumed by the implementer. The OpenID Intellectual Property Rights policy requires contributors to offer a patent promise not to assert certain patent claims against other contributors and against implementers. The OpenID Foundation invites any interested party to bring to its attention any copyrights, patents, patent applications, or other proprietary rights that may cover technology that may be required to practice this specification.</p>
-<h1 id="rfc.appendix.C">
-<a href="#rfc.appendix.C">Appendix C.</a> <a href="#History" id="History">Document History</a>
-</h1>
-<p id="rfc.section.C.p.1">[[ To be removed from the final specification ]]</p>
 <h1 id="rfc.authors"><a href="#rfc.authors">Author's Address</a></h1>
 <div class="avoidbreak">
   <address class="vcard">

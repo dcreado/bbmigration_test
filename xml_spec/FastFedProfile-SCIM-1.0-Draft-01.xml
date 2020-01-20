@@ -11,7 +11,7 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="fastfed-1_0" ipr="none">
+<rfc category="std" docName="fastfedprofile-scim-1_0-01" ipr="none">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -22,8 +22,8 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Profile for SCIM Provisioning">FastFed Profile for
-    SCIM Provisioning - draft 01</title>
+    <title abbrev="FastFed Profile for SCIM 2.0 Provisioning">FastFed Profile for
+    SCIM 2.0 Provisioning - draft 01</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -32,14 +32,14 @@
       </address>
     </author>
 
-    <date day="27" month="August" year="2019" />
+    <date day="20" month="January" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
     <abstract>
       <t>
 	This specification defines the requirements to implement the FastFed
-	Profile for SCIM Full Lifecycle provisioning. This profile supports
+	Profile for SCIM 2.0 Full Lifecycle provisioning. This profile supports
 	continual provisioning, update, and deprovisioning of end-users between
 	the Identity Provider and Application Provider.
       </t>
@@ -51,7 +51,7 @@
 
       <t>
         This specification defines the functionality which a provider must
-        implement to satisfy the FastFed Profile for SCIM Full Lifecycle
+        implement to satisfy the FastFed Profile for SCIM 2.0 Full Lifecycle
         provisioning.
       </t>
       <t>
@@ -125,7 +125,7 @@
 	  requires repair.
 	</t>
 	<t>
-	  To perform these reponsibilities, this specification defines the
+	  To perform these responsibilities, this specification defines the
 	  subset of SCIM capabilities that each party must implement to fulfill
 	  the FastFed interoperability requirements.
 	</t>
@@ -144,7 +144,7 @@
 	<t>
 	  As described in Section 6 of
 	  the <xref target="FastFed.Core">FastFed Core</xref> specification, the
-	  use of assymetric key pairs is preferred over long-lived shared
+	  use of asymmetric key pairs is preferred over long-lived shared
 	  secrets. As a result, this profile uses <xref target="RFC7523">RFC 7523</xref>
 	  which defines a mechanism to exchange a signed JWT for an OAuth 2.0 access token.
 	</t>
@@ -254,7 +254,7 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -308,7 +308,7 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -428,7 +428,7 @@
      </t>
      <t>
        However, a consequence of the flexibility is that two Providers may find
-       themselves incompabitible despite sharing the same protocols.
+       themselves incompatible despite sharing the same protocols.
      </t>
      <t>
        To deliver the simplified experience that is the goal of FastFed, it is
@@ -497,7 +497,7 @@
                  </list>
                </t>
 	       <t>
-		 SHOULD populuate the <spanx style="verb">groups</spanx>
+		 SHOULD populate the <spanx style="verb">groups</spanx>
 		 attribute on a SCIM User object with a list of groups to which
 		 the user belongs. As specified in the SCIM Core Schema
 		 <xref target="RFC7643"/>, a user can belong to a group either
@@ -573,7 +573,7 @@
 	As a first-step, the Identity
 	Provider shares a public key with the Application Provider in the form
 	of a JSON Web key Set <xref target="RFC7517">[JWK]</xref>. This occurs
-	during the FastFed Handhshake (see "jwks_uri", below) and is
+	during the FastFed Handshake (see "jwks_uri", below) and is
 	described in <xref target="FastFedHandshakeRegistrationRequest"/> of
 	this specification.
       </t>
@@ -582,7 +582,7 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
      "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
    ],
@@ -747,13 +747,6 @@
   <back>
     <references title="Normative References">
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4627"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5646"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6750"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7517"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7523"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
@@ -767,113 +760,6 @@
           </author>
           <date day="6" month="June" year="2018"/>
         </front>
-      </reference>
-
-      <reference anchor="OpenID.Core" target="http://openid.net/specs/openid-connect-core-1_0.html">
-        <front>
-          <title>OpenID Connect Core 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
-            <organization abbrev="Google">Google</organization>
-          </author>
-
-	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
-	    <organization abbrev="Salesforce">Salesforce</organization>
-	  </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.Discovery" target="http://openid.net/specs/openid-connect-discovery-1_0.html">
-        <front>
-          <title>OpenID Connect Discovery 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <author fullname="Edmund Jay" initials="E." surname="Jay">
-            <organization abbrev="Illumila">Illumila</organization>
-          </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.Registration" target="http://openid.net/specs/openid-connect-registration-1_0.html">
-        <front>
-          <title>OpenID Connect Dynamic Client Registration 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.SCIMProfile"
-      target="http://openid.net/specs/openid-connect-scim-profile-1_0.html">
-        <front>
-          <title>OpenID Connect Profile for SCIM Services [DRAFT]</title>
-
-          <author fullname="Phil Hunt" initials="P" surname="Hunt">
-            <organization abbrev="Oracle">Oracle</organization>
-          </author>
-          <author fullname="Chuck Mortimore" initials="C" surname="Mortimore">
-            <organization abbrev="Salesforce">Salesforce</organization>
-          </author>
-
-          <date day="15" month="June" year="2016"/>
-        </front>
-      </reference> 
-
-      
-      <reference anchor="W3C.REC-html401-19991224" target="https://www.w3.org/TR/1999/REC-html401-19991224">
-	<front>
-	  <title>HTML 4.01 Specification</title>
-
-	  <author fullname="Dave Raggett" initials="D" surname="Raggett">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
-	  <author fullname="Arnaud Le Hors" initials="A" surname="Hors">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
-	  <author fullname="Ian" initials="I" surname="Jacobs">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
-
-	  <date day="24" month="December" year="1999"/>
-	</front>
       </reference>
     </references>
 
@@ -924,10 +810,6 @@
       copyrights, patents, patent applications, or other proprietary rights
       that may cover technology that may be required to practice this
       specification.</t>
-    </section>
-
-    <section anchor="History" title="Document History">
-      <t>[[ To be removed from the final specification ]]</t>
     </section>
     
   </back>

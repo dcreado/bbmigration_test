@@ -11,7 +11,7 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="fastfed-01" ipr="none">
+<rfc category="std" docName="fastfedprofile-saml-01-01" ipr="none">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -31,14 +31,14 @@
       </address>
     </author>
 
-    <date day="3" month="January" year="2018" />
+    <date day="20" month="January" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
     <abstract>
       <t>
 	This specification defines the requirements to implement the FastFed
-	Basic SAML Profile.
+	Basic SAML 2.0  Profile.
       </t>
     </abstract>
   </front>
@@ -47,7 +47,7 @@
     <section anchor="Introduction" title="Introduction">
       <t>
 	This specification defines the functionality which a provider must
-	implement to satisfy the Basic SAML Profile for FastFed. 
+	implement to satisfy the Basic SAML 2.0 Profile for FastFed. 
       </t>
       <t>
 	It consists of the following extensions to
@@ -59,7 +59,7 @@
 	  </t>
 	  <t>
 	    Mapping rules for generating SAML Attributes from
-	    a SCIM schema.
+	    a SCIM 2.0 schema.
 	  </t>
 	  <t>
 	    An interoperability profile describing the subset of the SAML
@@ -151,7 +151,7 @@
       <section anchor="FastFedHandshakeRegistrationRequest" title="FastFed Registration Request">
 	<t>
 	  This specification extends the JWT contents of the FastFed
-	  Registration Request (Section 6.2.3.1
+	  Registration Request (Section 7.2.3.1
 	  of <xref target="FastFed.Core">FastFed Core</xref>) with a structure
 	  sharing the same name as the profile:
 	  <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
@@ -170,11 +170,10 @@
 	</t>
         <figure><artwork><![CDATA[
  {
-   "iss": "https://idp.example.com",
-   "sub": "tenant-12345",
-   "aud": "https://app.example.com",
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema": "urn:ietf:params:scim:schemas:core:2.0:User",
+   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "authentication_profiles": [
      "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
    ],
@@ -189,7 +188,7 @@
 	       title="FastFed Registration Response">
         <t>
           This specification extends the contents of the FastFed Registration
-          Response (Section 6.2.3.3 of <xref target="FastFed.Core">FastFed
+          Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
           Core</xref>) with a structure sharing the same name as the
           profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
 	</t>
@@ -231,8 +230,9 @@
 	FastFed recommmends SCIM for user schemas.
       </t>
       <t>
-	This specification defines how to be FastFed Compliant when using SCIM
-	schemas with the SAML 2.0 protocol.
+	This specification defines how to be FastFed compliant when using SCIM
+	2.0 Schema Grammar (Section 3.4 of <xref target="FastFed.Core">FastFed
+	Core</xref>) with the SAML 2.0 protocol.
       </t>
 
       <section anchor="SchemaBindingScimToSaml"
@@ -254,7 +254,7 @@
 	      <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"</spanx>
 	    </t>
 	    <t>
-              A value populated with the SCIM <spanx style="verb">id</spanx>.
+              A value populated with the SCIM <spanx style="verb">userName</spanx>.
             </t>
 	  </list>
 	</t>
@@ -263,7 +263,7 @@
 	</t>
 	<figure><artwork><![CDATA[
  <saml:Subject>
-   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">2819c223-7f76-453a-919d-413861904646</saml:NameID>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">babs@example.com</saml:NameID>
  </saml:Subject>
 ]]></artwork></figure>
 	</section>
@@ -282,17 +282,6 @@
 	    provisioning instead of pre-provisioning. In this mode of behavior,
 	    the incoming user attributes are used to auto-instantiate a user in
 	    the Application.
-	  </t>
-	  <t>
-	    Another situation occurs when users were previously created in the
-	    Application through a mechanism that doesn't provide the SCIM User
-	    ID. For example, this may happen when users are created manually by
-	    the adminstrator through a UI flow that only gathers simple attributes
-	    such as name and email address. Later, the administator may decide to
-	    convert to single sign-in. In this situation, it is necessary to match
-	    the incoming SAML message to an existing user via alternative
-	    attributes such as email. (The actual matching rules can vary by
-	    Application and are outside the scope of this specification.)
 	  </t>
 	  <t>
 	    To support these scenarios, FastFed allows a subset of user attributes
@@ -338,7 +327,10 @@
             <texttable>
               <ttcol>SAML Attribute Name</ttcol>
               <ttcol>SCIM Attribute</ttcol>
-	      
+
+	      <c>externalId</c>
+              <c>externalId</c>
+
               <c>displayName</c>
               <c>displayName</c>
 	      
@@ -350,9 +342,6 @@
 	      
               <c>middleName</c>
               <c>name.middleName</c>
-	      
-              <c>userName</c>
-              <c>userName</c>
 	      
               <c>email</c>
               <c>emails[primary eq true].value</c>
@@ -368,6 +357,9 @@
 
        <figure><artwork><![CDATA[
  <saml:AttributeStatement>
+   <saml:Attribute Name="externalId" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">1fc58220-7213-47bb-9161-bbd39ad75937</saml:AttributeValue>
+   </saml:Attribute>
    <saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
         <saml:AttributeValue xsi:type="xs:string">Babs Jensen</saml:AttributeValue>
    </saml:Attribute>
@@ -379,9 +371,6 @@
    </saml:Attribute>
    <saml:Attribute Name="middleName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
         <saml:AttributeValue xsi:type="xs:string">Jane</saml:AttributeValue>
-   </saml:Attribute>
-   <saml:Attribute Name="userName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
-        <saml:AttributeValue xsi:type="xs:string">bjensen</saml:AttributeValue>
    </saml:Attribute>
    <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
         <saml:AttributeValue xsi:type="xs:string">bjensen@example.com</saml:AttributeValue>
@@ -399,9 +388,9 @@
                title="Privacy Considerations">
         <t>
           When exposing user information through SAML Attributes, FastFed
-          Identity Providers MUST not expose any attributes which were not in
+          Identity Providers MUST NOT expose any attributes which were not in
           the <spanx style="verb">desired_user_attributes</spanx> element of the
-          Application Provider Metadata (Section 3.3.4
+          Application Provider Metadata (Section 3.3.6
           of <xref target="FastFed.Core">FastFed Core</xref>).
         </t>
       </section>
@@ -518,7 +507,7 @@
               title="Certificate Rotation">
 
        <t> 
-	 While the full SAML specification supports a variety of key usages,
+	 While the full SAML specification supports a variety of key types,
          the FastFed Profile defined herein restricts Providers to only X509
          Keys for signing SAML Assertions in Web Browser SSO response messages
          from the Identity Provider.
@@ -616,7 +605,7 @@
 	     </list>
 	 </t>
          <t>
-	   When preemptivey querying for updates on a recurring basis, the
+	   When preemptively querying for updates on a recurring basis, the
            following requirements apply to the Application Provider:
            <list style="symbols">
              <t>
@@ -681,7 +670,12 @@
     
   <section anchor="Security" title="Security Considerations">
     <t>
-      TODO
+      For SAML security considerations, see
+      <xref target="SAML.SecurityConsiderations">SAML Security and Privacy Considerations</xref>.
+    </t>
+    <t>
+      For FastFed security considerations, see Section 8
+      of <xref target="FastFed.Core">FastFed Core</xref>.
     </t>
   </section>
   
@@ -697,12 +691,6 @@
     <references title="Normative References">
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2119"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.2616"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.3986"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.4627"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.5646"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6125"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6749"?>
-      <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.6750"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?>
 
@@ -724,115 +712,6 @@
           </author>
           <date day="6" month="June" year="2018"/>
         </front>
-      </reference>
-
-      <reference anchor="OpenID.Core" target="http://openid.net/specs/openid-connect-core-1_0.html">
-        <front>
-          <title>OpenID Connect Core 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <author fullname="Breno de Medeiros" initials="B." surname="de Medeiros">
-            <organization abbrev="Google">Google</organization>
-          </author>
-
-	  <author fullname="Chuck Mortimore" initials="C." surname="Mortimore">
-	    <organization abbrev="Salesforce">Salesforce</organization>
-	  </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.Discovery" target="http://openid.net/specs/openid-connect-discovery-1_0.html">
-        <front>
-          <title>OpenID Connect Discovery 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <author fullname="Edmund Jay" initials="E." surname="Jay">
-            <organization abbrev="Illumila">Illumila</organization>
-          </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.Registration" target="http://openid.net/specs/openid-connect-registration-1_0.html">
-        <front>
-          <title>OpenID Connect Dynamic Client Registration 1.0</title>
-
-          <author fullname="Nat Sakimura" initials="N." surname="Sakimura">
-            <organization abbrev="NRI">Nomura Research Institute, Ltd.</organization>
-          </author>
-
-          <author fullname="John Bradley" initials="J." surname="Bradley">
-            <organization abbrev="Ping Identity">Ping Identity</organization>
-          </author>
-
-          <author fullname="Michael B. Jones" initials="M.B." surname="Jones">
-            <organization abbrev="Microsoft">Microsoft</organization>
-          </author>
-
-          <date day="8" month="November" year="2014"/>
-        </front>
-      </reference>
-
-      <reference anchor="OpenID.SCIMProfile"
-      target="http://openid.net/specs/openid-connect-scim-profile-1_0.html">
-        <front>
-          <title>OpenID Connect Profile for SCIM Services [DRAFT]</title>
-
-          <author fullname="Phil Hunt" initials="P" surname="Hunt">
-            <organization abbrev="Oracle">Oracle</organization>
-          </author>
-          <author fullname="Chuck Mortimore" initials="C" surname="Mortimore">
-            <organization abbrev="Salesforce">Salesforce</organization>
-          </author>
-
-          <date day="15" month="June" year="2016"/>
-        </front>
-      </reference> 
-
-      <reference anchor="SAML.Assertions" target="http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf">
-	<front>
-	  <title>Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0</title>
-
-	  <author fullname="Scott Cantor" initials="S" surname="Cantor">
-	    <organization abbrev="Internet2">Internet2</organization>
-	  </author>
-	  <author fullname="John Kemp" initials="J" surname="Kemp">
-	    <organization abbrev="Nokia">Nokia</organization>
-	  </author>
-	  <author fullname="Rob Philpott" initials="R" surname="Philpott">
-	    <organization abbrev="RSA Security">RSA Security</organization>
-	  </author>
-	  <author fullname="Eve Maler" initials="E" surname="Maler">
-	    <organization abbrev="Sun Microsystems">Sun Microsystems</organization>
-	  </author>
-
-          <date day="15" month="March" year="2005"/>
-	</front>
       </reference>
 
       <reference anchor="SAML.Interoperability" target="https://www.oasis-open.org/committees/download.php/36645/draft-sstc-metadata-iop-2.0-01.pdf">
@@ -906,24 +785,29 @@
           <date day="15" month="March" year="2005"/>
 	</front>
       </reference>
-      
-      <reference anchor="W3C.REC-html401-19991224" target="https://www.w3.org/TR/1999/REC-html401-19991224">
-	<front>
-	  <title>HTML 4.01 Specification</title>
 
-	  <author fullname="Dave Raggett" initials="D" surname="Raggett">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
-	  <author fullname="Arnaud Le Hors" initials="A" surname="Hors">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
-	  <author fullname="Ian" initials="I" surname="Jacobs">
-	    <organization abbrev="W3C">W3C</organization>
-	  </author>
+      <reference anchor="SAML.SecurityConsiderations"
+		 target="http://docs.oasis-open.org/security/saml/v2.0/saml-sec-consider-2.0-os.pdf">
+        <front>
+          <title>Security and Privacy Considerations for the OASIS Security
+          Assertion Markup Language (SAML) V2.0</title>
 
-	  <date day="24" month="December" year="1999"/>
-	</front>
+          <author fullname="Frederick Hirsch" initials="F" surname="Hirsch">
+            <organization abbrev="Nokia">Nokia</organization>
+          </author>
+          <author fullname="Rob Philpott" initials="R" surname="Philpott">
+            <organization abbrev="RSA Security">RSA Security</organization>
+          </author>
+          <author fullname="Eve Maler" initials="E" surname="Maler">
+            <organization abbrev="Sun Microsystems">Sun
+            Microsystems</organization>
+          </author>
+
+          <date day="15" month="March" year="2005"/>
+        </front>
       </reference>
+
+      
     </references>
 
     <section anchor="Acknowledgements" title="Acknowledgements">
@@ -973,10 +857,6 @@
       copyrights, patents, patent applications, or other proprietary rights
       that may cover technology that may be required to practice this
       specification.</t>
-    </section>
-
-    <section anchor="History" title="Document History">
-      <t>[[ To be removed from the final specification ]]</t>
     </section>
     
   </back>
