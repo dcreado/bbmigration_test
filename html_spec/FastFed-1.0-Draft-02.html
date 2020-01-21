@@ -769,8 +769,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1037,8 +1036,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1096,8 +1094,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1149,8 +1146,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1274,7 +1270,8 @@
 <p id="rfc.section.4.1.2.1.2.p.2">To start discovery of FastFed endpoints, the Application Provider makes an HTTP GET request to the WebFinger [RFC7033] endpoint with the <samp>resource</samp> value set to the user email address prepended with the <samp>acct:</samp> scheme <a href="#RFC7565" class="xref">[RFC7565]</a>. All WebFinger communication MUST utilize TLS in the manner described in <a href="#HanshakeTLSRequirements" class="xref">Section 7.1.1</a>.  </p>
 <p id="rfc.section.4.1.2.1.2.p.3">The FastFed Provider Metadata location MUST be returned in the WebFinger response as the value of the <samp>href</samp> member of a <samp>links</samp> array element with <samp>rel</samp> member value <samp>http://openid.net/specs/fastfed/1.0/provider</samp>. (Per Section 7 of WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a>, obtaining the WebFinger response may first involve following some redirects.) </p>
 <p id="rfc.section.4.1.2.1.2.p.4">The returned Issuer location MUST be a URI <a href="#RFC3986" class="xref">[RFC3986]</a> with a scheme component that MUST be https, a host component, and optionally, port and path components and no query or fragment components. Note that the WebFinger request may return a metadata location hosted under a different domain than the user's email.  </p>
-<p id="rfc.section.4.1.2.1.2.p.5">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
+<p id="rfc.section.4.1.2.1.2.p.5">The WebFinger endpoint MAY return a static response to any query, regardless of input parameters. This can be useful, for example, when all users under the same domain will share the same Identity Provider. A static response allows the Webfinger hosting provider to use a static file and avoid the overhead of operating a full-featured WebFinger service.  </p>
+<p id="rfc.section.4.1.2.1.2.p.6">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
 <thead><tr>
 <th class="left">WebFinger Parameter</th>
@@ -1295,7 +1292,7 @@
 </tr>
 </tbody>
 </table>
-<p id="rfc.section.4.1.2.1.2.p.6">The Application Provider makes a WebFinger request to the well-known FastFed subdomain endpoint (with line wraps for display purposes only): </p>
+<p id="rfc.section.4.1.2.1.2.p.7">The Application Provider makes a WebFinger request to the well-known FastFed subdomain endpoint (with line wraps for display purposes only): </p>
 <pre>
   GET /
     ?resource=acct%3Ajane%40example.com
@@ -1344,8 +1341,13 @@
  Content-Type: application/json
  {
    "identity_provider": {
-     "provider_domain": "idp.example.com",
-     "tenant_id": "tenant-12345",
+     "entity_id": "https://tenant-12345.idp.example.com/"
+     "provider_domain": "example.com",
+     "provider_contact_information": {
+       "organization": "Example Inc.",
+       "phone": "+1-800-555-5555",
+       "email": "support@example.com"
+     },
      "display_settings": {
        "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
@@ -1354,29 +1356,22 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
-       "provisioning_profiles":[
+       "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
        ],
        "signing_alg_values_supported": [
+         "ES512",
          "RS256"
        ]
      },
-     "provider_identity": {
-       "jwks_uri": "https://idp.example.com/keys",
-       "contact_information": {
-         "organization": "Example Inc.",
-         "phone": "+1-800-555-5555",
-         "email": "support@example.com"
-       }
-     },
+     "jwks_uri": "https://idp.example.com/keys",
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
- } 
+ }
 </pre>
 <h1 id="rfc.section.4.1.5">
 <a href="#rfc.section.4.1.5">4.1.5.</a> <a href="#MetadataRefresh" id="MetadataRefresh">Metadata Refresh</a>
@@ -1473,7 +1468,7 @@
 <a href="#rfc.section.6.4">6.4.</a> <a href="#ProviderAuthenticationMethodsJWT" id="ProviderAuthenticationMethodsJWT">JWT Requirements</a>
 </h1>
 <p id="rfc.section.6.4.p.1">Portions of the FastFed Handshake require the transmission of a signed JWT <a href="#RFC7519" class="xref">[RFC7519]</a>. This section describes the requirements for JWT usage within FastFed.  </p>
-<p id="rfc.section.6.4.p.2">JWT serialization MAY use either JWS Compact Serialization or JWS JSON Serialization.  </p>
+<p id="rfc.section.6.4.p.2">JWT serialization MUST use JWS Compact Serialization <a href="#RFC7517" class="xref">[RFC7517]</a>.  </p>
 <p id="rfc.section.6.4.p.3">The JWT header MUST contain the following attributes; </p>
 
 <dl>
@@ -1707,9 +1702,15 @@
 <h1 id="rfc.section.7.2.3.1">
 <a href="#rfc.section.7.2.3.1">7.2.3.1.</a> <a href="#HandshakeRegistrationRequest" id="HandshakeRegistrationRequest">Identity Provider Sends Registration Request</a>
 </h1>
-<p id="rfc.section.7.2.3.1.p.1">The Identity Provider registers with the Application Provider by issuing an HTTP POST to the <samp>fastfed_handshake_register_uri</samp> specified within the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>.  </p>
-<p id="rfc.section.7.2.3.1.p.2">The content of the POST is a JWT <a href="#RFC7519" class="xref">[RFC7519]</a> as specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>.  </p>
-<p id="rfc.section.7.2.3.1.p.3">In addition to the required attributes specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>, the JWT includes the following additional attributes: </p>
+<p id="rfc.section.7.2.3.1.p.1">The Identity Provider registers with the Application Provider by issuing an HTTP POST to the <samp>fastfed_handshake_register_uri</samp> specified within the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> with the following properties:.  </p>
+
+<ul>
+<li>HTTP <samp>Content-Type</samp> MUST be <samp>application/jwt</samp> </li>
+<li>The content of the HTTP POST MUST be a JWT that has been encoded using JWS Compact Serialization <a href="#RFC7519" class="xref">[RFC7519]</a> as specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.7.2.3.1.p.2">In addition to the required attributes specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>, the JWT includes the following additional attributes: </p>
 
 <dl>
 <dt>authentication_profiles</dt>
@@ -1721,9 +1722,10 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.7.2.3.1.p.4">Specific authentication or provisioning profiles MAY extend the set of attributes in the JWT with additional values necessary for the chosen protocol. These extensions are defined elsewhere within the profile specifications. See <a href="#FastFedProfile.SAML" class="xref">[FastFedProfile.SAML]</a> and <a href="#FastFedProfile.SCIM" class="xref">[FastFedProfile.SCIM]</a>.  </p>
-<p id="rfc.section.7.2.3.1.p.5">For example, the following is a non-normative example of the contents of a registration message prior to serialization, with protocol-specific values for SAML and SCIM: </p>
+<p id="rfc.section.7.2.3.1.p.3">Specific authentication or provisioning profiles MAY extend the set of attributes in the JWT with additional values necessary for the chosen protocol. These extensions are defined elsewhere within the profile specifications. See <a href="#FastFedProfile.SAML" class="xref">[FastFedProfile.SAML]</a> and <a href="#FastFedProfile.SCIM" class="xref">[FastFedProfile.SCIM]</a>.  </p>
+<p id="rfc.section.7.2.3.1.p.4">For example, the following is a non-normative example of the contents of a registration message prior to serialization, with protocol-specific values for SAML and SCIM: </p>
 <pre>
+ {
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
@@ -1746,6 +1748,15 @@
      }
    }
  }
+</pre>
+<p id="rfc.section.7.2.3.1.p.5">The following is a non-normative example of a POST after JWS serialization: </p>
+<pre>
+POST /fastfed/register
+ Host: tenant-67890.app.example.com 
+ Content-Type: application/jwt
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
+
 </pre>
 <h1 id="rfc.section.7.2.3.2">
 <a href="#rfc.section.7.2.3.2">7.2.3.2.</a> <a href="#HandshakeRegistrationProcessing" id="HandshakeRegistrationProcessing">Application Provider Handles Registration Request</a>
@@ -1794,16 +1805,16 @@
  Pragma: no-cache
 
  {  
-   "fastfed_handshake_finalize_uri": "https://tenant-56789.app.example.com/fastfed/finalize",
+   "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-     "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+     "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "scim_service_uri": "https://tenant-67890.app.example.com/scim",
      "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile":
      {
-       "token_endpoint": "https://tenant-56789.app.example.com/oauth",
+       "token_endpoint": "https://tenant-67890.app.example.com/oauth",
        "scope": "scim"
      }
    }
@@ -1831,7 +1842,31 @@
 </ol>
 
 <p> </p>
-<p id="rfc.section.7.2.4.1.p.2">The Identity Provider invokes the endpoint by sending an HTTP POST to the <samp>fastfed_handshake_finalize_uri</samp>. The content of the POST is a JWT <a href="#RFC7519" class="xref">[RFC7519]</a> as specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>.  </p>
+<p id="rfc.section.7.2.4.1.p.2">The Identity Provider invokes the endpoint by sending an HTTP POST to the <samp>fastfed_handshake_finalize_uri</samp> with the following properties: </p>
+
+<ul>
+<li>HTTP <samp>Content-Type</samp> MUST be <samp>application/jwt</samp> </li>
+<li>The content of the HTTP POST MUST be a JWT that has been encoded using JWS Compact Serialization <a href="#RFC7519" class="xref">[RFC7519]</a> as specified in <a href="#ProviderAuthenticationMethodsJWT" class="xref">Section 6.4</a>.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.7.2.4.1.p.3">The following is a non-normative example of the contents of a finalization message prior to serialization: </p>
+<pre>
+ {
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
+   "exp": 1234567890
+ }
+</pre>
+<p id="rfc.section.7.2.4.1.p.4">The following is a non-normative example of a POST after JWS serialization: </p>
+<pre>
+POST /fastfed/finalize
+ Host: tenant-67890.app.example.com 
+ Content-Type: application/jwt
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
+
+</pre>
 <h1 id="rfc.section.7.2.4.2">
 <a href="#rfc.section.7.2.4.2">7.2.4.2.</a> <a href="#HandshakeFinalizationApplicationProviderHandlesRequest" id="HandshakeFinalizationApplicationProviderHandlesRequest">Application Provider Handles Finalization Request</a>
 </h1>
@@ -1852,7 +1887,7 @@
 <a href="#rfc.section.7.2.4.3">7.2.4.3.</a> <a href="#HandshakeFinalizationApplicationProviderSendsResponse" id="HandshakeFinalizationApplicationProviderSendsResponse">Application Provider Sends Finalization Response</a>
 </h1>
 <p id="rfc.section.7.2.4.3.p.1">If the request validation fails, the Application Provider MUST respond with an HTTP 401 status code and content type text/plain. The response body MUST either be empty or contain a textual error message which may assist the Identity Provider with diagnostics.  </p>
-<p id="rfc.section.7.2.4.3.p.2">Otherwise, if the validation succeeds, the Application Provider MUST respond with an HTTP 200 OK status code and an empty message body if the following criteria are met: </p>
+<p id="rfc.section.7.2.4.3.p.2">Otherwise, if the validation succeeds, the Application Provider MUST respond with an HTTP 200 OK status code and empty message contents if the following criteria are met: </p>
 
 <ol>
 <li>If an authentication protocol was negotiated during the FastFed Handshake, the Application Provider is ready to handle sign-in requests using the selected protocol.  </li>
@@ -1860,7 +1895,7 @@
 </ol>
 
 <p> </p>
-<p id="rfc.section.7.2.4.3.p.3">If these criteria are NOT met, the Application Provider MUST respond with an HTTP 202 Accepted status and an empty message body.  </p>
+<p id="rfc.section.7.2.4.3.p.3">If these criteria are NOT met, the Application Provider MUST respond with an HTTP 202 Accepted status and empty message content.  </p>
 <h1 id="rfc.section.7.2.4.4">
 <a href="#rfc.section.7.2.4.4">7.2.4.4.</a> <a href="#HandshakeFinalizationIdentityProviderHandlesResponse" id="HandshakeFinalizationIdentityProviderHandlesResponse">Identity Provider Handles Finalization Response</a>
 </h1>

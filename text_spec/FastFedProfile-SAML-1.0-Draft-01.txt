@@ -17,13 +17,15 @@ Abstract
 
 Table of Contents
 
-   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   1
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
      1.1.  Requirements Notation and Conventions . . . . . . . . . .   2
      1.2.  Terminology . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  FastFed Metadata  . . . . . . . . . . . . . . . . . . . . . .   2
-   3.  FastFed Handshake . . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  FastFed Registration Request  . . . . . . . . . . . . . .   3
-     3.2.  FastFed Registration Response . . . . . . . . . . . . . .   4
+   2.  Overview  . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+   3.  Protocol Extensions . . . . . . . . . . . . . . . . . . . . .   3
+     3.1.  FastFed Metadata  . . . . . . . . . . . . . . . . . . . .   3
+     3.2.  FastFed Handshake . . . . . . . . . . . . . . . . . . . .   3
+       3.2.1.  FastFed Registration Request  . . . . . . . . . . . .   3
+       3.2.2.  FastFed Registration Response . . . . . . . . . . . .   4
    4.  Schema Binding  . . . . . . . . . . . . . . . . . . . . . . .   4
      4.1.  SCIM-to-SAML Attribute Mapping  . . . . . . . . . . . . .   5
        4.1.1.  SAML Subject  . . . . . . . . . . . . . . . . . . . .   5
@@ -44,10 +46,8 @@ Table of Contents
    Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  13
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  14
 
-1.  Introduction
 
-   This specification defines the functionality which a provider must
-   implement to satisfy the Basic SAML 2.0 Profile for FastFed.
+
 
 
 
@@ -57,6 +57,11 @@ McAdams                   Expires July 23, 2020                 [Page 1]
 
                       FastFed Profile for SAML 2.0          January 2020
 
+
+1.  Introduction
+
+   This specification defines the functionality which a provider must
+   implement to satisfy the Basic SAML 2.0 Profile for FastFed.
 
    It consists of the following extensions to the FastFed Core
    [FastFed.Core] specification:
@@ -91,7 +96,35 @@ McAdams                   Expires July 23, 2020                 [Page 1]
    This FastFed Profile uses the terminology defined in Section 1.2 of
    the FastFed Core [FastFed.Core] specification.
 
-2.  FastFed Metadata
+2.  Overview
+
+   When using the SAML protocol, the FastFed Identity Provider and
+   Application Provider have various responsibilities to comply with the
+   protocol.
+
+   The Identity Provider fulfills the role of a SAML Identity Provider.
+   It has a responsibility to host a SAML Metadata file as described in
+   Section 5.1.
+
+
+
+
+McAdams                   Expires July 23, 2020                 [Page 2]
+
+                      FastFed Profile for SAML 2.0          January 2020
+
+
+   The Application Provider fulfills the role of a SAML Application
+   Provider.  It has a responsibility to host a SAML Metadata file as
+   described in Section 5.2
+
+   This specification extends the FastFed Core [FastFed.Core] handshake
+   messages with the additional attributes necessary for each party to
+   fulfill their respective obligations under SAML.
+
+3.  Protocol Extensions
+
+3.1.  FastFed Metadata
 
    This specification extends the FastFed Core [FastFed.Core] Provider
    Metadata (Section 3.3.1) with the following value for
@@ -104,16 +137,6 @@ McAdams                   Expires July 23, 2020                 [Page 1]
    The following is a non-normative example of Provider Metadata showing
    the usage of the value:
 
-
-
-
-
-
-McAdams                   Expires July 23, 2020                 [Page 2]
-
-                      FastFed Profile for SAML 2.0          January 2020
-
-
  {
    "identity_provider": {
      "capabilities": {
@@ -121,25 +144,9 @@ McAdams                   Expires July 23, 2020                 [Page 2]
    ...
  }
 
-3.  FastFed Handshake
+3.2.  FastFed Handshake
 
-   When using the SAML protocol, the FastFed Identity Provider and
-   Application Provider have various responsibilities to comply with the
-   protocol.
-
-   The Identity Provider fulfills the role of a SAML Identity Provider.
-   It has a responsibility to host a SAML Metadata file as described in
-   Section 5.1.
-
-   The Application Provider fulfills the role of a SAML Application
-   Provider.  It has a responsibility to host a SAML Metadata file as
-   described in Section 5.2
-
-   This specification extends the FastFed Core [FastFed.Core] handshake
-   messages with the additional attributes necessary for each party to
-   fulfill their respective obligations under SAML.
-
-3.1.  FastFed Registration Request
+3.2.1.  FastFed Registration Request
 
    This specification extends the JWT contents of the FastFed
    Registration Request (Section 7.2.3.1 of FastFed Core [FastFed.Core])
@@ -153,13 +160,6 @@ McAdams                   Expires July 23, 2020                 [Page 2]
 
    The following is a non-normative example of the contents of a
    registration request message prior to serialization:
-
-
-
-
-
-
-
 
 
 
@@ -183,7 +183,7 @@ McAdams                   Expires July 23, 2020                 [Page 3]
    }
  }
 
-3.2.  FastFed Registration Response
+3.2.2.  FastFed Registration Response
 
    This specification extends the contents of the FastFed Registration
    Response (Section 7.2.3.3 of FastFed Core [FastFed.Core]) with a
@@ -212,11 +212,11 @@ McAdams                   Expires July 23, 2020                 [Page 3]
 
 4.  Schema Binding
 
-   FastFed recommmends SCIM for user schemas.
+   FastFed recommmends SCIM for user schemas.  However, neither SAML nor
+   SCIM specify how to represent SCIM attributes in the context of SAML
+   assertions.
 
-   This specification defines how to be FastFed compliant when using
-   SCIM 2.0 Schema Grammar (Section 3.4 of FastFed Core [FastFed.Core])
-   with the SAML 2.0 protocol.
+
 
 
 
@@ -225,6 +225,10 @@ McAdams                   Expires July 23, 2020                 [Page 4]
 
                       FastFed Profile for SAML 2.0          January 2020
 
+
+   This specification fills the gap and defines how FastFed compatible
+   Providers can use the SCIM 2.0 Schema Grammar (Section 3.4 of FastFed
+   Core [FastFed.Core]) with the SAML 2.0 protocol.
 
 4.1.  SCIM-to-SAML Attribute Mapping
 
@@ -249,11 +253,11 @@ McAdams                   Expires July 23, 2020                 [Page 4]
 
 4.1.2.  SAML Attributes
 
-   When users have been pre-provisioned into the Application through
+   If users have been pre-provisioned into the Application through
    mechanisms like SCIM, the SAML Subject alone can be sufficient to
    correlate the incoming SAML message with the appropriate pre-existing
-   user.  However, there can be circumstances when user attributes are
-   also necessary.
+   user.  However, there can be circumstances when additional user
+   attributes are necessary.
 
    One such situation occurs when an application is using Just-In-Time
    provisioning instead of pre-provisioning.  In this mode of behavior,
@@ -268,11 +272,7 @@ McAdams                   Expires July 23, 2020                 [Page 4]
 
    Attributes are requested by setting the value of
    ""include_attributes_in_saml_response"" to "true" in the FastFed
-   Handshake Registration Response (Section 3.2).
-
-   When attributes are requested, the Identity Provider MUST include
-   SAML Attribute elements in the response message with the following
-   properties:
+   Handshake Registration Response (Section 3.2.2).
 
 
 
@@ -281,6 +281,10 @@ McAdams                   Expires July 23, 2020                 [Page 5]
 
                       FastFed Profile for SAML 2.0          January 2020
 
+
+   When attributes are requested, the Identity Provider MUST include
+   SAML Attribute elements in the response message with the following
+   properties:
 
    o  "Name" set to the value in the mapping table below.
 
@@ -316,10 +320,6 @@ McAdams                   Expires July 23, 2020                 [Page 5]
 
    The following is a non-normative example demonstrating a
    transformation from a SCIM User to SAML Attributes:
-
-
-
-
 
 
 

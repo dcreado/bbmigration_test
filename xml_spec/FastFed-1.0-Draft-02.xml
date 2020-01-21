@@ -289,8 +289,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -912,8 +911,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1043,8 +1041,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1100,8 +1097,7 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
        "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
@@ -1408,6 +1404,14 @@
 		domain than the user's email.
 	      </t>
 	      <t>
+		The WebFinger endpoint MAY return a static response to any query,
+		regardless of input parameters. This can be useful, for
+		example, when all users under the same domain will share the
+		same Identity Provider. A static response allows the Webfinger
+		hosting provider to use a static file and avoid the overhead of
+		operating a full-featured WebFinger service.
+	      </t>
+	      <t>
 		The following non-normative example demonstrates the discovery of
 		FastFed Provider Metadata
 		for <spanx style="verb">jane@example.com</spanx>. The WebFinger
@@ -1506,8 +1510,13 @@
  Content-Type: application/json
  {
    "identity_provider": {
-     "provider_domain": "idp.example.com",
-     "tenant_id": "tenant-12345",
+     "entity_id": "https://tenant-12345.idp.example.com/"
+     "provider_domain": "example.com",
+     "provider_contact_information": {
+       "organization": "Example Inc.",
+       "phone": "+1-800-555-5555",
+       "email": "support@example.com"
+     },
      "display_settings": {
        "display_name": "Example Identity Provider",
        "logo_uri": "https://idp.example.com/images/logo.png",
@@ -1516,29 +1525,22 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic",
-         "urn:ietf:params:fastfed:1.0:authentication:OIDC:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
        ],
-       "provisioning_profiles":[
+       "provisioning_profiles": [
          "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
        ],
        "signing_alg_values_supported": [
+         "ES512",
          "RS256"
        ]
      },
-     "provider_identity": {
-       "jwks_uri": "https://idp.example.com/keys",
-       "contact_information": {
-         "organization": "Example Inc.",
-         "phone": "+1-800-555-5555",
-         "email": "support@example.com"
-       }
-     },
+     "jwks_uri": "https://idp.example.com/keys",
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
- } 
+ }
 ]]></artwork></figure>
 	</section>
 
@@ -1821,8 +1823,7 @@
 	  within FastFed. 
 	</t>
 	<t>
-	  JWT serialization MAY use either JWS Compact Serialization or JWS JSON
-          Serialization.
+	  JWT serialization MUST use JWS Compact Serialization <xref target="RFC7517"/>.
 	</t>
 	<t>
 	  The JWT header MUST contain the following attributes;
@@ -2533,11 +2534,19 @@
 	      the <spanx style="verb">fastfed_handshake_register_uri</spanx>
 	      specified within
 	      the <xref target="ApplicationProviderMetadata">Application
-	      Provider Metadata</xref>.
-	    </t>
-	    <t>
-	      The content of the POST is a JWT <xref target="RFC7519"/> as
-	      specified in <xref target="ProviderAuthenticationMethodsJWT"/>.
+	      Provider Metadata</xref> with the following properties:.
+	      <list style="symbols">
+		<t>
+		  HTTP <spanx style="verb">Content-Type</spanx> MUST be
+		  <spanx style="verb">application/jwt</spanx>
+		</t>
+		<t>
+		  The content of the HTTP POST MUST be a JWT that has been
+		  encoded using JWS Compact Serialization
+		  <xref target="RFC7519"/> as specified in
+		  <xref target="ProviderAuthenticationMethodsJWT"/>.
+		</t>
+	      </list>
 	    </t>
 	    <t>
 	      In addition to the required attributes specified in
@@ -2584,6 +2593,7 @@
               SAML and SCIM:
             </t>
             <figure><artwork><![CDATA[
+ {
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
@@ -2607,6 +2617,19 @@
    }
  }
 ]]></artwork></figure>
+            <t> 
+              The following is a non-normative example of a POST after JWS
+              serialization:
+            </t>
+            <figure><artwork><![CDATA[
+POST /fastfed/register
+ Host: tenant-67890.app.example.com 
+ Content-Type: application/jwt
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
+
+]]></artwork></figure>
+
 	  </section>
 
 	  <section anchor="HandshakeRegistrationProcessing"
@@ -2766,16 +2789,16 @@
  Pragma: no-cache
 
  {  
-   "fastfed_handshake_finalize_uri": "https://tenant-56789.app.example.com/fastfed/finalize",
+   "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
-     "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+     "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
    "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
-     "scim_service_uri": "https://tenant-56789.app.example.com/scim",
+     "scim_service_uri": "https://tenant-67890.app.example.com/scim",
      "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile":
      {
-       "token_endpoint": "https://tenant-56789.app.example.com/oauth",
+       "token_endpoint": "https://tenant-67890.app.example.com/oauth",
        "scope": "scim"
      }
    }
@@ -2855,10 +2878,42 @@
 	    <t>
 	      The Identity Provider invokes the endpoint by sending an HTTP POST
 	      to
-	      the <spanx style="verb">fastfed_handshake_finalize_uri</spanx>. The
-	      content of the POST is a JWT <xref target="RFC7519"/> as specified
-	      in <xref target="ProviderAuthenticationMethodsJWT"/>.
+	      the <spanx style="verb">fastfed_handshake_finalize_uri</spanx>
+	      with the following properties:
+              <list style="symbols">
+                <t> 
+		  HTTP <spanx style="verb">Content-Type</spanx> MUST be
+                  <spanx style="verb">application/jwt</spanx>
+                </t>
+                <t> The content of the HTTP POST MUST be a JWT that has been
+                  encoded using JWS Compact Serialization
+                  <xref target="RFC7519"/> as specified in
+                  <xref target="ProviderAuthenticationMethodsJWT"/>.
+                </t>
+              </list> 
 	    </t>
+            <t>
+              The following is a non-normative example of the contents of a
+              finalization message prior to serialization:
+            </t>
+            <figure><artwork><![CDATA[
+ {
+   "iss": "https://tenant-12345.idp.example.com",
+   "aud": "https://tenant-67890.app.example.com",
+   "exp": 1234567890
+ }
+]]></artwork></figure>
+            <t> 
+	      The following is a non-normative example of a POST after JWS serialization:
+            </t>
+            <figure><artwork><![CDATA[
+POST /fastfed/finalize
+ Host: tenant-67890.app.example.com 
+ Content-Type: application/jwt
+
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
+
+]]></artwork></figure>
 	  </section>
 
 	  
@@ -2922,8 +2977,8 @@
             </t> 
 	    <t>
 	      Otherwise, if the validation succeeds, the Application Provider
-	      MUST respond with an HTTP 200 OK status code and an empty message
-	      body if the following criteria are met:
+	      MUST respond with an HTTP 200 OK status code and empty message
+	      contents if the following criteria are met:
 	      <list style="numbers">
               <t> 
 		If an authentication protocol was negotiated during the
@@ -2939,7 +2994,7 @@
 	    </t>
 	    <t>
 	      If these criteria are NOT met, the Application Provider MUST respond
-	      with an HTTP 202 Accepted status and an empty message body.
+	      with an HTTP 202 Accepted status and empty message content.
 	    </t>
 	  </section>
 

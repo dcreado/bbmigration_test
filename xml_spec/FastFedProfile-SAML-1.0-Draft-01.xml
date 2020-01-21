@@ -98,41 +98,16 @@
       </section>
     </section>
 
-    <section anchor="FastFedMetadata" title="FastFed Metadata">
+    <section anchor="Overview"
+             title="Overview">
       <t>
-	This specification extends the <xref target="FastFed.Core">FastFed
-        Core</xref> Provider Metadata (Section 3.3.1) with the following value
-        for <spanx style="verb">authentication_profiles</spanx>:
-	<list style="hanging">
-	  <t hangText="urn:ietf:params:fastfed:1.0:authentication:SAML:Basic">
-            A Provider who includes this URN in their list of capabilities MUST
-            comply with the requirements described in this specification.
-	  </t>
-	</list>
-      </t>
-      <t>
-        The following is a non-normative example of Provider Metadata showing
-        the usage of the value:
-      </t>
-        <figure><artwork><![CDATA[
- {
-   "identity_provider": {
-     "capabilities": {
-       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
-   ...
- }
-]]></artwork></figure> 
-    </section>
-    
-    <section anchor="FastFedHandshake" title="FastFed Handshake">
-
-      <t>
-	When using the SAML protocol, the FastFed
+        When using the SAML protocol, the FastFed
         Identity Provider and Application Provider have various
         responsibilities to comply with the protocol.
       </t>
       <t>
-        The Identity Provider fulfills the role of a SAML Identity Provider. It has
+        The Identity Provider fulfills the role of a SAML Identity
+        Provider. It has
         a responsibility to host a SAML Metadata file as described in
         <xref target="SAMLInteroperabilityIdentityProviderReqs"/>.
       </t>
@@ -144,30 +119,61 @@
       </t>
       <t>
         This specification extends the <xref target="FastFed.Core">FastFed
-        Core</xref> handshake messages with the additional attributes necessary for
+          Core</xref> handshake messages with the additional attributes
+        necessary for
         each party to fulfill their respective obligations under SAML.
       </t>
+    </section> <!-- End of Overview -->
 
-      <section anchor="FastFedHandshakeRegistrationRequest" title="FastFed Registration Request">
+    <section anchor="ProtocolExtensions" title="Protocol Extensions">
+
+      <section anchor="FastFedMetadata" title="FastFed Metadata">
 	<t>
-	  This specification extends the JWT contents of the FastFed
-	  Registration Request (Section 7.2.3.1
-	  of <xref target="FastFed.Core">FastFed Core</xref>) with a structure
-	  sharing the same name as the profile:
-	  <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	  This specification extends the <xref target="FastFed.Core">FastFed
+            Core</xref> Provider Metadata (Section 3.3.1) with the following value
+          for <spanx style="verb">authentication_profiles</spanx>:
+	  <list style="hanging">
+	    <t hangText="urn:ietf:params:fastfed:1.0:authentication:SAML:Basic">
+              A Provider who includes this URN in their list of capabilities MUST
+              comply with the requirements described in this specification.
+	    </t>
+	  </list>
 	</t>
 	<t>
-	  The structure contains the following attributes:
-          <list style="hanging">
-            <t hangText="saml_metadata_uri">
-	      REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.
-            </t>
-          </list>
+          The following is a non-normative example of Provider Metadata showing
+          the usage of the value:
 	</t>
-	<t>
-          The following is a non-normative example of the contents of a
-          registration request message prior to serialization:
-	</t>
+        <figure><artwork><![CDATA[
+ {
+   "identity_provider": {
+     "capabilities": {
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
+   ...
+ }
+]]></artwork></figure> 
+      </section>
+      
+      <section anchor="FastFedHandshake" title="FastFed Handshake">	
+	<section anchor="FastFedHandshakeRegistrationRequest" title="FastFed Registration Request">
+	  <t>
+	    This specification extends the JWT contents of the FastFed
+	    Registration Request (Section 7.2.3.1
+	    of <xref target="FastFed.Core">FastFed Core</xref>) with a structure
+	    sharing the same name as the profile:
+	    <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	  </t>
+	  <t>
+	    The structure contains the following attributes:
+            <list style="hanging">
+              <t hangText="saml_metadata_uri">
+		REQUIRED. Contains the URL of the Identity Provider's SAML Metadata document.
+              </t>
+            </list>
+	  </t>
+	  <t>
+            The following is a non-normative example of the contents of a
+            registration request message prior to serialization:
+	  </t>
         <figure><artwork><![CDATA[
  {
    "iss": "https://tenant-12345.idp.example.com",
@@ -182,57 +188,62 @@
    }
  }
 ]]></artwork></figure>
-      </section>
+	</section>
 
-      <section anchor="FastFedHandshakeRegistrationResponse" 
-	       title="FastFed Registration Response">
-        <t>
-          This specification extends the contents of the FastFed Registration
-          Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
-          Core</xref>) with a structure sharing the same name as the
-          profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
-	</t>
-	<t>
-	  The structure contains the following attributes:
-          <list style="hanging">
-            <t hangText="saml_metadata_uri">
-              REQUIRED. Contains the URL of the Application Provider's
-              SAML Metadata document.
-            </t>
-	    <t hangText="include_attributes_in_saml_response">
-	      OPTIONAL. Boolean value indicating whether a SAML
-              AttributeStatement should be included in sign-in responses,
-              populated with user attributes. If not specified, only the SAML
-              Subject is provided. (See
-              <xref target="SchemaBindingScimToSamlAttributes"/>
-              for details about attribute binding into SAML assertions.)
-            </t>
-          </list>
-        </t> 
-        <t>
-          The following is a non-normative example of the contents of a
-          registration response message:
-        </t>
-        <figure><artwork><![CDATA[
+	<section anchor="FastFedHandshakeRegistrationResponse" 
+		 title="FastFed Registration Response">
+          <t>
+            This specification extends the contents of the FastFed Registration
+            Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
+              Core</xref>) with a structure sharing the same name as the
+            profile: <spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"</spanx>.
+	  </t>
+	  <t>
+	    The structure contains the following attributes:
+            <list style="hanging">
+              <t hangText="saml_metadata_uri">
+		REQUIRED. Contains the URL of the Application Provider's
+		SAML Metadata document.
+              </t>
+	      <t hangText="include_attributes_in_saml_response">
+		OPTIONAL. Boolean value indicating whether a SAML
+		AttributeStatement should be included in sign-in responses,
+		populated with user attributes. If not specified, only the SAML
+		Subject is provided. (See
+		<xref target="SchemaBindingScimToSamlAttributes"/>
+		for details about attribute binding into SAML assertions.)
+              </t>
+            </list>
+          </t> 
+          <t>
+            The following is a non-normative example of the contents of a
+            registration response message:
+          </t>
+          <figure><artwork><![CDATA[
  {
    "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
      "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
    }
  }
 ]]></artwork></figure>
-      </section>
-
-    </section> <!-- End of FastFed Handshake Extensions -->
+	</section>
+	
+      </section> <!-- End of FastFed Handshake Extensions -->
+    </section> <!-- End of Protocol Extensions -->
+      
 
     <section anchor="SchemaBinding" title="Schema Binding">
 
       <t>
-	FastFed recommmends SCIM for user schemas.
+	FastFed recommmends SCIM for user schemas. However, neither SAML nor
+	SCIM specify how to represent SCIM attributes in the context of SAML
+	assertions.
       </t>
       <t>
-	This specification defines how to be FastFed compliant when using SCIM
-	2.0 Schema Grammar (Section 3.4 of <xref target="FastFed.Core">FastFed
-	Core</xref>) with the SAML 2.0 protocol.
+	This specification fills the gap and defines how FastFed compatible
+	Providers can use the SCIM 2.0 Schema Grammar (Section 3.4
+	of <xref target="FastFed.Core">FastFed Core</xref>) with the SAML 2.0
+	protocol.
       </t>
 
       <section anchor="SchemaBindingScimToSaml"
@@ -271,11 +282,11 @@
 	<section anchor="SchemaBindingScimToSamlAttributes"
                  title="SAML Attributes">
 	  <t>
-	    When users have been pre-provisioned into the Application through
+	    If users have been pre-provisioned into the Application through
 	    mechanisms like SCIM, the SAML Subject alone can be sufficient to
-	    correlate the incoming SAML message with the appropriate pre-existing
-	    user. However, there can be circumstances when user attributes are
-	    also necessary.
+	    correlate the incoming SAML message with the appropriate
+	    pre-existing user. However, there can be circumstances when
+	    additional user attributes are necessary.
 	  </t>
 	  <t>
 	    One such situation occurs when an application is using Just-In-Time
