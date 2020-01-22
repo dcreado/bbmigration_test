@@ -2955,12 +2955,6 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
               </list>
 	    </t>
 	    <t>
-              If validation fails, the Application Provider MUST respond with an
-              HTTP 401 status code and content type text/plain. The response
-              body MUST either be empty or contain a textual error message which
-              may assist the Identity Provider with diagnostics.
-            </t>
-	    <t>
 	      If validation is successful, the Application Provider may initiate
 	      any actions that result from a finalized handshake. This is an
 	      implementation detail outside the scope of the specification.
@@ -2976,9 +2970,9 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
               may assist the Identity Provider with diagnostics.
             </t> 
 	    <t>
-	      Otherwise, if the validation succeeds, the Application Provider
-	      MUST respond with an HTTP 200 OK status code and empty message
-	      contents if the following criteria are met:
+	      Otherwise, if validation succeeds, the Application Provider MUST
+	      respond with an HTTP 200 OK status code and empty message contents
+	      if the following criteria are met:
 	      <list style="numbers">
               <t> 
 		If an authentication protocol was negotiated during the

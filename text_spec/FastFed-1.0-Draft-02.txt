@@ -120,7 +120,7 @@ McAdams                   Expires July 23, 2020                 [Page 2]
        7.2.4.  Handshake Finalization  . . . . . . . . . . . . . . .  48
          7.2.4.1.  Identity Provider Sends Finalization Request  . .  49
          7.2.4.2.  Application Provider Handles Finalization Request  50
-         7.2.4.3.  Application Provider Sends Finalization Response   51
+         7.2.4.3.  Application Provider Sends Finalization Response   50
          7.2.4.4.  Identity Provider Handles Finalization Response .  51
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .  51
      8.1.  Strong Authentication of Administrators . . . . . . . . .  52
@@ -2785,14 +2785,14 @@ McAdams                   Expires July 23, 2020                [Page 49]
        signing algorithm for the "kid" in the key set MUST match the
        signing algorithm in the JWT.
 
-   If validation fails, the Application Provider MUST respond with an
-   HTTP 401 status code and content type text/plain.  The response body
-   MUST either be empty or contain a textual error message which may
-   assist the Identity Provider with diagnostics.
-
    If validation is successful, the Application Provider may initiate
    any actions that result from a finalized handshake.  This is an
    implementation detail outside the scope of the specification.
+
+7.2.4.3.  Application Provider Sends Finalization Response
+
+   If the request validation fails, the Application Provider MUST
+   respond with an HTTP 401 status code and content type text/plain.
 
 
 
@@ -2802,14 +2802,10 @@ McAdams                   Expires July 23, 2020                [Page 50]
                             FastFed Core 1.0                January 2020
 
 
-7.2.4.3.  Application Provider Sends Finalization Response
-
-   If the request validation fails, the Application Provider MUST
-   respond with an HTTP 401 status code and content type text/plain.
    The response body MUST either be empty or contain a textual error
    message which may assist the Identity Provider with diagnostics.
 
-   Otherwise, if the validation succeeds, the Application Provider MUST
+   Otherwise, if validation succeeds, the Application Provider MUST
    respond with an HTTP 200 OK status code and empty message contents if
    the following criteria are met:
 
@@ -2849,7 +2845,11 @@ McAdams                   Expires July 23, 2020                [Page 50]
 
    For example, if a malicious actor were to succeed in having their
    Identity Provider approved for single sign-on to an application owned
+   by another party, it can allow the malicious actor to access the
+   application.
 
+   Similarly, if a malicious application were to succeed in being
+   approved for use by members of an organization, this can have several
 
 
 
@@ -2858,11 +2858,6 @@ McAdams                   Expires July 23, 2020                [Page 51]
                             FastFed Core 1.0                January 2020
 
 
-   by another party, it can allow the malicious actor to access the
-   application.
-
-   Similarly, if a malicious application were to succeed in being
-   approved for use by members of an organization, this can have several
    impacts.  First, by receiving user provisioning messages, the
    malicious application may gain access to information about members of
    the organization.  Second, by observing user activity in the
@@ -2906,6 +2901,11 @@ McAdams                   Expires July 23, 2020                [Page 51]
 
    Depending on the sensitivity of the application or organization,
    Providers may also consider additional defenses such as quorum
+   approval processes, Test of User Presence [W3C.WebAuthn], or change
+   notifications.
+
+
+
 
 
 
@@ -2913,9 +2913,6 @@ McAdams                   Expires July 23, 2020                [Page 52]
 
                             FastFed Core 1.0                January 2020
 
-
-   approval processes, Test of User Presence [W3C.WebAuthn], or change
-   notifications.
 
 8.3.  Evaluating Trustworthiness of Applications
 
@@ -2960,8 +2957,11 @@ McAdams                   Expires July 23, 2020                [Page 52]
               McAdams, K., "FastFed Profile for SCIM", October 2019,
               <http://example.com>.
 
-
-
+   [OpenID.Registration]
+              Sakimura, N., Bradley, J., and M. Jones, "OpenID Connect
+              Dynamic Client Registration 1.0", November 2014,
+              <http://openid.net/specs/
+              openid-connect-registration-1_0.html>.
 
 
 
@@ -2969,12 +2969,6 @@ McAdams                   Expires July 23, 2020                [Page 53]
 
                             FastFed Core 1.0                January 2020
 
-
-   [OpenID.Registration]
-              Sakimura, N., Bradley, J., and M. Jones, "OpenID Connect
-              Dynamic Client Registration 1.0", November 2014,
-              <http://openid.net/specs/
-              openid-connect-registration-1_0.html>.
 
    [POSIX.1]  IEEE Std 1003.1, 2018 Edition, "The Open Group Base
               Specifications Issue 7", 2018,
@@ -3018,6 +3012,12 @@ McAdams                   Expires July 23, 2020                [Page 53]
               Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
               September 2009, <https://www.rfc-editor.org/info/rfc5646>.
 
+   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
+              Verification of Domain-Based Application Service Identity
+              within Internet Public Key Infrastructure Using X.509
+              (PKIX) Certificates in the Context of Transport Layer
+              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
+              2011, <https://www.rfc-editor.org/info/rfc6125>.
 
 
 
@@ -3025,13 +3025,6 @@ McAdams                   Expires July 23, 2020                [Page 54]
 
                             FastFed Core 1.0                January 2020
 
-
-   [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
-              Verification of Domain-Based Application Service Identity
-              within Internet Public Key Infrastructure Using X.509
-              (PKIX) Certificates in the Context of Transport Layer
-              Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
-              2011, <https://www.rfc-editor.org/info/rfc6125>.
 
    [RFC7033]  Jones, P., Salgueiro, G., Jones, M., and J. Smarr,
               "WebFinger", RFC 7033, DOI 10.17487/RFC7033, September
@@ -3073,6 +3066,13 @@ McAdams                   Expires July 23, 2020                [Page 54]
               Core Schema", RFC 7643, DOI 10.17487/RFC7643, September
               2015, <https://www.rfc-editor.org/info/rfc7643>.
 
+   [RFC7644]  Hunt, P., Ed., Grizzle, K., Ansari, M., Wahlstroem, E.,
+              and C. Mortimore, "System for Cross-domain Identity
+              Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
+              September 2015, <https://www.rfc-editor.org/info/rfc7644>.
+
+
+
 
 
 
@@ -3081,11 +3081,6 @@ McAdams                   Expires July 23, 2020                [Page 55]
 
                             FastFed Core 1.0                January 2020
 
-
-   [RFC7644]  Hunt, P., Ed., Grizzle, K., Ansari, M., Wahlstroem, E.,
-              and C. Mortimore, "System for Cross-domain Identity
-              Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
-              September 2015, <https://www.rfc-editor.org/info/rfc7644>.
 
    [W3C.REC-html401-19991224]
               Raggett, D., Hors, A., and I. Jacobs, "HTML 4.01
@@ -3130,6 +3125,11 @@ Appendix B.  Notices
    rights might or might not be available; neither does it represent
    that it has made any independent effort to identify any such rights.
    The OpenID Foundation and the contributors to this specification make
+   no (and hereby expressly disclaim any) warranties (express, implied,
+   or otherwise), including implied warranties of merchantability, non-
+   infringement, fitness for a particular purpose, or title, related to
+   this specification, and the entire risk as to implementing this
+   specification is assumed by the implementer.  The OpenID Intellectual
 
 
 
@@ -3138,11 +3138,6 @@ McAdams                   Expires July 23, 2020                [Page 56]
                             FastFed Core 1.0                January 2020
 
 
-   no (and hereby expressly disclaim any) warranties (express, implied,
-   or otherwise), including implied warranties of merchantability, non-
-   infringement, fitness for a particular purpose, or title, related to
-   this specification, and the entire risk as to implementing this
-   specification is assumed by the implementer.  The OpenID Intellectual
    Property Rights policy requires contributors to offer a patent
    promise not to assert certain patent claims against other
    contributors and against implementers.  The OpenID Foundation invites
@@ -3156,6 +3151,11 @@ Author's Address
    Amazon
 
    Email: darinm@amazon.com
+
+
+
+
+
 
 
 
