@@ -4,7 +4,7 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                        January 20, 2020
+                                                           March 9, 2020
 
 
                       FastFed Core 1.0 - draft 02
@@ -38,28 +38,31 @@ Table of Contents
      3.2.  Metadata Languages and Scripts  . . . . . . . . . . . . .  11
      3.3.  Provider Metadata . . . . . . . . . . . . . . . . . . . .  12
        3.3.1.  Capabilities  . . . . . . . . . . . . . . . . . . . .  12
-       3.3.2.  Display Settings  . . . . . . . . . . . . . . . . . .  13
-       3.3.3.  Provider Contact Information  . . . . . . . . . . . .  14
-       3.3.4.  Common Provider Metadata  . . . . . . . . . . . . . .  15
-       3.3.5.  Identity Provider Metadata  . . . . . . . . . . . . .  16
-       3.3.6.  Application Provider Metadata . . . . . . . . . . . .  17
-     3.4.  SCIM 2.0 Schema Grammar . . . . . . . . . . . . . . . . .  22
+       3.3.2.  Display Settings  . . . . . . . . . . . . . . . . . .  14
+       3.3.3.  Provider Contact Information  . . . . . . . . . . . .  15
+       3.3.4.  Attribute Reference . . . . . . . . . . . . . . . . .  15
+         3.3.4.1.  Using the SCIM 2.0 Schema Grammar for Attribute
+                   References  . . . . . . . . . . . . . . . . . . .  16
+       3.3.5.  Desired Attributes  . . . . . . . . . . . . . . . . .  18
+       3.3.6.  Common Provider Metadata  . . . . . . . . . . . . . .  20
+       3.3.7.  Identity Provider Metadata  . . . . . . . . . . . . .  21
+       3.3.8.  Application Provider Metadata . . . . . . . . . . . .  22
    4.  Metadata Endpoints  . . . . . . . . . . . . . . . . . . . . .  24
      4.1.  Provider Metadata Endpoint  . . . . . . . . . . . . . . .  24
-       4.1.1.  Endpoint Validation . . . . . . . . . . . . . . . . .  24
-       4.1.2.  Endpoint Discovery  . . . . . . . . . . . . . . . . .  25
-         4.1.2.1.  Email-based Discovery via WebFinger . . . . . . .  25
-           4.1.2.1.1.  WebFinger Endpoints . . . . . . . . . . . . .  25
+       4.1.1.  Endpoint Validation . . . . . . . . . . . . . . . . .  25
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 1]
+McAdams                Expires September 10, 2020               [Page 1]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
+       4.1.2.  Endpoint Discovery  . . . . . . . . . . . . . . . . .  25
+         4.1.2.1.  Email-based Discovery via WebFinger . . . . . . .  26
+           4.1.2.1.1.  WebFinger Endpoints . . . . . . . . . . . . .  26
            4.1.2.1.2.  WebFinger Queries . . . . . . . . . . . . . .  26
-         4.1.2.2.  Alternative Discovery Mechanisms  . . . . . . . .  27
+         4.1.2.2.  Alternative Discovery Mechanisms  . . . . . . . .  28
        4.1.3.  Read Request  . . . . . . . . . . . . . . . . . . . .  28
        4.1.4.  Read Response . . . . . . . . . . . . . . . . . . . .  28
        4.1.5.  Metadata Refresh  . . . . . . . . . . . . . . . . . .  29
@@ -103,24 +106,24 @@ McAdams                   Expires July 23, 2020                 [Page 1]
          7.2.2.4.  Identity Provider Checks For Duplicates and
                    Updates . . . . . . . . . . . . . . . . . . . . .  42
          7.2.2.5.  Identity Provider Obtains Confirmation from
+
+
+
+McAdams                Expires September 10, 2020               [Page 2]
+
+                            FastFed Core 1.0                  March 2020
+
+
                    Administrator . . . . . . . . . . . . . . . . . .  44
        7.2.3.  Handshake Registration  . . . . . . . . . . . . . . .  44
          7.2.3.1.  Identity Provider Sends Registration Request  . .  44
-
-
-
-McAdams                   Expires July 23, 2020                 [Page 2]
-
-                            FastFed Core 1.0                January 2020
-
-
          7.2.3.2.  Application Provider Handles Registration Request  46
          7.2.3.3.  Application Provider Sends Registration Response   47
          7.2.3.4.  Identity Provider Handles Registration Response .  48
-       7.2.4.  Handshake Finalization  . . . . . . . . . . . . . . .  48
+       7.2.4.  Handshake Finalization  . . . . . . . . . . . . . . .  49
          7.2.4.1.  Identity Provider Sends Finalization Request  . .  49
          7.2.4.2.  Application Provider Handles Finalization Request  50
-         7.2.4.3.  Application Provider Sends Finalization Response   50
+         7.2.4.3.  Application Provider Sends Finalization Response   51
          7.2.4.4.  Identity Provider Handles Finalization Response .  51
    8.  Security Considerations . . . . . . . . . . . . . . . . . . .  51
      8.1.  Strong Authentication of Administrators . . . . . . . . .  52
@@ -129,7 +132,7 @@ McAdams                   Expires July 23, 2020                 [Page 2]
    9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  53
    10. Normative References  . . . . . . . . . . . . . . . . . . . .  53
    Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  56
-   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  56
+   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  57
    Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  57
 
 1.  Introduction
@@ -158,18 +161,19 @@ McAdams                   Expires July 23, 2020                 [Page 2]
    documentation can result in non-functional configuration that is
    difficult to debug.
 
+
+
+
+
+McAdams                Expires September 10, 2020               [Page 3]
+
+                            FastFed Core 1.0                  March 2020
+
+
    Finally, a working configuration may cease to function when the
    configuration becomes stale, such as when certificates expire.  The
    lack of a direct communication channel between the identity provider
    and application provider requires that human administrators remember
-
-
-
-McAdams                   Expires July 23, 2020                 [Page 3]
-
-                            FastFed Core 1.0                January 2020
-
-
    to periodically refresh the configuration and rotate certificates.
    In some implementations, planned refresh activities such as
    certificate rotation can temporarily break the ability for federated
@@ -198,7 +202,7 @@ McAdams                   Expires July 23, 2020                 [Page 3]
 
    Additional FastFed Profiles extend this specification with protocol-
    specific requirements.  For reference, see the FastFed Profiles for
-   SAML [FastFedProfile.SAML], and SCIM Provisioning
+   SAML [FastFedProfile.SAML] and SCIM Provisioning
    [FastFedProfile.SCIM].
 
 1.1.  Requirements Notation and Conventions
@@ -217,13 +221,9 @@ McAdams                   Expires July 23, 2020                 [Page 3]
 
 
 
-
-
-
-
-McAdams                   Expires July 23, 2020                 [Page 4]
+McAdams                Expires September 10, 2020               [Page 4]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 1.2.  Terminology
@@ -277,9 +277,9 @@ McAdams                   Expires July 23, 2020                 [Page 4]
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 5]
+McAdams                Expires September 10, 2020               [Page 5]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 2.  Overview
@@ -303,7 +303,7 @@ McAdams                   Expires July 23, 2020                 [Page 5]
 
    FastFed uses Metadata documents to enable Identity Providers and
    Application Providers to programmatically discover the capabilities
-   of one other and exchange any configuration necessary to enable
+   of one another and exchange any configuration necessary to enable
    federation.
 
    Metadata can be different for each tenant of a Provider.  The various
@@ -333,9 +333,9 @@ McAdams                   Expires July 23, 2020                 [Page 5]
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 6]
+McAdams                Expires September 10, 2020               [Page 6]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
  {
@@ -355,10 +355,10 @@ McAdams                   Expires July 23, 2020                 [Page 6]
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -389,9 +389,9 @@ McAdams                   Expires July 23, 2020                 [Page 6]
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 7]
+McAdams                Expires September 10, 2020               [Page 7]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    o  FastFed Handshake Register Endpoint, hosted by the Application
@@ -445,9 +445,9 @@ McAdams                   Expires July 23, 2020                 [Page 7]
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 8]
+McAdams                Expires September 10, 2020               [Page 8]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    7.  Identity Provider captures the federation configuration.
@@ -501,9 +501,9 @@ McAdams                   Expires July 23, 2020                 [Page 8]
 
 
 
-McAdams                   Expires July 23, 2020                 [Page 9]
+McAdams                Expires September 10, 2020               [Page 9]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    Administrators bear the burden of this inconsistency.  The lack of
@@ -531,8 +531,8 @@ McAdams                   Expires July 23, 2020                 [Page 9]
    completion.
 
    FastFed recommends the use of SCIM 2.0 User and Group Resource
-   Schemas (Section 3.4).  This specification uses SCIM in examples and
-   references.  However, other schemas may be used.
+   Schemas (Section 3.3.4.1).  This specification uses SCIM in examples
+   and references.  However, other schemas may be used.
 
    The following is a non-normative example showing a snippet of FastFed
    Metadata with a list of schema grammars understood by an Identity
@@ -557,9 +557,9 @@ McAdams                   Expires July 23, 2020                 [Page 9]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 10]
+McAdams                Expires September 10, 2020              [Page 10]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    information with a hosted application.  In recognition of this,
@@ -574,17 +574,18 @@ McAdams                   Expires July 23, 2020                [Page 10]
    Metadata for an Application Provider who desires 3 attributes from a
    SCIM User Resource.
 
-    {
-      "application_provider": {
-        ...
-        "desired_user_attributes": [
+        "desired_attributes": [
           "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-            {"required": ["username", "emails[primary eq true]"],
-             "optional": ["name.formatted"]
-            }
+             "required_user_attributes": [
+               "username",
+               "emails[primary eq true]"
+             ],
+             "optional_user_attributes": [
+               "externalId",
+               "name.formatted"
+             ]
           }
-        ],
-        ...
+        ]
 
 3.  Metadata
 
@@ -608,15 +609,17 @@ McAdams                   Expires July 23, 2020                [Page 10]
 
    Human-readable Metadata values and Metadata values that reference
    human-readable values MAY be represented in multiple languages and
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 11]
+
+                            FastFed Core 1.0                  March 2020
+
+
    scripts.  For example, values such as display_name and logo_uri might
    have multiple locale-specific values for some Providers.
-
-
-
-McAdams                   Expires July 23, 2020                [Page 11]
-
-                            FastFed Core 1.0                January 2020
-
 
    To specify the languages and scripts, BCP47 [RFC5646] [RFC5646]
    language tags are added to Provider Metadata member names, delimited
@@ -633,20 +636,20 @@ McAdams                   Expires July 23, 2020                [Page 11]
 3.3.  Provider Metadata
 
    Provider Metadata enables Providers to advertise their capabilities
-   and evaluate compatibility with other Providers by comparing
-   capabilities.  The Metadata also contains the endpoint configuration
-   needed to perform the FastFed Handshake.
+   and evaluate compatibility with other Providers.  The Metadata also
+   contains the endpoint configuration needed to perform the FastFed
+   Handshake.
 
    Provider Metadata is a structure with the following top-level
    attributes:
 
-   identity_provider  OPTIONAL.  Structure containing the attributes
-      described by Identity Provider Metadata (Section 3.3.5).  The
+   identity_provider  OPTIONAL.  Structure containing the members
+      described by Identity Provider Metadata (Section 3.3.7).  The
       existence of this element indicates the entity is capable of
       acting as an Identity Provider.
 
-   application_provider  OPTIONAL.  Structure containing the attributes
-      described by Application Provider Metadata (Section 3.3.6) The
+   application_provider  OPTIONAL.  Structure containing the members
+      described by Application Provider Metadata (Section 3.3.8) The
       existence of this element indicates the entity is capable of
       acting as an Application Provider.
 
@@ -664,22 +667,22 @@ McAdams                   Expires July 23, 2020                [Page 11]
    Application Providers and are the primary tool to evaluate if two
    Providers are compatible with one another.
 
-   Capabilities are represented as a structure with the following
-   attributes:
 
 
-
-McAdams                   Expires July 23, 2020                [Page 12]
+McAdams                Expires September 10, 2020              [Page 12]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
+
+   Capabilities are represented as a structure with the following
+   members:
 
    authentication_profiles  OPTIONAL.  A list of URNs specifying the
       single sign-in authentication protocols supported by the Provider.
       For example, the value
-      "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic" indicates
-      the provider implements the FastFed Basic Profile for SAML
-      [FastFedProfile.SAML].
+      "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+      indicates the provider implements the FastFed Basic Profile for
+      SAML [FastFedProfile.SAML].
 
       If no value is specified by the Application Provider for
       "authentication_profiles", this indicates the Provider does not
@@ -692,7 +695,7 @@ McAdams                   Expires July 23, 2020                [Page 12]
       provisioning capabilities supported by the Provider.
 
       For example, the value
-      ""urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle""
+      ""urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic""
       indicates a Provider supports full user provisioning (and
       deprovisioning) as defined in the FastFed Profile For SCIM
       Provisioning [FastFedProfile.SCIM].
@@ -706,7 +709,7 @@ McAdams                   Expires July 23, 2020                [Page 12]
    schema_grammars  REQUIRED.  A list of URNs specifying the schemas
       grammars understood by the Provider.  FastFed does not mandate a
       specific schema grammar, but RECOMMENDS the use of SCIM as defined
-      in Section 3.4.
+      in Section 3.3.4.1.
 
    signing_alg_values_supported  REQUIRED.  A list of JWA [RFC7518]
       signing algorithms supported by the Provider.  Used for signing
@@ -716,25 +719,27 @@ McAdams                   Expires July 23, 2020                [Page 12]
       At minimum, all Providers SHOULD support "RS256", but MAY support
       additional algorithms.
 
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 13]
+
+                            FastFed Core 1.0                  March 2020
+
+
 3.3.2.  Display Settings
 
    Display Settings contains the names, icons, logos, and licenses for a
    Provider.  It is included in the Metadata for both Identity Providers
    and Application Providers.
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 13]
-
-                            FastFed Core 1.0                January 2020
-
-
    If defined, these values supersede any overlapping specifications
    from underlying protocols; e.g. the "logo_uri" defined in OpenID
    Connect Dynamic Client Registration 1.0 [OpenID.Registration].
    Display Settings are represented as a structure with the following
-   attributes:
+   members:
 
    display_name  REQUIRED.  The name of the Provider suitable for
       display to end-users.  The value SHOULD be the primary textual
@@ -772,26 +777,27 @@ McAdams                   Expires July 23, 2020                [Page 13]
       ""https://openid.net/intellectual-property/licenses/
       fastfed/1.0/"".
 
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 14]
+
+                            FastFed Core 1.0                  March 2020
+
+
 3.3.3.  Provider Contact Information
 
    Specifies the contact information for the Provider.  This information
    is intended to be used when one Provider needs to contact another
    Provider for operational purposes.  For example, if software flaws
    were to cause an undesired impact, such as excessive HTTP traffic
-
-
-
-McAdams                   Expires July 23, 2020                [Page 14]
-
-                            FastFed Core 1.0                January 2020
-
-
    between Providers or a broken end-user experience, this contact
    information can be used to notify the Provider of the issue.
    This information is NOT intended to be displayed to end-users as it
    exists only for the purpose of allowing one Provider to contact
    another Provider for operational reasons.
-   Provider Contact Information consists of the following attributes:
+   Provider Contact Information consists of the following members:
 
    organization  REQUIRED.  The legal name of the business or
       organization which operates the Provider.
@@ -820,27 +826,307 @@ McAdams                   Expires July 23, 2020                [Page 14]
         }
 
 
-3.3.4.  Common Provider Metadata
+3.3.4.  Attribute Reference
+
+   Portions of the FastFed specification require the ability to
+   reference a User attribute, such as a name, email, or phone.  An
+   example of such a scenario occurs when the Application Provider seeks
+   to express the list of user attributes it needs to receive during
+   user provisioning.
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 15]
+
+                            FastFed Core 1.0                  March 2020
+
+
+   Different schema grammars define different mechanisms for referencing
+   individual attributes.  For example, SCIM 2.0 represents Users as a
+   JSON structure, and individual attributes are referenced using a path
+   syntax that is defined in Section 3.5.2 of RFC 7644 [RFC7644].
+
+   The FastFed Attribute Reference is a string containing an attribute
+   reference in the syntax of a particular schema grammar.
+
+   The following is a non-normative example of a list of SCIM 2.0
+   Attribute References:
+
+    [username,
+     name.givenName,
+     emails[primary eq true]
+    ]
+
+3.3.4.1.  Using the SCIM 2.0 Schema Grammar for Attribute References
+
+   This section defines the requirements for using SCIM 2.0 [RFC7643] as
+   a schema grammar for Attribute References (Section 3.3.4).
+
+   A Provider who includes the value
+   ""urn:ietf:params:fastfed:1:0:schemas:scim:2.0"" as a supported
+   "schema_grammar" in their Provider Metadata (Section 3.3.1)
+   "capabilities" MUST comply with the following requirements:
+
+   1.  The Provider MUST support the SCIM Core schema for "User", and
+       MAY support "Group", as defined in Section 4.1 and 4.2 of RFC
+       7643 [RFC7643].  The Provider MAY support additional schema
+       extensions, as defined in Section 3.3 of RFC 7643 [RFC7643].
+
+
+
+   2.  FastFed Attribute References MUST be specified using the SCIM
+       PATH syntax as defined in Section 3.5.2 of RFC 7644 [RFC7644].
+       For example, the given name of a User is referenced as
+       ""name.givenName"".
+
+
+
+   3.  As per Section 3.10 of the SCIM Protocol Specification RFC 7644
+       [RFC7644], attribute names are fully qualified by prefixing with
+       a schema URI.  E.g.
+       ""urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"".
+       Clients MAY omit URN prefixes for core schema names, but SHOULD
+       fully qualify extended attributes with the associated schema
+       extension URI.  When no prefix is specified, the default SCIM
+       core schema is presumed.
+
+
+
+McAdams                Expires September 10, 2020              [Page 16]
+
+                            FastFed Core 1.0                  March 2020
+
+
+   4.  For the multi-valued attributes ""emails"", ""phoneNumbers"", and
+       ""addresses"", it MUST be possible to reference one of the
+       attributes in the multi-valued set using the filter ""primary eq
+       true"", as described in Section 2.4 of RFC 7643 [RFC7643].  If
+       the Identity Provider does not natively represent any of the
+       multi-valued attributes as the primary, it MUST be able to map a
+       request for the primary into a deterministic answer.
+
+
+
+   5.  If a SCIM PATH references a complex attribute type, it MUST be
+       processed as equivalent to referencing each individual attribute
+       within the complex type.  For example, specifying the value
+       ""name"" is equivalent to specifying ""name.formatted"",
+       ""name.familyName"", ""name.givenName"", etc.
+
+
+
+   6.  If a SCIM PATH references a multi-valued attribute, it MUST be
+       processed as equivalent to referencing all members of the list.
+       For example, specifying the value ""emails"" as a desired
+       attribute would result in the full list of emails being shared.
+
+
+
+   7.  A trailing asterisk ""*"" wildcard in the SCIM PATH MUST be
+       processed as equivalent to any fully qualified path that is
+       prefixed with the string that precedes the wildcard.  Wildcards
+       MUST NOT be used in any position except the final character of
+       the SCIM PATH.  Wildcards MUST NOT be used in the
+       "required_user_attributes" or "required_group_attributes"
+       elements of the Desired Attributes (Section 3.3.5) structure, but
+       MAY be used in the "optional_user_attributes" or
+       "optional_group_attributes".
+
+       Wildcards can be useful when an application wants to receive user
+       data without knowing in advance which attributes are defined or
+       available for the user.  For example, the value ""*"" would match
+       all attributes from any schema, including custom-defined
+       extensions.  The effectively results in a full copy of the user
+       object.  Wildcards also allow for requesting all attributes
+       within a particular schema.  For example,
+       ""urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*""
+       would match all attributes in the SCIM Enterprise User extension.
+
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 17]
+
+                            FastFed Core 1.0                  March 2020
+
+
+3.3.5.  Desired Attributes
+
+   A structure describing the user and group attributes that the
+   Application Provider desires from the Identity Provider.  During the
+   FastFed Handshake, Administrators have an opportunity to review and
+   consent to the release of the desired attributes.
+
+   As a reference, the set of attributes can vary across protocols.  For
+   example, the attributes included in a SAML Assertion may differ from
+   the attributes included in a SCIM provisioning activity.  Due to this
+   variability, each FastFed Profile will generally define its own rules
+   for declaring the desired attributes, as well as rules about which
+   attributes are required versus optional.
+
+   As such, the structure defined in this section is not directly
+   referenced in any of the FastFed Core metadata documents.  Rather, it
+   exists as a re-usable element which the various FastFed Profiles may
+   reference in their own extensions, to declare their desired
+   attributes.
+
+   The structure has the following properties.
+
+   It MUST contain a member for each "schema_grammar" in the list of
+   Provider "capabilities", where the member name is the URN of the
+   "schema_grammar".
+
+   The value of each element is another structure with the following
+   members:
+
+   required_user_attributes  REQUIRED.  A list of Attribute References
+      (Section 3.3.4) describing the end-user attributes which the
+      Identity Provider MUST release to the Application Provider.  The
+      value of the attributes MUST NOT be null, empty, or consist of
+      only whitespace characters.
+
+      If a required attribute is not defined for an end-user, the
+      Identity Provider MUST NOT perform any authentication or
+      provisioning activity into the Application Provider for the
+      affected end-user.  To assist with diagnostics, the Identity
+      Provider SHOULD signal to the end-user that the attribute is
+      missing and is required by the Application.  The means of doing so
+      are outside the scope of the specification, but could include
+      displaying an informative error message when the end-user attempts
+      to authenticate into the application, or making error logs
+      available to the administrators of the Identity Provider if user
+      provisioning fails due to the missing attributes.
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 18]
+
+                            FastFed Core 1.0                  March 2020
+
+
+      To encourage interoperability, it is RECOMMENDED that Providers
+      avoid requiring any schema extensions or custom attributes which
+      are unlikely to be in common use by potential integration
+      partners.
+
+   optional_user_attributes  OPTIONAL.  A list of Attribute References
+      (Section 3.3.4) describing the user attributes which the Identity
+      Provider MAY release to the Application Provider.
+
+      The Application Provider MUST remain functional if the attributes
+      are undefined or if the Identity Provider chooses not to release
+      the "optional_attributes"; albeit with minor degradations in user
+      experience; e.g. falling back to labeling end-users with an opaque
+      "userName" instead of a more human-readable "displayName".
+
+   required_group_attributes  OPTIONAL.  A list of Attribute References
+      (Section 3.3.4) describing the group attributes which the Identity
+      Provider MUST release to the Application Provider.
+
+      If a required attribute is not defined for a group, the Identity
+      Provider MUST NOT attempt to provision the group to the
+      Application.
+
+      To encourage interoperability, it is RECOMMENDED that Providers
+      avoid requiring any schema extensions or custom attributes which
+      are unlikely to be in common use by potential integration
+      partners.
+
+   optional_group_attributes  OPTIONAL.  A list of Attribute References
+      (Section 3.3.4) describing the group attributes which the Identity
+      Provider MAY release to the Application Provider.
+
+      The Application Provider MUST remain functional if the attributes
+      are undefined or if the Identity Provider chooses not to release
+      the "optional_group_attributes".
+
+   The following is a non-normative example of Desired Attributes using
+   the SCIM 2.0 schema grammar:
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 19]
+
+                            FastFed Core 1.0                  March 2020
+
+
+   {
+     "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+       "required_user_attributes": [
+         "externalId",
+         "username",
+         "active",
+         "emails[primary eq true]"
+       ],
+       "optional_user_attributes": [
+         "displayName",
+         "name.givenName",
+         "name.familyName",
+         "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
+         "urn:scim:my:custom:schema:customAttribute"
+       ]
+       "required_group_attributes": [
+         "displayName"
+       ],
+       "optional_group_attributes": [
+         "externalId",
+         "members"
+       ]
+     }
+   }
+
+   The following is a non-normative example of the usage of wildcards in
+   the Desired Attributes.  In this example, the Application Provider
+   accepts any user attribute that is defined using the SCIM 2.0
+   grammar, essentially resulting in a copy of the User object:
+
+     {
+       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+         "required_user_attributes": [
+           "username",
+           "active"
+         ],
+         "optional_user_attributes": [
+           "*"
+         ]
+       }
+     }
+
+3.3.6.  Common Provider Metadata
 
    Common Provider Metadata describes properties that are shared by both
    Identity Providers and Application Providers.
 
-   Common Provider Metadata is a structure with the following values:
+   Common Provider Metadata is a structure with the following members:
+
+
+
+McAdams                Expires September 10, 2020              [Page 20]
+
+                            FastFed Core 1.0                  March 2020
+
 
    entity_id  REQUIRED.  A URI which serves as a globally unique name
       for a participant in a FastFed exchange.  The value MUST represent
       a combination of the Provider, Tenant, and role (Identity Provider
       or Application Provider) such that varying any of those attributes
       results in a different "entity_id".
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 15]
-
-                            FastFed Core 1.0                January 2020
-
 
       If expressed as a URL, the "entity_id" does not need to be
       resolvable and does not need to match the FastFed Endpoints.
@@ -869,20 +1155,28 @@ McAdams                   Expires July 23, 2020                [Page 15]
    capabilities  REQUIRED.  A structure describing the capabilities of
       the Provider, defined in Section 3.3.1.
 
-3.3.5.  Identity Provider Metadata
+3.3.7.  Identity Provider Metadata
 
    Identity Provider Metadata represents the configuration and
    preferences of a single tenant within the Identity Provider.  The
    same metadata is advertised to all Application Providers who initiate
    a FastFed Handshake.
 
-   The data type is a structure that includes all the elements defined
-   in Common Provider Metadata (Section 3.3.4), plus the following
-   additional elements:
+   The data type is a structure that includes all the members defined in
+   Common Provider Metadata (Section 3.3.6), plus the following
+   additional members:
 
    jwks_uri  REQUIRED.  URL of the Identity Provider's JSON Web Key Set
       [JWK] [RFC7517] containing the signing key(s) used by the
       Provider.  The Provider MAY use the same key set for all tenants.
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 21]
+
+                            FastFed Core 1.0                  March 2020
+
 
    fastfed_handshake_start_uri  REQUIRED.  A URL which specifies the
       endpoint for the Identity Provider to receive a FastFed Handshake
@@ -890,13 +1184,6 @@ McAdams                   Expires July 23, 2020                [Page 15]
 
    The following is a non-normative example of Identity Provider
    Metadata:
-
-
-
-McAdams                   Expires July 23, 2020                [Page 16]
-
-                            FastFed Core 1.0                January 2020
-
 
  {
    "identity_provider": {
@@ -915,10 +1202,10 @@ McAdams                   Expires July 23, 2020                [Page 16]
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -932,7 +1219,7 @@ McAdams                   Expires July 23, 2020                [Page 16]
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  }
 
-3.3.6.  Application Provider Metadata
+3.3.8.  Application Provider Metadata
 
    Application Provider Metadata represents the configuration and
    preferences of a single tenant within the Application Provider.  The
@@ -940,186 +1227,67 @@ McAdams                   Expires July 23, 2020                [Page 16]
    Identity Providers as a means to control which capabilities the
    Identity Provider is permitted to utilize.
 
+
+
+McAdams                Expires September 10, 2020              [Page 22]
+
+                            FastFed Core 1.0                  March 2020
+
+
    For example, if an Application Provider supports both SAML and OpenID
    Connect as authentication protocols, but only wishes to allow the
    Identity Provider to use SAML, the Application would vend a metadata
    document that only includes SAML in the list of supported
    authentication methods.  Similarly, if the Application supports SCIM
    for user provisioning, but doesn't wish to use SCIM with the Identity
-
-
-
-McAdams                   Expires July 23, 2020                [Page 17]
-
-                            FastFed Core 1.0                January 2020
-
-
    Provider, then the metadata would not include SCIM in the advertised
    capabilities.
 
-   The data type is a structure that includes all the elements defined
-   in Common Provider Metadata (Section 3.3.4), plus the following
-   additional elements:
+   The data type is a structure that includes all the members defined in
+   Common Provider Metadata (Section 3.3.6), plus the following
+   additional members:
 
    fastfed_handshake_register_uri  REQUIRED.  A URL which specifies the
       FastFed Handshake registration endpoint.  See Section 7.2.3.1.
 
-   desired_user_attributes  REQUIRED.  A structure describing the end-
-      user attributes that the Application Provider desires from the
-      Identity Provider.  During the FastFed Handshake, Administrators
-      have an opportunity to review and consent to the release of the
-      desired attributes.
-
-      Each "schema_grammar" from the list of Provider "capabilities"
-      MUST exist as element in the structure.  The value of each element
-      is another structure with the following attributes:
-
-      required_attributes  A list of attributes which the Identity
-         Provider MUST release to the Application Provider.  The value
-         of the attributes MUST NOT be null or empty.  Attributes are
-         identified using the reference syntax for the particular schema
-         grammar.  See Section 3.4 for SCIM schemas.
-
-         If a required value is not defined for an end-user, the
-         Application Provider MUST reject the end-user for any
-         authentication or provisioning activity using an HTTP 4xx error
-         message.  To assist with debugging, the Identity Provider
-         SHOULD signal to the end-user that the value is missing and is
-         required by the Application.  The means of doing so are outside
-         the scope of the specification, but could include displaying an
-         informative error message when the end-user attempts to
-         authenticate into the application, or making error logs
-         available to the administrators of the Identity Provider if
-         user provisioning fails due to the missing attributes.
-
-         To encourage interoperability, it is RECOMMENDED that Providers
-         avoid requiring any schema extensions or custom attributes
-         which are unlikely to be in common use by potential integration
-         partners.
-
-      optional_attributes  A list of attributes which the Identity
-         Provider MAY release to the Application Provider.  Attributes
-         are identified using the reference syntax for the particular
-         schema grammar.  See Section 3.4 for SCIM schemas.
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 18]
-
-                            FastFed Core 1.0                January 2020
-
-
-         The application MUST remain functional if the attributes are
-         undefined or if the Identity Provider chooses not to release
-         the "optional_attributes"; albeit with minor degradations in
-         user experience; e.g. falling back to labeling end-users with
-         an opaque "userName" instead of a more human-readable
-         "displayName".
-
    The following is a non-normative example of Application Provider
    Metadata:
 
- {
-   "application_provider": {
-     "entity_id": "https://tenant-67890.app.example.com/"
-     "provider_domain": "example.com",
-     "provider_contact_information": {
-       "organization": "Example Inc.",
-       "phone": "+1-800-555-5555",
-       "email": "support@example.com"
-     },
-     "display_settings": {
-       "display_name": "Example Application Provider",
-       "logo_uri": "https://app.example.com/images/logo.png",
-       "icon_uri": "https://app.example.com/images/icon.png",
-       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
-     }
-     "capabilities": {
-       "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
-       ],
-       "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
-       ],
-       "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
-       ],
-       "signing_alg_values_supported": [
-         "ES512",
-         "RS256"
-       ]
-     },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active",
-           "emails[primary eq true]"
 
 
 
-McAdams                   Expires July 23, 2020                [Page 19]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 23]
 
-                            FastFed Core 1.0                January 2020
-
-
-         ],
-         "optional_attributes": [
-           "displayName",
-           "name.givenName",
-           "name.familyName",
-           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
-           "urn:scim:my:custom:schema:customAttribute"
-         ]
-       }
-    }
- }
-
-   The following is a non-normative example of an Application Provider
-   which accepts any user attribute from any schema that is defined
-   using the SCIM 2.0 grammar:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 20]
-
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
  {
@@ -1139,10 +1307,10 @@ McAdams                   Expires July 23, 2020                [Page 20]
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1152,143 +1320,8 @@ McAdams                   Expires July 23, 2020                [Page 20]
          "RS256"
        ]
      },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active"
-         ],
-         "optional_attributes": [
-           "*",
-         ]
-       }
-     }
-   }
+     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register"
  }
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 21]
-
-                            FastFed Core 1.0                January 2020
-
-
-3.4.  SCIM 2.0 Schema Grammar
-
-   Portions of the FastFed specification require references to
-   attributes within a schema definition.  For example, the Application
-   Provider Metadata (Section 3.3.6) includes a set of
-   "desired_user_attributes" which must be populated with lists of
-   references to specific attributes.
-
-   This section defines the requirements for using SCIM 2.0 [RFC7643] as
-   a schema grammar for attribute references.
-
-   A Provider who includes the value
-   ""urn:ietf:params:fastfed:1:0:schemas:scim:2.0"" as a supported
-   "schema_grammar" in their Provider Metadata (Section 3.3.1)
-   "capabilities" MUST comply with the following requirements:
-
-   1.  The Provider MUST support the SCIM Core schema for "User" and
-       "Group", as defined in Section 4.1 and 4.2 of RFC 7643 [RFC7643].
-       The Provider MAY support additional schema extensions, as defined
-       in Section 3.3 of RFC 7643 [RFC7643].
-
-
-
-   2.  Multi-valued attributes MUST have one value where "primary"
-       equals "true", as defined in Section 2.4 of RFC 7643 [RFC7643].
-
-
-
-   3.  FastFed attribute references MUST be specified using the SCIM
-       PATH syntax as defined in Section 3.5.2 of RFC 7644 [RFC7644].
-       For example, the given name of a User is referenced as
-       ""name.givenName"".
-
-
-
-   4.  As per Section 3.10 of the SCIM Protocol Specification RFC 7644
-       [RFC7644], attribute names are fully qualified by prefixing with
-       a schema URI.  E.g.
-       ""urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"".
-       Clients MAY omit URN prefixes for core schema names, but SHOULD
-       fully qualify extended attributes with the associated schema
-       extension URI.  When no prefix is specified, the default SCIM
-       core schema is presumed.
-
-
-
-   5.  If a SCIM PATH references a complex attribute type, it MUST be
-       processed as equivalent to referencing each individual attribute
-
-
-
-McAdams                   Expires July 23, 2020                [Page 22]
-
-                            FastFed Core 1.0                January 2020
-
-
-       within the complex type.  For example, specifying the value
-       ""name"" in the list of "optional_attributes" of the Application
-       Provider Metadata (Section 3.3.6) is equivalent to requesting
-       ""name.formatted"", ""name.familyName"", ""name.givenName"", etc.
-
-
-
-   6.  If a SCIM PATH references a multi-valued attribute, it MUST be
-       processed as equivalent to referencing all members of the list.
-       For example, specifying the value ""emails"" in the list of
-       "optional_attributes" of the Application Provider Metadata
-       (Section 3.3.6) would result in the full list of emails being
-       shared with the Application.
-
-
-
-   7.  A trailing asterisk ""*"" wildcard in the SCIM PATH MUST be
-       processed as equivalent to any fully qualified path that is
-       prefixed with the string that precedes the wildcard.  Wildcards
-       MUST NOT be used in any position except the final character of
-       the SCIM PATH.  Wildcards MUST NOT be used in the
-       "required_attributes" of the Application Provider Metadata
-       (Section 3.3.6), but MAY be used in the "optional_attributes".
-
-       Wildcards can be useful when an application wants to receive user
-       data without knowing in advance which attributes are defined or
-       available for the user.  For example, the value ""*"" would match
-       all attributes from any schema, including custom-defined
-       extensions.  The effectively results in a full copy of the user
-       object.  Wildcards also allow for requesting all attributes
-       within a particular schema.  For example,
-       ""urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*""
-       would match all attributes in the SCIM Enterprise User extension.
-
-
-
-   8.  Application Providers MUST include the following SCIM Core User
-       attributes in the "required_attributes" of the Application
-       Provider Metadata (Section 3.3.6):
-
-       *  "externalId"
-
-       *  "userName"
-
-       *  "active"
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 23]
-
-                            FastFed Core 1.0                January 2020
-
 
 4.  Metadata Endpoints
 
@@ -1305,6 +1338,14 @@ McAdams                   Expires July 23, 2020                [Page 23]
    entity.  Access to the Endpoint SHOULD NOT require Administrators to
    perform pre-configuration or pre-registration of any form between the
    two Providers, except the necessary act of inputting the URL for the
+
+
+
+McAdams                Expires September 10, 2020              [Page 24]
+
+                            FastFed Core 1.0                  March 2020
+
+
    Provider Metadata Endpoint (a.k.a.  "FastFed URL") to initiate the
    FastFed Handshake if the endpoint location is not discoverable
    through other means.  Requests to the endpoint may be rate-limited or
@@ -1313,7 +1354,7 @@ McAdams                   Expires July 23, 2020                [Page 23]
 4.1.1.  Endpoint Validation
 
    To prevent impersonation of Providers, the value of the
-   "provider_domain" returned in the Metadata (Section 3.3.4) MUST
+   "provider_domain" returned in the Metadata (Section 3.3.6) MUST
    suffix-match the domain of the Metadata Endpoint.
 
    The Metadata Endpoint MAY be hosted at a subdomain of the
@@ -1325,26 +1366,6 @@ McAdams                   Expires July 23, 2020                [Page 23]
 
    The following is a non-normative example showing valid and invalid
    Metadata Endpoints.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 24]
-
-                            FastFed Core 1.0                January 2020
-
 
  For a Metadata document containing the following domain name:
      {
@@ -1370,6 +1391,17 @@ McAdams                   Expires July 23, 2020                [Page 24]
 
 4.1.2.  Endpoint Discovery
 
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 25]
+
+                            FastFed Core 1.0                  March 2020
+
+
 4.1.2.1.  Email-based Discovery via WebFinger
 
    Discovering the location of a Provider Metadata Endpoint for a
@@ -1386,21 +1418,12 @@ McAdams                   Expires July 23, 2020                [Page 24]
    ""https://company.com/.well_known/webfinger"".
 
    However, administrators at large enterprises can experience
-   organizational roadblocks when attempting to host this type of
+   organizational roadblocks when attempting to host a WebFinger
    discovery endpoint at the root domain.  This is because the root
    domain is often the public-facing product or web presence for an
-   organization and is maintained by different owners who possess
-   security and operational privileges that FastFed administrators may
-   not normally share.
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 25]
-
-                            FastFed Core 1.0                January 2020
-
+   organization.  This domain is often maintained by different owners
+   who possess security and operational privileges that FastFed
+   administrators may not share.
 
    Therefore, to simplify adoption, FastFed supports WebFinger discovery
    using subdomains.  The subdomain location is determined by prefixing
@@ -1427,6 +1450,14 @@ McAdams                   Expires July 23, 2020                [Page 25]
    The FastFed Provider Metadata location MUST be returned in the
    WebFinger response as the value of the "href" member of a "links"
    array element with "rel" member value
+
+
+
+McAdams                Expires September 10, 2020              [Page 26]
+
+                            FastFed Core 1.0                  March 2020
+
+
    "http://openid.net/specs/fastfed/1.0/provider".  (Per Section 7 of
    WebFinger [RFC7033], obtaining the WebFinger response may first
    involve following some redirects.)
@@ -1440,23 +1471,16 @@ McAdams                   Expires July 23, 2020                [Page 25]
    The WebFinger endpoint MAY return a static response to any query,
    regardless of input parameters.  This can be useful, for example,
    when all users under the same domain will share the same Identity
-   Provider.  A static response allows the Webfinger hosting provider to
+   Provider.  A static response allows the WebFinger hosting provider to
    use a static file and avoid the overhead of operating a full-featured
    WebFinger service.
+
+   To allow the use of static responses, "subject" MAY be omitted from
+   the WebFinger response.
 
    The following non-normative example demonstrates the discovery of
    FastFed Provider Metadata for "jane@example.com".  The WebFinger
    parameters are as follows:
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 26]
-
-                            FastFed Core 1.0                January 2020
-
 
    +-------------------+-----------------------------------------------+
    | WebFinger         | Value                                         |
@@ -1478,6 +1502,17 @@ McAdams                   Expires July 23, 2020                [Page 26]
        &rel=http%3A%2F%2Fopenid.net%2Fspecs%2Ffastfed%2F1.0%2Fprovider
        HTTP/1.1
      Host: fastfed._well_known.example.com
+
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 27]
+
+                            FastFed Core 1.0                  March 2020
+
 
      HTTP/1.1 200 OK
      Content-Type: application/jrd+json
@@ -1502,17 +1537,6 @@ McAdams                   Expires July 23, 2020                [Page 26]
    Administrator to read the single sign-on documentation provided by
    their Identity Provider to find the FastFed URL and then paste the
    value into a form field.
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 27]
-
-                            FastFed Core 1.0                January 2020
-
 
 4.1.3.  Read Request
 
@@ -1541,33 +1565,9 @@ McAdams                   Expires July 23, 2020                [Page 27]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 28]
+McAdams                Expires September 10, 2020              [Page 28]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
  HTTP/1.1 200 OK
@@ -1589,10 +1589,10 @@ McAdams                   Expires July 23, 2020                [Page 28]
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1621,9 +1621,9 @@ McAdams                   Expires July 23, 2020                [Page 28]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 29]
+McAdams                Expires September 10, 2020              [Page 29]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    The following applies to a publisher of metadata information:
@@ -1677,9 +1677,9 @@ McAdams                   Expires July 23, 2020                [Page 29]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 30]
+McAdams                Expires September 10, 2020              [Page 30]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    o  schema_grammars
@@ -1733,9 +1733,9 @@ McAdams                   Expires July 23, 2020                [Page 30]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 31]
+McAdams                Expires September 10, 2020              [Page 31]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    o  If the Application Provider returns an empty value for BOTH
@@ -1781,7 +1781,7 @@ McAdams                   Expires July 23, 2020                [Page 31]
 
    Public keys for the Identity Provider are found at the location
    specified by the "jwks_uri" in the Identity Provider Metadata
-   (Section 3.3.5).
+   (Section 3.3.7).
 
    Providers MAY use the same "jwks_uri" across all tenants and all
    federation relationships.
@@ -1789,9 +1789,9 @@ McAdams                   Expires July 23, 2020                [Page 31]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 32]
+McAdams                Expires September 10, 2020              [Page 32]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 6.2.  Key Rotation
@@ -1845,9 +1845,9 @@ McAdams                   Expires July 23, 2020                [Page 32]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 33]
+McAdams                Expires September 10, 2020              [Page 33]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    The JWT header MUST contain the following attributes;
@@ -1860,7 +1860,7 @@ McAdams                   Expires July 23, 2020                [Page 33]
    kid  The JWS signing key MUST exist in the JSON Web Key Set [JWK]
       [RFC7517].  For the FastFed Handshake, the location of the key set
       is specified by the "jwks_uri" parameter of the Identity Provider
-      Metadata (Section 3.3.5).  Other profiles, such as SCIM
+      Metadata (Section 3.3.7).  Other profiles, such as SCIM
       provisioning [FastFedProfile.SCIM], may specify alternative key
       sets.  The "alg" associated with the signing key MUST match the
       "alg" used to sign the JWT.
@@ -1868,14 +1868,14 @@ McAdams                   Expires July 23, 2020                [Page 33]
    The JWT payload MUST contain the following attributes:
 
    iss  The value MUST match the "entity_id" of the Provider generating
-      the JWT, as specified in the Provider Metadata (Section 3.3.4).
+      the JWT, as specified in the Provider Metadata (Section 3.3.6).
 
    aud  The value MUST match the "entity_id" of the intended recipient
       of the JWT, as specified in the recipient's Provider Metadata
-      (Section 3.3.4).
+      (Section 3.3.6).
 
    exp  Expiration time SHOULD be as short as possible.  As a reference
-      to implementors, a 10 minute expiration window is often sufficient
+      to implementors, a 10-minute expiration window is often sufficient
       to reduce the risk of replays while still allowing a small degree
       of clock skew between participants.
 
@@ -1901,9 +1901,9 @@ McAdams                   Expires July 23, 2020                [Page 33]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 34]
+McAdams                Expires September 10, 2020              [Page 34]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 6.6.  OAuth 2.0 with JWT Profile
@@ -1957,9 +1957,9 @@ McAdams                   Expires July 23, 2020                [Page 34]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 35]
+McAdams                Expires September 10, 2020              [Page 35]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    be applied using TLS with a ciphersuite that provides confidentiality
@@ -2013,9 +2013,9 @@ McAdams                   Expires July 23, 2020                [Page 35]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 36]
+McAdams                Expires September 10, 2020              [Page 36]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    In addition, because the FastFed Handshake relies on an exchange of
@@ -2069,9 +2069,9 @@ McAdams                   Expires July 23, 2020                [Page 36]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 37]
+McAdams                Expires September 10, 2020              [Page 37]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    reference to implementors, one possible implementation is to display
@@ -2125,9 +2125,9 @@ McAdams                   Expires July 23, 2020                [Page 37]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 38]
+McAdams                Expires September 10, 2020              [Page 38]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    To accomplish these goals, the whitelist MUST capture the following
@@ -2181,9 +2181,9 @@ McAdams                   Expires July 23, 2020                [Page 38]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 39]
+McAdams                Expires September 10, 2020              [Page 39]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    empty if no active relationship exists yet) in order to signal that
@@ -2213,7 +2213,7 @@ McAdams                   Expires July 23, 2020                [Page 39]
 
    An Application Provider MAY issue an HTTP 302 redirect to the
    "fastfed_handshake_start_uri" specified in the Identity Provider
-   Metadata (Section 3.3.5) with the request parameters encoded using
+   Metadata (Section 3.3.7) with the request parameters encoded using
    Query String Serialization (Section 7.1.3).
 
    The following is a non-normative example of a response (with line
@@ -2237,9 +2237,9 @@ McAdams                   Expires July 23, 2020                [Page 39]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 40]
+McAdams                Expires September 10, 2020              [Page 40]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    the request message MAY be transmitted through alternate channels.
@@ -2248,7 +2248,7 @@ McAdams                   Expires July 23, 2020                [Page 40]
 
    The request message is conveyed as a URL with the host value set to
    the "fastfed_handshake_start_uri" specified in the Identity Provider
-   Metadata (Section 3.3.5) and the request parameters encoded using
+   Metadata (Section 3.3.7) and the request parameters encoded using
    Query String Serialization (Section 7.1.3).
 
    The following is a non-normative example of a message (with line
@@ -2293,9 +2293,9 @@ McAdams                   Expires July 23, 2020                [Page 40]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 41]
+McAdams                Expires September 10, 2020              [Page 41]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 7.2.2.3.  Identity Provider Verifies Compatibility
@@ -2349,9 +2349,9 @@ McAdams                   Expires July 23, 2020                [Page 41]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 42]
+McAdams                Expires September 10, 2020              [Page 42]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
    examining the "capabilities" returned in the Application Provider
@@ -2368,9 +2368,9 @@ McAdams                   Expires July 23, 2020                [Page 42]
    current configuration, the Administrator SHOULD be given the choice
    to add or update to the new value.  For example, if SCIM provisioning
    is not currently enabled, but the capabilities now include SCIM
-   provisioning, the the Administrator can choose to enable it.
+   provisioning, the Administrator can choose to enable it.
 
-   If a value is missing from the capabilities that was previously
+   If values are missing from the capabilities that were previously
    configured, then completion of the FastFed handshake MUST result in
    disabling the capability.  For example, if SCIM provisioning was
    previously enabled, but the new capabilities don't include SCIM
@@ -2405,9 +2405,9 @@ McAdams                   Expires July 23, 2020                [Page 42]
 
 
 
-McAdams                   Expires July 23, 2020                [Page 43]
+McAdams                Expires September 10, 2020              [Page 43]
 
-                            FastFed Core 1.0                January 2020
+                            FastFed Core 1.0                  March 2020
 
 
 7.2.2.5.  Identity Provider Obtains Confirmation from Administrator
@@ -2431,10 +2431,16 @@ McAdams                   Expires July 23, 2020                [Page 43]
 
 7.2.3.1.  Identity Provider Sends Registration Request
 
-   The Identity Provider registers with the Application Provider by
-   issuing an HTTP POST to the "fastfed_handshake_register_uri"
-   specified within the Application Provider Metadata (Section 3.3.6)
-   with the following properties:.
+   The Identity Provider MUST choose the set of capabilities to be
+   activated and enabled, based upon the mutually supported capabilities
+   between the Providers.  The choice may include all the mutually
+   supported capabilities, or a subset.  The Identity Provider conveys
+   its choices in the registration request by populating the contents of
+   the message with the capabilities that it seeks to enable.
+   Unspecified capabilities will not be enabled.  The Identity Provider
+   registers with the Application Provider by issuing an HTTP POST to
+   the "fastfed_handshake_register_uri" specified within the Application
+   Provider Metadata (Section 3.3.8) with the following properties:.
 
    o  HTTP "Content-Type" MUST be "application/jwt"
 
@@ -2451,20 +2457,20 @@ McAdams                   Expires July 23, 2020                [Page 43]
       list of compatible "authentication_profiles" defined in the
       Provider Capabilities (Section 3.3.1).
 
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 44]
+
+                            FastFed Core 1.0                  March 2020
+
+
    provisioning_profiles  OPTIONAL.  A list containing the user
       provisioning profiles to be enabled by the Identity Provider and
       Application Provider, chosen from the list of compatible
       "provisioning_profiles" defined in the Provider Capabilities
       (Section 3.3.1).
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 44]
-
-                            FastFed Core 1.0                January 2020
-
 
    schema_grammar  REQUIRED.  A string value containing the schema
       grammar to be used by the Identity Provider and Application
@@ -2485,20 +2491,20 @@ McAdams                   Expires July 23, 2020                [Page 44]
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
+   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
    "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-6666",
        "email": "provisioning@example.com"
      },
      "provider_authentication_methods": {
-       "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
+       "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
          "jwks_uri": "https://provisioning.example.com/keys"
        }
      }
@@ -2508,18 +2514,19 @@ McAdams                   Expires July 23, 2020                [Page 44]
    The following is a non-normative example of a POST after JWS
    serialization:
 
+
+
+
+McAdams                Expires September 10, 2020              [Page 45]
+
+                            FastFed Core 1.0                  March 2020
+
+
    POST /fastfed/register
     Host: tenant-67890.app.example.com
     Content-Type: application/jwt
 
    eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 45]
-
-                            FastFed Core 1.0                January 2020
 
 
 7.2.3.2.  Application Provider Handles Registration Request
@@ -2564,6 +2571,13 @@ McAdams                   Expires July 23, 2020                [Page 45]
    Provider as an authorized client.  This is an implementation detail
    outside the scope of the specification.
 
+
+
+McAdams                Expires September 10, 2020              [Page 46]
+
+                            FastFed Core 1.0                  March 2020
+
+
    If the registration request applies to an existing federation
    relationship, it can result in capabilities being added or removed.
    For example, if a federation relationship previously used SCIM
@@ -2571,23 +2585,16 @@ McAdams                   Expires July 23, 2020                [Page 45]
    value for "provisioning_profile", then the existing SCIM capabilities
    will be disabled to reflect the new settings.
 
-
-
-McAdams                   Expires July 23, 2020                [Page 46]
-
-                            FastFed Core 1.0                January 2020
-
-
    After processing the registration request, the expiration date MUST
    be removed from the whitelisting entry.
 
-   Due to transient failures or redrive scenarios, it is possible that
-   an Identity Provider may send duplicate registration requests.  The
+   Due to transient failures and retry scenarios, it is possible that an
+   Identity Provider may send duplicate registration requests.  The
    Application Provider MUST preserve enough whitelist context to
-   provide an idempotent response to duplicate requests.  If the request
-   is still valid when compared against the current whitelist, the
-   Application Provider MUST return the same response contents as in the
-   original response, as specified in Section 7.2.3.3.
+   provide an idempotent response to duplicate requests.  If a duplicate
+   request is still valid when compared against the current whitelist,
+   the Application Provider MUST return the same response contents as in
+   the original response, as specified in Section 7.2.3.3.
 
    The implementation of the whitelist is outside the scope of the
    specification.  As a reference to implementors, it may be beneficial
@@ -2618,21 +2625,21 @@ McAdams                   Expires July 23, 2020                [Page 46]
 
    FastFed Profiles may extend the response with protocol-specific
    values.  For example, the use of the SCIM Provisioning
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 47]
+
+                            FastFed Core 1.0                  March 2020
+
+
    [FastFedProfile.SCIM] profile will result in the location of the SCIM
    endpoint being included in the response.
 
    If the Identity Provider does not receive an HTTP 200 or 401 status
    code, it MUST periodically retry the request until a successful
    response is received or 48 hours has elapsed, whichever comes first.
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 47]
-
-                            FastFed Core 1.0                January 2020
-
 
    Retry logic is outside the scope of this specification.  As a
    reference to implementors, a potential retry strategy could include
@@ -2651,13 +2658,13 @@ McAdams                   Expires July 23, 2020                [Page 47]
 
  {
    "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "scim_service_uri": "https://tenant-67890.app.example.com/scim",
-     "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
-     "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile":
+     "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
+     "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
      {
        "token_endpoint": "https://tenant-67890.app.example.com/oauth",
        "scope": "scim"
@@ -2674,21 +2681,21 @@ McAdams                   Expires July 23, 2020                [Page 47]
    "authentication_profile" and "provisioning_profile" indicated in the
    registration request.
 
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 48]
+
+                            FastFed Core 1.0                  March 2020
+
+
 7.2.4.  Handshake Finalization
 
    Handshake Finalization is an optional step of the FastFed Handshake.
    It signals when each provider has completed the work necessary to
    setup the authentication and provisioning mechanisms and is ready to
    handle user traffic.
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 48]
-
-                            FastFed Core 1.0                January 2020
-
 
    Handshake Finalization occurs if the registration response from the
    Application Provider includes a value for
@@ -2731,20 +2738,16 @@ McAdams                   Expires July 23, 2020                [Page 48]
       using JWS Compact Serialization [RFC7519] as specified in
       Section 6.4.
 
+
+
+
+McAdams                Expires September 10, 2020              [Page 49]
+
+                            FastFed Core 1.0                  March 2020
+
+
    The following is a non-normative example of the contents of a
    finalization message prior to serialization:
-
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 49]
-
-                            FastFed Core 1.0                January 2020
-
 
     {
       "iss": "https://tenant-12345.idp.example.com",
@@ -2789,19 +2792,20 @@ McAdams                   Expires July 23, 2020                [Page 49]
    any actions that result from a finalized handshake.  This is an
    implementation detail outside the scope of the specification.
 
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 50]
+
+                            FastFed Core 1.0                  March 2020
+
+
 7.2.4.3.  Application Provider Sends Finalization Response
 
    If the request validation fails, the Application Provider MUST
    respond with an HTTP 401 status code and content type text/plain.
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 50]
-
-                            FastFed Core 1.0                January 2020
-
-
    The response body MUST either be empty or contain a textual error
    message which may assist the Identity Provider with diagnostics.
 
@@ -2845,19 +2849,20 @@ McAdams                   Expires July 23, 2020                [Page 50]
 
    For example, if a malicious actor were to succeed in having their
    Identity Provider approved for single sign-on to an application owned
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 51]
+
+                            FastFed Core 1.0                  March 2020
+
+
    by another party, it can allow the malicious actor to access the
    application.
 
    Similarly, if a malicious application were to succeed in being
    approved for use by members of an organization, this can have several
-
-
-
-McAdams                   Expires July 23, 2020                [Page 51]
-
-                            FastFed Core 1.0                January 2020
-
-
    impacts.  First, by receiving user provisioning messages, the
    malicious application may gain access to information about members of
    the organization.  Second, by observing user activity in the
@@ -2901,23 +2906,21 @@ McAdams                   Expires July 23, 2020                [Page 51]
 
    Depending on the sensitivity of the application or organization,
    Providers may also consider additional defenses such as quorum
+
+
+
+McAdams                Expires September 10, 2020              [Page 52]
+
+                            FastFed Core 1.0                  March 2020
+
+
    approval processes, Test of User Presence [W3C.WebAuthn], or change
    notifications.
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 52]
-
-                            FastFed Core 1.0                January 2020
-
 
 8.3.  Evaluating Trustworthiness of Applications
 
    Providers are uniquely identified via the "provider_domain" attribute
-   in the Provider Metadata (Section 3.3.4).  Domain names MUST be
+   in the Provider Metadata (Section 3.3.6).  Domain names MUST be
    validated as per Section 4.1.1.
 
    The validation process relies on TLS certificate checks to verify the
@@ -2945,30 +2948,33 @@ McAdams                   Expires July 23, 2020                [Page 52]
 
 9.  IANA Considerations
 
-   TODO
+   Pending
 
 10.  Normative References
 
    [FastFedProfile.SAML]
-              McAdams, K., "FastFed Profile for SAML", October 2019,
+              McAdams, K., "FastFed Profile for SAML", March 2020,
               <http://example.com>.
 
    [FastFedProfile.SCIM]
-              McAdams, K., "FastFed Profile for SCIM", October 2019,
+              McAdams, K., "FastFed Profile for SCIM", March 2020,
               <http://example.com>.
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 53]
+
+                            FastFed Core 1.0                  March 2020
+
 
    [OpenID.Registration]
               Sakimura, N., Bradley, J., and M. Jones, "OpenID Connect
               Dynamic Client Registration 1.0", November 2014,
               <http://openid.net/specs/
               openid-connect-registration-1_0.html>.
-
-
-
-McAdams                   Expires July 23, 2020                [Page 53]
-
-                            FastFed Core 1.0                January 2020
-
 
    [POSIX.1]  IEEE Std 1003.1, 2018 Edition, "The Open Group Base
               Specifications Issue 7", 2018,
@@ -3012,19 +3018,20 @@ McAdams                   Expires July 23, 2020                [Page 53]
               Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
               September 2009, <https://www.rfc-editor.org/info/rfc5646>.
 
+
+
+
+McAdams                Expires September 10, 2020              [Page 54]
+
+                            FastFed Core 1.0                  March 2020
+
+
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
               Verification of Domain-Based Application Service Identity
               within Internet Public Key Infrastructure Using X.509
               (PKIX) Certificates in the Context of Transport Layer
               Security (TLS)", RFC 6125, DOI 10.17487/RFC6125, March
               2011, <https://www.rfc-editor.org/info/rfc6125>.
-
-
-
-McAdams                   Expires July 23, 2020                [Page 54]
-
-                            FastFed Core 1.0                January 2020
-
 
    [RFC7033]  Jones, P., Salgueiro, G., Jones, M., and J. Smarr,
               "WebFinger", RFC 7033, DOI 10.17487/RFC7033, September
@@ -3066,21 +3073,19 @@ McAdams                   Expires July 23, 2020                [Page 54]
               Core Schema", RFC 7643, DOI 10.17487/RFC7643, September
               2015, <https://www.rfc-editor.org/info/rfc7643>.
 
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 55]
+
+                            FastFed Core 1.0                  March 2020
+
+
    [RFC7644]  Hunt, P., Ed., Grizzle, K., Ansari, M., Wahlstroem, E.,
               and C. Mortimore, "System for Cross-domain Identity
               Management: Protocol", RFC 7644, DOI 10.17487/RFC7644,
               September 2015, <https://www.rfc-editor.org/info/rfc7644>.
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 55]
-
-                            FastFed Core 1.0                January 2020
-
 
    [W3C.REC-html401-19991224]
               Raggett, D., Hors, A., and I. Jacobs, "HTML 4.01
@@ -3098,7 +3103,40 @@ Appendix A.  Acknowledgements
    The OpenID Community would like to thank the following people for
    their contributions to this specification:
 
-      TODO
+      Brian Campbell (bcampbell@pingidentity.com), Ping Identity
+
+      Zhen Chien Chia (chiazhenchien@outlook.com), Microsoft
+
+      Pamela Dingle (pamela.dingle@microsoft.com), Microsoft
+
+      Matt Domsch (matt.domsch@sailpoint.com), Sailpoint
+
+      Wesley Dunnington (wesleydunnington@pingidentity.com), Ping
+      Identity
+
+      Erik Gustavson (erikgustavson@google.com), Google
+
+      Dick Hardt (dick.hardt@gmail.com), Independent
+
+      Romain Lenglet (rlenglet@google.com), Google
+
+      Karl McGuinness (kmcguinness@okta.com), Okta
+
+      Chuck Mortimore (cmortimore@salesforce.com), Salesforce
+
+      Brian Rose (brian.rose@sailpoint.com), Sailpoint
+
+
+
+
+
+
+
+
+McAdams                Expires September 10, 2020              [Page 56]
+
+                            FastFed Core 1.0                  March 2020
+
 
 Appendix B.  Notices
 
@@ -3130,14 +3168,6 @@ Appendix B.  Notices
    infringement, fitness for a particular purpose, or title, related to
    this specification, and the entire risk as to implementing this
    specification is assumed by the implementer.  The OpenID Intellectual
-
-
-
-McAdams                   Expires July 23, 2020                [Page 56]
-
-                            FastFed Core 1.0                January 2020
-
-
    Property Rights policy requires contributors to offer a patent
    promise not to assert certain patent claims against other
    contributors and against implementers.  The OpenID Foundation invites
@@ -3159,34 +3189,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-McAdams                   Expires July 23, 2020                [Page 57]
+McAdams                Expires September 10, 2020              [Page 57]

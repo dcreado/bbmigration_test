@@ -392,10 +392,12 @@
 <link href="#rfc.section.3.3.1" rel="Chapter" title="3.3.1 Capabilities">
 <link href="#rfc.section.3.3.2" rel="Chapter" title="3.3.2 Display Settings">
 <link href="#rfc.section.3.3.3" rel="Chapter" title="3.3.3 Provider Contact Information">
-<link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Common Provider Metadata">
-<link href="#rfc.section.3.3.5" rel="Chapter" title="3.3.5 Identity Provider Metadata">
-<link href="#rfc.section.3.3.6" rel="Chapter" title="3.3.6 Application Provider Metadata">
-<link href="#rfc.section.3.4" rel="Chapter" title="3.4 SCIM 2.0 Schema Grammar">
+<link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Attribute Reference">
+<link href="#rfc.section.3.3.4.1" rel="Chapter" title="3.3.4.1 Using the SCIM 2.0 Schema Grammar for Attribute References">
+<link href="#rfc.section.3.3.5" rel="Chapter" title="3.3.5 Desired Attributes">
+<link href="#rfc.section.3.3.6" rel="Chapter" title="3.3.6 Common Provider Metadata">
+<link href="#rfc.section.3.3.7" rel="Chapter" title="3.3.7 Identity Provider Metadata">
+<link href="#rfc.section.3.3.8" rel="Chapter" title="3.3.8 Application Provider Metadata">
 <link href="#rfc.section.4" rel="Chapter" title="4 Metadata Endpoints">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Provider Metadata Endpoint">
 <link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 Endpoint Validation">
@@ -466,7 +468,7 @@
 
   <meta name="dct.creator" content="McAdams, D." />
   <meta name="dct.identifier" content="urn:ietf:id:fastfed-01" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-01-20" />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-03-09" />
   <meta name="dct.abstract" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
   <meta name="description" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
 
@@ -487,7 +489,7 @@
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">January 20, 2020</td>
+<td class="right">March 9, 2020</td>
 </tr>
 
     	
@@ -541,15 +543,19 @@
 </li>
 <li>3.3.3.   <a href="#rfc.section.3.3.3">Provider Contact Information</a>
 </li>
-<li>3.3.4.   <a href="#rfc.section.3.3.4">Common Provider Metadata</a>
+<li>3.3.4.   <a href="#rfc.section.3.3.4">Attribute Reference</a>
 </li>
-<li>3.3.5.   <a href="#rfc.section.3.3.5">Identity Provider Metadata</a>
+<ul><li>3.3.4.1.   <a href="#rfc.section.3.3.4.1">Using the SCIM 2.0 Schema Grammar for Attribute References</a>
 </li>
-<li>3.3.6.   <a href="#rfc.section.3.3.6">Application Provider Metadata</a>
+</ul><li>3.3.5.   <a href="#rfc.section.3.3.5">Desired Attributes</a>
 </li>
-</ul><li>3.4.   <a href="#rfc.section.3.4">SCIM 2.0 Schema Grammar</a>
+<li>3.3.6.   <a href="#rfc.section.3.3.6">Common Provider Metadata</a>
 </li>
-</ul><li>4.   <a href="#rfc.section.4">Metadata Endpoints</a>
+<li>3.3.7.   <a href="#rfc.section.3.3.7">Identity Provider Metadata</a>
+</li>
+<li>3.3.8.   <a href="#rfc.section.3.3.8">Application Provider Metadata</a>
+</li>
+</ul></ul><li>4.   <a href="#rfc.section.4">Metadata Endpoints</a>
 </li>
 <ul><li>4.1.   <a href="#rfc.section.4.1">Provider Metadata Endpoint</a>
 </li>
@@ -690,7 +696,7 @@
 <p id="rfc.section.1.p.6">The goal of FastFed is to simplify the administrator experience. An ecosystem of FastFed-enabled providers enable administrators to instantiate new federation relationships with a few clicks in a web-based workflow, and without needing to understand the underlying technologies.  </p>
 <p id="rfc.section.1.p.7">To achieve this, FastFed defines additional metadata documents, APIs, and flows so that an administrator can quickly connect two providers that support common identity standards. In addition, FastFed defines interoperability profiles which describe the subset of existing standards which must be implemented for a Provider to label themselves as FastFed compatible.  </p>
 <p id="rfc.section.1.p.8">This specification defines the core FastFed metadata formats and handshake flows.  </p>
-<p id="rfc.section.1.p.9">Additional FastFed Profiles extend this specification with protocol-specific requirements.  For reference, see the FastFed Profiles for <a href="#FastFedProfile.SAML" class="xref">SAML</a>, and <a href="#FastFedProfile.SCIM" class="xref">SCIM Provisioning</a>.  </p>
+<p id="rfc.section.1.p.9">Additional FastFed Profiles extend this specification with protocol-specific requirements.  For reference, see the FastFed Profiles for <a href="#FastFedProfile.SAML" class="xref">SAML</a> and <a href="#FastFedProfile.SCIM" class="xref">SCIM Provisioning</a>.  </p>
 <h1 id="rfc.section.1.1">
 <a href="#rfc.section.1.1">1.1.</a> <a href="#rnc" id="rnc">Requirements Notation and Conventions</a>
 </h1>
@@ -738,7 +744,7 @@
 <h1 id="rfc.section.2.1">
 <a href="#rfc.section.2.1">2.1.</a> <a href="#OverviewMetadata" id="OverviewMetadata">Metadata</a>
 </h1>
-<p id="rfc.section.2.1.p.1">FastFed uses Metadata documents to enable Identity Providers and Application Providers to programmatically discover the capabilities of one other and exchange any configuration necessary to enable federation.  </p>
+<p id="rfc.section.2.1.p.1">FastFed uses Metadata documents to enable Identity Providers and Application Providers to programmatically discover the capabilities of one another and exchange any configuration necessary to enable federation.  </p>
 <p id="rfc.section.2.1.p.2">Metadata can be different for each tenant of a Provider. The various tenants may have different preferences, configurations, and namespaces that get reflected in their Metadata.  </p>
 <p id="rfc.section.2.1.p.3">Metadata includes the following: </p>
 
@@ -769,10 +775,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -862,7 +868,7 @@
 <a href="#rfc.section.2.5.1">2.5.1.</a> <a href="#OverviewUserSchemaSelection" id="OverviewUserSchemaSelection">Schema Selection</a>
 </h1>
 <p id="rfc.section.2.5.1.p.1">FastFed Metadata allows Providers to declare the schemas they understand. Providers should choose schemas that are likely to be shared by federation partners. The lack of a common schema between an Identity Provider and Application Provider will be regarded as an incompatibility and the FastFed handshake will be halted before completion.  </p>
-<p id="rfc.section.2.5.1.p.2">FastFed recommends the use of SCIM 2.0 User and Group Resource Schemas (<a href="#ScimSchemaGrammar" class="xref">Section 3.4</a>). This specification uses SCIM in examples and references. However, other schemas may be used.  </p>
+<p id="rfc.section.2.5.1.p.2">FastFed recommends the use of SCIM 2.0 User and Group Resource Schemas (<a href="#ScimSchemaGrammar" class="xref">Section 3.3.4.1</a>). This specification uses SCIM in examples and references. However, other schemas may be used.  </p>
 <p id="rfc.section.2.5.1.p.3">The following is a non-normative example showing a snippet of FastFed Metadata with a list of schema grammars understood by an Identity Provider: </p>
 <pre>
  {
@@ -882,17 +888,18 @@
 <p id="rfc.section.2.5.2.p.2">Identity Providers MAY display the list of requested attributes during the FastFed Handshake so that Administrators can review and approve the attributes to be released.  </p>
 <p id="rfc.section.2.5.2.p.3">The following is a non-normative example showing a snippet of FastFed Metadata for an Application Provider who desires 3 attributes from a SCIM User Resource.  </p>
 <pre>
- {
-   "application_provider": {
-     ...
-     "desired_user_attributes": [
+     "desired_attributes": [
        "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         {"required": ["username", "emails[primary eq true]"],
-          "optional": ["name.formatted"]
-         }
+          "required_user_attributes": [
+            "username", 
+            "emails[primary eq true]"
+          ],
+          "optional_user_attributes": [
+            "externalId",
+            "name.formatted"
+          ]
        }
-     ],
-     ...
+     ]
 </pre>
 <h1 id="rfc.section.3">
 <a href="#rfc.section.3">3.</a> <a href="#Metadata" id="Metadata">Metadata</a>
@@ -910,14 +917,14 @@
 <h1 id="rfc.section.3.3">
 <a href="#rfc.section.3.3">3.3.</a> <a href="#ProviderMetadata" id="ProviderMetadata">Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.p.1">Provider Metadata enables Providers to advertise their capabilities and evaluate compatibility with other Providers by comparing capabilities. The Metadata also contains the endpoint configuration needed to perform the FastFed Handshake.  </p>
+<p id="rfc.section.3.3.p.1">Provider Metadata enables Providers to advertise their capabilities and evaluate compatibility with other Providers. The Metadata also contains the endpoint configuration needed to perform the FastFed Handshake.  </p>
 <p id="rfc.section.3.3.p.2">Provider Metadata is a structure with the following top-level attributes: </p>
 
 <dl>
 <dt>identity_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.5</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.7</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
 <dt>application_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the attributes described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.6</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.8</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
 </dl>
 
 <p> </p>
@@ -927,15 +934,15 @@
 <a href="#rfc.section.3.3.1">3.3.1.</a> <a href="#ProviderMetadataCapabilities" id="ProviderMetadataCapabilities">Capabilities</a>
 </h1>
 <p id="rfc.section.3.3.1.p.1">Capabilities describe the supported behaviors of a Provider.  They are included in the Metadata for both Identity Providers and Application Providers and are the primary tool to evaluate if two Providers are compatible with one another.  </p>
-<p id="rfc.section.3.3.1.p.2">Capabilities are represented as a structure with the following attributes: </p>
+<p id="rfc.section.3.3.1.p.2">Capabilities are represented as a structure with the following members: </p>
 
 <dl>
 <dt>authentication_profiles</dt>
-<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the single sign-in authentication protocols supported by the Provider. For example, the value "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic" indicates the provider implements the <a href="#FastFedProfile.SAML" class="xref">FastFed Basic Profile for SAML</a>.  <br><br> If no value is specified by the Application Provider for <samp>authentication_profiles</samp>, this indicates the Provider does not require authentication, perhaps because FastFed is being used only to configure synchronization of user data between systems in a context without a need for single sign-on. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
+<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the single sign-in authentication protocols supported by the Provider. For example, the value "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic" indicates the provider implements the <a href="#FastFedProfile.SAML" class="xref">FastFed Basic Profile for SAML</a>.  <br><br> If no value is specified by the Application Provider for <samp>authentication_profiles</samp>, this indicates the Provider does not require authentication, perhaps because FastFed is being used only to configure synchronization of user data between systems in a context without a need for single sign-on. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
 <dt>provisioning_profiles</dt>
-<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the user provisioning capabilities supported by the Provider.  <br><br>For example, the value <samp>"urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</samp> indicates a Provider supports full user provisioning (and deprovisioning) as defined in the <a href="#FastFedProfile.SCIM" class="xref">FastFed Profile For SCIM Provisioning</a>.  <br><br> If no value is specified by the Application Provider for <samp>provisioning_profiles</samp>, this indicates the Provider does not require provisioning or that provisioning happens through a non-standard mechanism that is out of scope of the FastFed specification. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
+<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the user provisioning capabilities supported by the Provider.  <br><br>For example, the value <samp>"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</samp> indicates a Provider supports full user provisioning (and deprovisioning) as defined in the <a href="#FastFedProfile.SCIM" class="xref">FastFed Profile For SCIM Provisioning</a>.  <br><br> If no value is specified by the Application Provider for <samp>provisioning_profiles</samp>, this indicates the Provider does not require provisioning or that provisioning happens through a non-standard mechanism that is out of scope of the FastFed specification. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
 <dt>schema_grammars</dt>
-<dd style="margin-left: 8">REQUIRED. A list of URNs specifying the schemas grammars understood by the Provider. FastFed does not mandate a specific schema grammar, but RECOMMENDS the use of SCIM as defined in <a href="#ScimSchemaGrammar" class="xref">Section 3.4</a>.  </dd>
+<dd style="margin-left: 8">REQUIRED. A list of URNs specifying the schemas grammars understood by the Provider. FastFed does not mandate a specific schema grammar, but RECOMMENDS the use of SCIM as defined in <a href="#ScimSchemaGrammar" class="xref">Section 3.3.4.1</a>.  </dd>
 <dt>signing_alg_values_supported</dt>
 <dd style="margin-left: 8">REQUIRED. A list of JWA <a href="#RFC7518" class="xref">[RFC7518]</a> signing algorithms supported by the Provider. Used for signing request objects within the FastFed Handshake. May also be used by FastFed Profiles (for example, SCIM provisioning) which require authentication of a Provider.<br>At minimum, all Providers SHOULD support <samp>RS256</samp>, but MAY support additional algorithms.  </dd>
 </dl>
@@ -944,7 +951,7 @@
 <h1 id="rfc.section.3.3.2">
 <a href="#rfc.section.3.3.2">3.3.2.</a> <a href="#DisplaySettings" id="DisplaySettings">Display Settings</a>
 </h1>
-<p id="rfc.section.3.3.2.p.1">Display Settings contains the names, icons, logos, and licenses for a Provider. It is included in the Metadata for both Identity Providers and Application Providers.<br><br>If defined, these values supersede any overlapping specifications from underlying protocols; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a>.  <br><br> Display Settings are represented as a structure with the following attributes: </p>
+<p id="rfc.section.3.3.2.p.1">Display Settings contains the names, icons, logos, and licenses for a Provider. It is included in the Metadata for both Identity Providers and Application Providers.<br><br>If defined, these values supersede any overlapping specifications from underlying protocols; e.g. the <samp>logo_uri</samp> defined in <a href="#OpenID.Registration" class="xref">OpenID Connect Dynamic Client Registration 1.0</a>.  <br><br> Display Settings are represented as a structure with the following members: </p>
 
 <dl>
 <dt>display_name</dt>
@@ -961,7 +968,7 @@
 <h1 id="rfc.section.3.3.3">
 <a href="#rfc.section.3.3.3">3.3.3.</a> <a href="#ProviderContactInformation" id="ProviderContactInformation">Provider Contact Information</a>
 </h1>
-<p id="rfc.section.3.3.3.p.1">Specifies the contact information for the Provider. This information is intended to be used when one Provider needs to contact another Provider for operational purposes. For example, if software flaws were to cause an undesired impact, such as excessive HTTP traffic between Providers or a broken end-user experience, this contact information can be used to notify the Provider of the issue.  <br><br>This information is NOT intended to be displayed to end-users as it exists only for the purpose of allowing one Provider to contact another Provider for operational reasons.  <br><br>Provider Contact Information consists of the following attributes: </p>
+<p id="rfc.section.3.3.3.p.1">Specifies the contact information for the Provider. This information is intended to be used when one Provider needs to contact another Provider for operational purposes. For example, if software flaws were to cause an undesired impact, such as excessive HTTP traffic between Providers or a broken end-user experience, this contact information can be used to notify the Provider of the issue.  <br><br>This information is NOT intended to be displayed to end-users as it exists only for the purpose of allowing one Provider to contact another Provider for operational reasons.  <br><br>Provider Contact Information consists of the following members: </p>
 
 <dl>
 <dt>organization</dt>
@@ -984,10 +991,103 @@
  
 </pre>
 <h1 id="rfc.section.3.3.4">
-<a href="#rfc.section.3.3.4">3.3.4.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+<a href="#rfc.section.3.3.4">3.3.4.</a> <a href="#AttributeReferences" id="AttributeReferences">Attribute Reference</a>
 </h1>
-<p id="rfc.section.3.3.4.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
-<p id="rfc.section.3.3.4.p.2">Common Provider Metadata is a structure with the following values: </p>
+<p id="rfc.section.3.3.4.p.1">Portions of the FastFed specification require the ability to reference a User attribute, such as a name, email, or phone. An example of such a scenario occurs when the Application Provider seeks to express the list of user attributes it needs to receive during user provisioning.  </p>
+<p id="rfc.section.3.3.4.p.2">Different schema grammars define different mechanisms for referencing individual attributes. For example, SCIM 2.0 represents Users as a JSON structure, and individual attributes are referenced using a path syntax that is defined in Section 3.5.2 of <a href="#RFC7644" class="xref">RFC 7644</a>.  </p>
+<p id="rfc.section.3.3.4.p.3">The FastFed Attribute Reference is a string containing an attribute reference in the syntax of a particular schema grammar.  </p>
+<p id="rfc.section.3.3.4.p.4">The following is a non-normative example of a list of SCIM 2.0 Attribute References: </p>
+<pre>
+ [username,
+  name.givenName,               
+  emails[primary eq true]
+ ]
+</pre>
+<h1 id="rfc.section.3.3.4.1">
+<a href="#rfc.section.3.3.4.1">3.3.4.1.</a> <a href="#ScimSchemaGrammar" id="ScimSchemaGrammar">Using the SCIM 2.0 Schema Grammar for Attribute References</a>
+</h1>
+<p id="rfc.section.3.3.4.1.p.1">This section defines the requirements for using SCIM 2.0 <a href="#RFC7643" class="xref">[RFC7643]</a> as a schema grammar for <a href="#AttributeReferences" class="xref">Attribute References</a>.  </p>
+<p id="rfc.section.3.3.4.1.p.2">A Provider who includes the value <samp>"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</samp> as a supported <samp>schema_grammar</samp> in their <a href="#ProviderMetadataCapabilities" class="xref">Provider Metadata</a> <samp>capabilities</samp> MUST comply with the following requirements: </p>
+
+<ol>
+<li>The Provider MUST support the SCIM Core schema for "User", and MAY support "Group", as defined in Section 4.1 and 4.2 of <a href="#RFC7643" class="xref">RFC 7643</a>. The Provider MAY support additional schema extensions, as defined in Section 3.3 of <a href="#RFC7643" class="xref">RFC 7643</a>.<br><br> </li>
+<li>FastFed Attribute References MUST be specified using the SCIM PATH syntax as defined in Section 3.5.2 of <a href="#RFC7644" class="xref">RFC 7644</a>. For example, the given name of a User is referenced as <samp>"name.givenName"</samp>.<br><br> </li>
+<li>As per Section 3.10 of the SCIM Protocol Specification <a href="#RFC7644" class="xref">RFC 7644</a>, attribute names are fully qualified by prefixing with a schema URI. E.g. <samp>"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</samp>.  Clients MAY omit URN prefixes for core schema names, but SHOULD fully qualify extended attributes with the associated schema extension URI. When no prefix is specified, the default SCIM core schema is presumed.<br><br> </li>
+<li>For the multi-valued attributes <samp>"emails"</samp>, <samp>"phoneNumbers"</samp>, and <samp>"addresses"</samp>, it MUST be possible to reference one of the attributes in the multi-valued set using the filter <samp>"primary eq true"</samp>, as described in Section 2.4 of <a href="#RFC7643" class="xref">RFC 7643</a>. If the Identity Provider does not natively represent any of the multi-valued attributes as the primary, it MUST be able to map a request for the primary into a deterministic answer.<br><br> </li>
+<li>If a SCIM PATH references a complex attribute type, it MUST be processed as equivalent to referencing each individual attribute within the complex type. For example, specifying the value <samp>"name"</samp> is equivalent to specifying <samp>"name.formatted"</samp>, <samp>"name.familyName"</samp>, <samp>"name.givenName"</samp>, etc.<br><br> </li>
+<li>If a SCIM PATH references a multi-valued attribute, it MUST be processed as equivalent to referencing all members of the list. For example, specifying the value <samp>"emails"</samp> as a desired attribute would result in the full list of emails being shared.<br><br> </li>
+<li>A trailing asterisk <samp>"*"</samp> wildcard in the SCIM PATH MUST be processed as equivalent to any fully qualified path that is prefixed with the string that precedes the wildcard. Wildcards MUST NOT be used in any position except the final character of the SCIM PATH. Wildcards MUST NOT be used in the <samp>required_user_attributes</samp> or <samp>required_group_attributes</samp> elements of the <a href="#DesiredAttributes" class="xref">Desired Attributes</a> structure, but MAY be used in the <samp>optional_user_attributes</samp> or <samp>optional_group_attributes</samp>.<br><br>Wildcards can be useful when an application wants to receive user data without knowing in advance which attributes are defined or available for the user. For example, the value <samp>"*"</samp> would match all attributes from any schema, including custom-defined extensions. The effectively results in a full copy of the user object. Wildcards also allow for requesting all attributes within a particular schema. For example, <samp>"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*"</samp> would match all attributes in the SCIM Enterprise User extension.<br><br> </li>
+</ol>
+
+<p> </p>
+<h1 id="rfc.section.3.3.5">
+<a href="#rfc.section.3.3.5">3.3.5.</a> <a href="#DesiredAttributes" id="DesiredAttributes">Desired Attributes</a>
+</h1>
+<p id="rfc.section.3.3.5.p.1">A structure describing the user and group attributes that the Application Provider desires from the Identity Provider. During the FastFed Handshake, Administrators have an opportunity to review and consent to the release of the desired attributes.  </p>
+<p id="rfc.section.3.3.5.p.2">As a reference, the set of attributes can vary across protocols. For example, the attributes included in a SAML Assertion may differ from the attributes included in a SCIM provisioning activity. Due to this variability, each FastFed Profile will generally define its own rules for declaring the desired attributes, as well as rules about which attributes are required versus optional.  </p>
+<p id="rfc.section.3.3.5.p.3">As such, the structure defined in this section is not directly referenced in any of the FastFed Core metadata documents. Rather, it exists as a re-usable element which the various FastFed Profiles may reference in their own extensions, to declare their desired attributes.  </p>
+<p id="rfc.section.3.3.5.p.4">The structure has the following properties.  </p>
+<p id="rfc.section.3.3.5.p.5">It MUST contain a member for each <samp>schema_grammar</samp> in the list of Provider <samp>capabilities</samp>, where the member name is the URN of the <samp>schema_grammar</samp>.  </p>
+<p id="rfc.section.3.3.5.p.6">The value of each element is another structure with the following members: </p>
+
+<dl>
+<dt>required_user_attributes</dt>
+<dd style="margin-left: 8">REQUIRED. A list of <a href="#AttributeReferences" class="xref">Attribute References</a> describing the end-user attributes which the Identity Provider MUST release to the Application Provider. The value of the attributes MUST NOT be null, empty, or consist of only whitespace characters.  <br><br>If a required attribute is not defined for an end-user, the Identity Provider MUST NOT perform any authentication or provisioning activity into the Application Provider for the affected end-user. To assist with diagnostics, the Identity Provider SHOULD signal to the end-user that the attribute is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to authenticate into the application, or making error logs available to the administrators of the Identity Provider if user provisioning fails due to the missing attributes.  <br><br>To encourage interoperability, it is RECOMMENDED that Providers avoid requiring any schema extensions or custom attributes which are unlikely to be in common use by potential integration partners.  </dd>
+<dt>optional_user_attributes</dt>
+<dd style="margin-left: 8">OPTIONAL. A list of <a href="#AttributeReferences" class="xref">Attribute References</a> describing the user attributes which the Identity Provider MAY release to the Application Provider.  <br><br>The Application Provider MUST remain functional if the attributes are undefined or if the Identity Provider chooses not to release the <samp>optional_attributes</samp>; albeit with minor degradations in user experience; e.g. falling back to labeling end-users with an opaque <samp>userName</samp> instead of a more human-readable <samp>displayName</samp>.  </dd>
+<dt>required_group_attributes</dt>
+<dd style="margin-left: 8">OPTIONAL. A list of <a href="#AttributeReferences" class="xref">Attribute References</a> describing the group attributes which the Identity Provider MUST release to the Application Provider.  <br><br>If a required attribute is not defined for a group, the Identity Provider MUST NOT attempt to provision the group to the Application.  <br><br>To encourage interoperability, it is RECOMMENDED that Providers avoid requiring any schema extensions or custom attributes which are unlikely to be in common use by potential integration partners.  </dd>
+<dt>optional_group_attributes</dt>
+<dd style="margin-left: 8">OPTIONAL. A list of <a href="#AttributeReferences" class="xref">Attribute References</a> describing the group attributes which the Identity Provider MAY release to the Application Provider.  <br><br>The Application Provider MUST remain functional if the attributes are undefined or if the Identity Provider chooses not to release the <samp>optional_group_attributes</samp>.  </dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.3.3.5.p.7">The following is a non-normative example of Desired Attributes using the SCIM 2.0 schema grammar: </p>
+<pre>
+  {
+    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+      "required_user_attributes": [
+        "externalId",
+        "username",
+        "active",
+        "emails[primary eq true]"
+      ],
+      "optional_user_attributes": [
+        "displayName",
+        "name.givenName",
+        "name.familyName",
+        "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
+        "urn:scim:my:custom:schema:customAttribute"
+      ]
+      "required_group_attributes": [
+        "displayName"
+      ],
+      "optional_group_attributes": [
+	"externalId",
+        "members"
+      ]
+    }
+  }
+</pre>
+<p id="rfc.section.3.3.5.p.8">The following is a non-normative example of the usage of wildcards in the Desired Attributes. In this example, the Application Provider accepts any user attribute that is defined using the SCIM 2.0 grammar, essentially resulting in a copy of the User object: </p>
+<pre>
+  {
+    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+      "required_user_attributes": [
+        "username",
+        "active"
+      ],
+      "optional_user_attributes": [
+        "*"
+      ]
+    }
+  }
+</pre>
+<h1 id="rfc.section.3.3.6">
+<a href="#rfc.section.3.3.6">3.3.6.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+</h1>
+<p id="rfc.section.3.3.6.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
+<p id="rfc.section.3.3.6.p.2">Common Provider Metadata is a structure with the following members: </p>
 
 <dl>
 <dt>entity_id</dt>
@@ -1003,11 +1103,11 @@
 </dl>
 
 <p> </p>
-<h1 id="rfc.section.3.3.5">
-<a href="#rfc.section.3.3.5">3.3.5.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
+<h1 id="rfc.section.3.3.7">
+<a href="#rfc.section.3.3.7">3.3.7.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.5.p.1">Identity Provider Metadata represents the configuration and preferences of a single tenant within the Identity Provider. The same metadata is advertised to all Application Providers who initiate a FastFed Handshake.  </p>
-<p id="rfc.section.3.3.5.p.2">The data type is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
+<p id="rfc.section.3.3.7.p.1">Identity Provider Metadata represents the configuration and preferences of a single tenant within the Identity Provider. The same metadata is advertised to all Application Providers who initiate a FastFed Handshake.  </p>
+<p id="rfc.section.3.3.7.p.2">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
 
 <dl>
 <dt>jwks_uri</dt>
@@ -1017,7 +1117,7 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.3.5.p.3">The following is a non-normative example of Identity Provider Metadata: </p>
+<p id="rfc.section.3.3.7.p.3">The following is a non-normative example of Identity Provider Metadata: </p>
 <pre>
  {
    "identity_provider": {
@@ -1036,10 +1136,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1053,29 +1153,20 @@
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  }
 </pre>
-<h1 id="rfc.section.3.3.6">
-<a href="#rfc.section.3.3.6">3.3.6.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
+<h1 id="rfc.section.3.3.8">
+<a href="#rfc.section.3.3.8">3.3.8.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.6.p.1">Application Provider Metadata represents the configuration and preferences of a single tenant within the Application Provider. The Application MAY expose different metadata contents to different Identity Providers as a means to control which capabilities the Identity Provider is permitted to utilize.  </p>
-<p id="rfc.section.3.3.6.p.2">For example, if an Application Provider supports both SAML and OpenID Connect as authentication protocols, but only wishes to allow the Identity Provider to use SAML, the Application would vend a metadata document that only includes SAML in the list of supported authentication methods. Similarly, if the Application supports SCIM for user provisioning, but doesn't wish to use SCIM with the Identity Provider, then the metadata would not include SCIM in the advertised capabilities.  </p>
-<p id="rfc.section.3.3.6.p.3">The data type is a structure that includes all the elements defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional elements: </p>
+<p id="rfc.section.3.3.8.p.1">Application Provider Metadata represents the configuration and preferences of a single tenant within the Application Provider. The Application MAY expose different metadata contents to different Identity Providers as a means to control which capabilities the Identity Provider is permitted to utilize.  </p>
+<p id="rfc.section.3.3.8.p.2">For example, if an Application Provider supports both SAML and OpenID Connect as authentication protocols, but only wishes to allow the Identity Provider to use SAML, the Application would vend a metadata document that only includes SAML in the list of supported authentication methods. Similarly, if the Application supports SCIM for user provisioning, but doesn't wish to use SCIM with the Identity Provider, then the metadata would not include SCIM in the advertised capabilities.  </p>
+<p id="rfc.section.3.3.8.p.3">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
 
 <dl>
 <dt>fastfed_handshake_register_uri</dt>
 <dd style="margin-left: 8">REQUIRED. A URL which specifies the FastFed Handshake registration endpoint. See <a href="#HandshakeRegistrationRequest" class="xref">Section 7.2.3.1</a>.  </dd>
-<dt>desired_user_attributes</dt>
-<dd style="margin-left: 8">REQUIRED. A structure describing the end-user attributes that the Application Provider desires from the Identity Provider. During the FastFed Handshake, Administrators have an opportunity to review and consent to the release of the desired attributes.  <br><br>Each <samp>schema_grammar</samp> from the list of Provider <samp>capabilities</samp> MUST exist as element in the structure. The value of each element is another structure with the following attributes: <dl>
-<dt>required_attributes</dt>
-<dd style="margin-left: 8">A list of attributes which the Identity Provider MUST release to the Application Provider. The value of the attributes MUST NOT be null or empty. Attributes are identified using the reference syntax for the particular schema grammar. See <a href="#ScimSchemaGrammar" class="xref">Section 3.4</a> for SCIM schemas.  <br><br>If a required value is not defined for an end-user, the Application Provider MUST reject the end-user for any authentication or provisioning activity using an HTTP 4xx error message. To assist with debugging, the Identity Provider SHOULD signal to the end-user that the value is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to authenticate into the application, or making error logs available to the administrators of the Identity Provider if user provisioning fails due to the missing attributes.  <br><br>To encourage interoperability, it is RECOMMENDED that Providers avoid requiring any schema extensions or custom attributes which are unlikely to be in common use by potential integration partners.  </dd>
-<dt>optional_attributes</dt>
-<dd style="margin-left: 8">A list of attributes which the Identity Provider MAY release to the Application Provider. Attributes are identified using the reference syntax for the particular schema grammar. See <a href="#ScimSchemaGrammar" class="xref">Section 3.4</a> for SCIM schemas.  <br><br>The application MUST remain functional if the attributes are undefined or if the Identity Provider chooses not to release the <samp>optional_attributes</samp>; albeit with minor degradations in user experience; e.g. falling back to labeling end-users with an opaque <samp>userName</samp> instead of a more human-readable <samp>displayName</samp>.  </dd>
-</dl>
-<p> </p>
-</dd>
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.3.6.p.4">The following is a non-normative example of Application Provider Metadata: </p>
+<p id="rfc.section.3.3.8.p.4">The following is a non-normative example of Application Provider Metadata: </p>
 <pre>
  {
    "application_provider": {
@@ -1094,10 +1185,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1107,102 +1198,9 @@
          "RS256"
        ]
      },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active",
-           "emails[primary eq true]"
-         ],
-         "optional_attributes": [
-           "displayName",
-           "name.givenName",
-           "name.familyName",
-           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
-           "urn:scim:my:custom:schema:customAttribute"
-         ]
-       }
-    }
+     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register"
  }
 </pre>
-<p id="rfc.section.3.3.6.p.5">The following is a non-normative example of an Application Provider which accepts any user attribute from any schema that is defined using the SCIM 2.0 grammar: </p>
-<pre>
- {
-   "application_provider": {
-     "entity_id": "https://tenant-67890.app.example.com/"
-     "provider_domain": "example.com",
-     "provider_contact_information": {
-       "organization": "Example Inc.",
-       "phone": "+1-800-555-5555",
-       "email": "support@example.com"
-     },
-     "display_settings": {
-       "display_name": "Example Application Provider",
-       "logo_uri": "https://app.example.com/images/logo.png",
-       "icon_uri": "https://app.example.com/images/icon.png",
-       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
-     }
-     "capabilities": {
-       "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
-       ],
-       "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
-       ],
-       "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
-       ],
-       "signing_alg_values_supported": [
-         "ES512",
-         "RS256"
-       ]
-     },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active"
-         ],
-         "optional_attributes": [
-           "*",
-         ]
-       }
-     }
-   }
- }
-</pre>
-<h1 id="rfc.section.3.4">
-<a href="#rfc.section.3.4">3.4.</a> <a href="#ScimSchemaGrammar" id="ScimSchemaGrammar">SCIM 2.0 Schema Grammar</a>
-</h1>
-<p id="rfc.section.3.4.p.1">Portions of the FastFed specification require references to attributes within a schema definition. For example, the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> includes a set of <samp>desired_user_attributes</samp> which must be populated with lists of references to specific attributes.  </p>
-<p id="rfc.section.3.4.p.2">This section defines the requirements for using SCIM 2.0 <a href="#RFC7643" class="xref">[RFC7643]</a> as a schema grammar for attribute references.  </p>
-<p id="rfc.section.3.4.p.3">A Provider who includes the value <samp>"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</samp> as a supported <samp>schema_grammar</samp> in their <a href="#ProviderMetadataCapabilities" class="xref">Provider Metadata</a> <samp>capabilities</samp> MUST comply with the following requirements: </p>
-
-<ol>
-<li>The Provider MUST support the SCIM Core schema for "User" and "Group", as defined in Section 4.1 and 4.2 of <a href="#RFC7643" class="xref">RFC 7643</a>. The Provider MAY support additional schema extensions, as defined in Section 3.3 of <a href="#RFC7643" class="xref">RFC 7643</a>.<br><br> </li>
-<li>Multi-valued attributes MUST have one value where <samp>primary</samp> equals "true", as defined in Section 2.4 of <a href="#RFC7643" class="xref">RFC 7643</a>.<br><br> </li>
-<li>FastFed attribute references MUST be specified using the SCIM PATH syntax as defined in Section 3.5.2 of <a href="#RFC7644" class="xref">RFC 7644</a>. For example, the given name of a User is referenced as <samp>"name.givenName"</samp>.<br><br> </li>
-<li>As per Section 3.10 of the SCIM Protocol Specification <a href="#RFC7644" class="xref">RFC 7644</a>, attribute names are fully qualified by prefixing with a schema URI. E.g. <samp>"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</samp>.  Clients MAY omit URN prefixes for core schema names, but SHOULD fully qualify extended attributes with the associated schema extension URI. When no prefix is specified, the default SCIM core schema is presumed.<br><br> </li>
-<li>If a SCIM PATH references a complex attribute type, it MUST be processed as equivalent to referencing each individual attribute within the complex type. For example, specifying the value <samp>"name"</samp> in the list of <samp>optional_attributes</samp> of the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> is equivalent to requesting <samp>"name.formatted"</samp>, <samp>"name.familyName"</samp>, <samp>"name.givenName"</samp>, etc.<br><br> </li>
-<li>If a SCIM PATH references a multi-valued attribute, it MUST be processed as equivalent to referencing all members of the list. For example, specifying the value <samp>"emails"</samp> in the list of <samp>optional_attributes</samp> of the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> would result in the full list of emails being shared with the Application.<br><br> </li>
-<li>A trailing asterisk <samp>"*"</samp> wildcard in the SCIM PATH MUST be processed as equivalent to any fully qualified path that is prefixed with the string that precedes the wildcard. Wildcards MUST NOT be used in any position except the final character of the SCIM PATH. Wildcards MUST NOT be used in the <samp>required_attributes</samp> of the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>, but MAY be used in the <samp>optional_attributes</samp>.<br><br>Wildcards can be useful when an application wants to receive user data without knowing in advance which attributes are defined or available for the user. For example, the value <samp>"*"</samp> would match all attributes from any schema, including custom-defined extensions. The effectively results in a full copy of the user object. Wildcards also allow for requesting all attributes within a particular schema. For example, <samp>"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*"</samp> would match all attributes in the SCIM Enterprise User extension.<br><br> </li>
-<li>Application Providers MUST include the following SCIM Core User attributes in the <samp>required_attributes</samp> of the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a>: <ul>
-<li>
-<samp>externalId</samp> </li>
-<li>
-<samp>userName</samp> </li>
-<li>
-<samp>active</samp> </li>
-</ul>
-<p> </p>
-</li>
-</ol>
-
-<p> </p>
 <h1 id="rfc.section.4">
 <a href="#rfc.section.4">4.</a> <a href="#MetadataEndpoints" id="MetadataEndpoints">Metadata Endpoints</a>
 </h1>
@@ -1215,7 +1213,7 @@
 <h1 id="rfc.section.4.1.1">
 <a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#ProviderMetadataEndpointValidation" id="ProviderMetadataEndpointValidation">Endpoint Validation</a>
 </h1>
-<p id="rfc.section.4.1.1.p.1">To prevent impersonation of Providers, the value of the <samp>provider_domain</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.4</a>) MUST suffix-match the domain of the Metadata Endpoint.  </p>
+<p id="rfc.section.4.1.1.p.1">To prevent impersonation of Providers, the value of the <samp>provider_domain</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.6</a>) MUST suffix-match the domain of the Metadata Endpoint.  </p>
 <p id="rfc.section.4.1.1.p.2">The Metadata Endpoint MAY be hosted at a subdomain of the <samp>provider_domain</samp>.  </p>
 <p id="rfc.section.4.1.1.p.3">A TLS server certificate check MUST be performed when connecting to the Metadata Endpoint to verify Provider ownership of the domain. See <a href="#SecurityAppTrust" class="xref">Section 8.3</a>.  </p>
 <p id="rfc.section.4.1.1.p.4">The following is a non-normative example showing valid and invalid Metadata Endpoints.  </p>
@@ -1251,7 +1249,7 @@
 <a href="#rfc.section.4.1.2.1.1">4.1.2.1.1.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFingerEndpoint" id="ProviderMetadataEndpointDiscoveryWebFingerEndpoint">WebFinger Endpoints</a>
 </h1>
 <p id="rfc.section.4.1.2.1.1.p.1">WebFinger traditionally requires a webserver hosted at the root domain. For example, if a user's email address is <samp>"user@company.com"</samp>, WebFinger requests are sent to <samp>"https://company.com/.well_known/webfinger"</samp>.  </p>
-<p id="rfc.section.4.1.2.1.1.p.2">However, administrators at large enterprises can experience organizational roadblocks when attempting to host this type of discovery endpoint at the root domain. This is because the root domain is often the public-facing product or web presence for an organization and is maintained by different owners who possess security and operational privileges that FastFed administrators may not normally share.  </p>
+<p id="rfc.section.4.1.2.1.1.p.2">However, administrators at large enterprises can experience organizational roadblocks when attempting to host a WebFinger discovery endpoint at the root domain. This is because the root domain is often the public-facing product or web presence for an organization. This domain is often maintained by different owners who possess security and operational privileges that FastFed administrators may not share.  </p>
 <p id="rfc.section.4.1.2.1.1.p.3">Therefore, to simplify adoption, FastFed supports WebFinger discovery using subdomains. The subdomain location is determined by prefixing the email domain with <samp>"fastfed._well_known"</samp>. For example, if the user email is <samp>"babs@example.com"</samp>, the resulting Webfinger endpoint is <samp>"https://fastfed._well_known.example.com"</samp>.  </p>
 <h1 id="rfc.section.4.1.2.1.2">
 <a href="#rfc.section.4.1.2.1.2">4.1.2.1.2.</a> <a href="#ProviderMetadataEndpointDiscoveryWebFingerQueries" id="ProviderMetadataEndpointDiscoveryWebFingerQueries">WebFinger Queries</a>
@@ -1270,8 +1268,9 @@
 <p id="rfc.section.4.1.2.1.2.p.2">To start discovery of FastFed endpoints, the Application Provider makes an HTTP GET request to the WebFinger [RFC7033] endpoint with the <samp>resource</samp> value set to the user email address prepended with the <samp>acct:</samp> scheme <a href="#RFC7565" class="xref">[RFC7565]</a>. All WebFinger communication MUST utilize TLS in the manner described in <a href="#HanshakeTLSRequirements" class="xref">Section 7.1.1</a>.  </p>
 <p id="rfc.section.4.1.2.1.2.p.3">The FastFed Provider Metadata location MUST be returned in the WebFinger response as the value of the <samp>href</samp> member of a <samp>links</samp> array element with <samp>rel</samp> member value <samp>http://openid.net/specs/fastfed/1.0/provider</samp>. (Per Section 7 of WebFinger <a href="#RFC7033" class="xref">[RFC7033]</a>, obtaining the WebFinger response may first involve following some redirects.) </p>
 <p id="rfc.section.4.1.2.1.2.p.4">The returned Issuer location MUST be a URI <a href="#RFC3986" class="xref">[RFC3986]</a> with a scheme component that MUST be https, a host component, and optionally, port and path components and no query or fragment components. Note that the WebFinger request may return a metadata location hosted under a different domain than the user's email.  </p>
-<p id="rfc.section.4.1.2.1.2.p.5">The WebFinger endpoint MAY return a static response to any query, regardless of input parameters. This can be useful, for example, when all users under the same domain will share the same Identity Provider. A static response allows the Webfinger hosting provider to use a static file and avoid the overhead of operating a full-featured WebFinger service.  </p>
-<p id="rfc.section.4.1.2.1.2.p.6">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
+<p id="rfc.section.4.1.2.1.2.p.5">The WebFinger endpoint MAY return a static response to any query, regardless of input parameters. This can be useful, for example, when all users under the same domain will share the same Identity Provider. A static response allows the WebFinger hosting provider to use a static file and avoid the overhead of operating a full-featured WebFinger service.  </p>
+<p id="rfc.section.4.1.2.1.2.p.6">To allow the use of static responses, <samp>subject</samp> MAY be omitted from the WebFinger response.  </p>
+<p id="rfc.section.4.1.2.1.2.p.7">The following non-normative example demonstrates the discovery of FastFed Provider Metadata for <samp>jane@example.com</samp>. The WebFinger parameters are as follows: </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
 <thead><tr>
 <th class="left">WebFinger Parameter</th>
@@ -1292,7 +1291,7 @@
 </tr>
 </tbody>
 </table>
-<p id="rfc.section.4.1.2.1.2.p.7">The Application Provider makes a WebFinger request to the well-known FastFed subdomain endpoint (with line wraps for display purposes only): </p>
+<p id="rfc.section.4.1.2.1.2.p.8">The Application Provider makes a WebFinger request to the well-known FastFed subdomain endpoint (with line wraps for display purposes only): </p>
 <pre>
   GET /
     ?resource=acct%3Ajane%40example.com
@@ -1356,10 +1355,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1487,7 +1486,7 @@
 <dt>aud</dt>
 <dd style="margin-left: 8">The value MUST match the <samp>entity_id</samp> of the intended recipient of the JWT, as specified in the recipient's <a href="#CommonProviderMetadata" class="xref">Provider Metadata</a>.  </dd>
 <dt>exp</dt>
-<dd style="margin-left: 8">Expiration time SHOULD be as short as possible. As a reference to implementors, a 10 minute expiration window is often sufficient to reduce the risk of replays while still allowing a small degree of clock skew between participants.  </dd>
+<dd style="margin-left: 8">Expiration time SHOULD be as short as possible. As a reference to implementors, a 10-minute expiration window is often sufficient to reduce the risk of replays while still allowing a small degree of clock skew between participants.  </dd>
 </dl>
 
 <p> A JWT MAY include additional attributes in addition to the list above.  </p>
@@ -1684,8 +1683,8 @@
 </ul>
 
 <p> </p>
-<p id="rfc.section.7.2.2.4.p.5">If new values exist in the capabilities that don't exist in the current configuration, the Administrator SHOULD be given the choice to add or update to the new value. For example, if SCIM provisioning is not currently enabled, but the capabilities now include SCIM provisioning, the the Administrator can choose to enable it.  </p>
-<p id="rfc.section.7.2.2.4.p.6">If a value is missing from the capabilities that was previously configured, then completion of the FastFed handshake MUST result in disabling the capability. For example, if SCIM provisioning was previously enabled, but the new capabilities don't include SCIM provisioning, then execution of the FastFed Handshake will result in SCIM being disabled.  </p>
+<p id="rfc.section.7.2.2.4.p.5">If new values exist in the capabilities that don't exist in the current configuration, the Administrator SHOULD be given the choice to add or update to the new value. For example, if SCIM provisioning is not currently enabled, but the capabilities now include SCIM provisioning, the Administrator can choose to enable it.  </p>
+<p id="rfc.section.7.2.2.4.p.6">If values are missing from the capabilities that were previously configured, then completion of the FastFed handshake MUST result in disabling the capability. For example, if SCIM provisioning was previously enabled, but the new capabilities don't include SCIM provisioning, then execution of the FastFed Handshake will result in SCIM being disabled.  </p>
 <p id="rfc.section.7.2.2.4.p.7">Both scenarios can be combined to perform an update. For example, if the federation relationship was previously configured to use SAML for user authentication, but the new capabilities only include an alternative protocol such as OpenID Connect, then the result of completing the FastFed Handshake would be to disable SAML and enable OpenID Connect as the user authentication method.  </p>
 <p id="rfc.section.7.2.2.4.p.8">If any capabilities can be enabled or disabled, the Administrator MUST be given the option to proceed with updating the existing federation relationship. The Administrator MUST be informed how proceeding will cause the relationship to be altered.  </p>
 <p id="rfc.section.7.2.2.4.p.9">If no capabilities are changing, the Administrator SHOULD be given the opportunity to proceed and re-execute the FastFed Handshake with the same configuration. This can be necessary, for example, if the Administrator accidentally deleted their settings in the Application Provider and seeks to re-execute the Handshake in order to restore the configuration.  </p>
@@ -1702,7 +1701,7 @@
 <h1 id="rfc.section.7.2.3.1">
 <a href="#rfc.section.7.2.3.1">7.2.3.1.</a> <a href="#HandshakeRegistrationRequest" id="HandshakeRegistrationRequest">Identity Provider Sends Registration Request</a>
 </h1>
-<p id="rfc.section.7.2.3.1.p.1">The Identity Provider registers with the Application Provider by issuing an HTTP POST to the <samp>fastfed_handshake_register_uri</samp> specified within the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> with the following properties:.  </p>
+<p id="rfc.section.7.2.3.1.p.1">The Identity Provider MUST choose the set of capabilities to be activated and enabled, based upon the mutually supported capabilities between the Providers. The choice may include all the mutually supported capabilities, or a subset.  The Identity Provider conveys its choices in the registration request by populating the contents of the message with the capabilities that it seeks to enable. Unspecified capabilities will not be enabled.  The Identity Provider registers with the Application Provider by issuing an HTTP POST to the <samp>fastfed_handshake_register_uri</samp> specified within the <a href="#ApplicationProviderMetadata" class="xref">Application Provider Metadata</a> with the following properties:.  </p>
 
 <ul>
 <li>HTTP <samp>Content-Type</samp> MUST be <samp>application/jwt</samp> </li>
@@ -1729,20 +1728,20 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
+   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
    "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-6666",
        "email": "provisioning@example.com"
      },
      "provider_authentication_methods": {
-       "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
+       "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
          "jwks_uri": "https://provisioning.example.com/keys"
        }
      }
@@ -1778,7 +1777,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <p id="rfc.section.7.2.3.2.p.3">For example, if SCIM provisioning was enabled, one of the actions may include activating the SCIM endpoint and registering the Identity Provider as an authorized client. This is an implementation detail outside the scope of the specification.  </p>
 <p id="rfc.section.7.2.3.2.p.4">If the registration request applies to an existing federation relationship, it can result in capabilities being added or removed. For example, if a federation relationship previously used SCIM provisioning, but the new registration request contains an empty value for <samp>provisioning_profile</samp>, then the existing SCIM capabilities will be disabled to reflect the new settings.  </p>
 <p id="rfc.section.7.2.3.2.p.5">After processing the registration request, the expiration date MUST be removed from the whitelisting entry.  </p>
-<p id="rfc.section.7.2.3.2.p.6">Due to transient failures or redrive scenarios, it is possible that an Identity Provider may send duplicate registration requests. The Application Provider MUST preserve enough whitelist context to provide an idempotent response to duplicate requests.  If the request is still valid when compared against the current whitelist, the Application Provider MUST return the same response contents as in the original response, as specified in <a href="#HandshakeRegistrationResponse" class="xref">Section 7.2.3.3</a>.  </p>
+<p id="rfc.section.7.2.3.2.p.6">Due to transient failures and retry scenarios, it is possible that an Identity Provider may send duplicate registration requests. The Application Provider MUST preserve enough whitelist context to provide an idempotent response to duplicate requests.  If a duplicate request is still valid when compared against the current whitelist, the Application Provider MUST return the same response contents as in the original response, as specified in <a href="#HandshakeRegistrationResponse" class="xref">Section 7.2.3.3</a>.  </p>
 <p id="rfc.section.7.2.3.2.p.7">The implementation of the whitelist is outside the scope of the specification.  As a reference to implementors, it may be beneficial to capture contextual information such as the status of the whitelisting entry (pending, active) and the date when the registration was completed to assist with auditing and debugging.  </p>
 <h1 id="rfc.section.7.2.3.3">
 <a href="#rfc.section.7.2.3.3">7.2.3.3.</a> <a href="#HandshakeRegistrationResponse" id="HandshakeRegistrationResponse">Application Provider Sends Registration Response</a>
@@ -1806,13 +1805,13 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
  {  
    "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "scim_service_uri": "https://tenant-67890.app.example.com/scim",
-     "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
-     "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile":
+     "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
+     "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
      {
        "token_endpoint": "https://tenant-67890.app.example.com/oauth",
        "scope": "scim"
@@ -1937,19 +1936,19 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <h1 id="rfc.section.9">
 <a href="#rfc.section.9">9.</a> <a href="#IANA" id="IANA">IANA Considerations</a>
 </h1>
-<p id="rfc.section.9.p.1">TODO </p>
+<p id="rfc.section.9.p.1">Pending </p>
 <h1 id="rfc.references">
 <a href="#rfc.references">10.</a> Normative References</h1>
 <table><tbody>
 <tr>
 <td class="reference"><b id="FastFedProfile.SAML">[FastFedProfile.SAML]</b></td>
 <td class="top">
-<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Profile for SAML</a>", October 2019.</td>
+<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Profile for SAML</a>", March 2020.</td>
 </tr>
 <tr>
 <td class="reference"><b id="FastFedProfile.SCIM">[FastFedProfile.SCIM]</b></td>
 <td class="top">
-<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Profile for SCIM</a>", October 2019.</td>
+<a title="Amazon">McAdams, K.</a>, "<a href="http://example.com">FastFed Profile for SCIM</a>", March 2020.</td>
 </tr>
 <tr>
 <td class="reference"><b id="OpenID.Registration">[OpenID.Registration]</b></td>
@@ -2073,7 +2072,19 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <p id="rfc.section.A.p.1">The OpenID Community would like to thank the following people for their contributions to this specification: </p>
 <p></p>
 
-<ul class="empty"><li>TODO</li></ul>
+<ul class="empty">
+<li>Brian Campbell (bcampbell@pingidentity.com), Ping Identity </li>
+<li>Zhen Chien Chia (chiazhenchien@outlook.com), Microsoft </li>
+<li>Pamela Dingle (pamela.dingle@microsoft.com), Microsoft </li>
+<li>Matt Domsch (matt.domsch@sailpoint.com), Sailpoint </li>
+<li>Wesley Dunnington (wesleydunnington@pingidentity.com), Ping Identity </li>
+<li>Erik Gustavson (erikgustavson@google.com), Google </li>
+<li>Dick Hardt (dick.hardt@gmail.com), Independent </li>
+<li>Romain Lenglet (rlenglet@google.com), Google </li>
+<li>Karl McGuinness (kmcguinness@okta.com), Okta </li>
+<li>Chuck Mortimore (cmortimore@salesforce.com), Salesforce </li>
+<li>Brian Rose (brian.rose@sailpoint.com), Sailpoint </li>
+</ul>
 
 <p> </p>
 <h1 id="rfc.appendix.B">

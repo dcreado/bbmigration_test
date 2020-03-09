@@ -31,7 +31,7 @@
       </address>
     </author>
 
-    <date day="20" month="January" year="2020" />
+    <date day="9" month="March" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -120,7 +120,7 @@
       <t>
 	Additional FastFed Profiles extend this specification with
 	protocol-specific requirements.  For reference, see the FastFed
-	Profiles for <xref target="FastFedProfile.SAML">SAML</xref>,
+	Profiles for <xref target="FastFedProfile.SAML">SAML</xref>
 	and <xref target="FastFedProfile.SCIM">SCIM Provisioning</xref>.
       </t>
 
@@ -236,7 +236,7 @@
 	<t>
 	  FastFed uses Metadata documents to enable Identity Providers and
 	  Application Providers to programmatically discover the capabilities of
-	  one other and exchange any configuration necessary to enable
+	  one another and exchange any configuration necessary to enable
 	  federation.
 	</t>
 	<t>
@@ -289,10 +289,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -519,17 +519,18 @@
 	    a SCIM User Resource.
 	  </t>
 	  <figure><artwork><![CDATA[
- {
-   "application_provider": {
-     ...
-     "desired_user_attributes": [
+     "desired_attributes": [
        "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         {"required": ["username", "emails[primary eq true]"],
-          "optional": ["name.formatted"]
-         }
+          "required_user_attributes": [
+            "username", 
+            "emails[primary eq true]"
+          ],
+          "optional_user_attributes": [
+            "externalId",
+            "name.formatted"
+          ]
        }
-     ],
-     ...
+     ]
 ]]></artwork></figure>
 	</section>
       </section>      
@@ -584,23 +585,23 @@
       <section anchor="ProviderMetadata" title="Provider Metadata">
 	<t>
 	  Provider Metadata enables Providers to advertise their capabilities
-	  and evaluate compatibility with other Providers by comparing
-	  capabilities. The Metadata also contains the endpoint
-	  configuration needed to perform the FastFed Handshake.
+	  and evaluate compatibility with other Providers. The Metadata also
+	  contains the endpoint configuration needed to perform the FastFed
+	  Handshake.
 	</t>
 	<t>
 	  Provider Metadata is a structure with the following top-level
 	  attributes:
 	  <list style="hanging">
 	    <t hangText="identity_provider">
-	      OPTIONAL. Structure containing the attributes described by
+	      OPTIONAL. Structure containing the members described by
 	      Identity Provider Metadata (<xref
 	      target="IdentityProviderMetadata"/>).  The existence of this
 	      element indicates the entity is capable of acting as an Identity
 	      Provider.
 	    </t>
 	    <t hangText="application_provider">
-	      OPTIONAL. Structure containing the attributes described by
+	      OPTIONAL. Structure containing the members described by
 	      Application Provider Metadata (<xref
 	      target="ApplicationProviderMetadata"/>) The existence of this
 	      element indicates the entity is capable of acting as an
@@ -628,14 +629,14 @@
 	  </t>
 	  <t>
 	    Capabilities are represented as a structure with the following
-	    attributes:
+	    members:
 
 	    <list style="hanging">
 	      <t hangText="authentication_profiles">
 		OPTIONAL. A list of URNs specifying the single sign-in
 		authentication protocols supported by the Provider. For example,
 		the value
-		"urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+		"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
 		indicates the provider implements
 		the <xref target="FastFedProfile.SAML">FastFed Basic Profile for
 		SAML</xref>.
@@ -655,7 +656,7 @@
 		capabilities supported by the Provider. 
 
 		<vspace/><vspace/>For example, the value <spanx style="verb">
-                "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"</spanx>
+                "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</spanx>
                 indicates a Provider supports full user provisioning (and
                 deprovisioning) as defined in
                 the <xref target="FastFedProfile.SCIM">
@@ -700,7 +701,7 @@
                 <xref target="OpenID.Registration">OpenID Connect Dynamic
                 Client Registration 1.0</xref>.
                 <vspace/><vspace/>
-		Display Settings are represented as a structure with the following attributes:
+		Display Settings are represented as a structure with the following members:
                 <list style="hanging">
                   <t hangText="display_name">
                     REQUIRED. The name of the Provider suitable for display to
@@ -763,7 +764,7 @@
 	    to end-users as it exists only for the purpose of allowing one
 	    Provider to contact another Provider for operational reasons.
 	    <vspace/><vspace/>Provider Contact Information consists of the following
-	    attributes:
+	    members:
 	    
 	    <list style="hanging">
 	      <t hangText="organization">
@@ -801,7 +802,303 @@
      }
  
 ]]></artwork></figure>
-        </section> <!-- End of Provider Authentication -->
+        </section> <!-- End of Provider Contact Information -->
+
+        <section anchor="AttributeReferences"
+                 title="Attribute Reference">
+	  <t>
+	    Portions of the FastFed specification require the ability to reference
+	    a User attribute, such as a name, email, or phone. An example of
+	    such a scenario occurs when the Application Provider seeks to
+	    express the list of user attributes it needs to receive during
+	    user provisioning.
+	  </t>
+	  <t>
+	    Different schema grammars define different mechanisms for
+	    referencing individual attributes. For example, SCIM 2.0 represents
+	    Users as a JSON structure, and individual attributes are referenced
+	    using a path syntax that is defined in Section 3.5.2 of
+	    <xref target="RFC7644">RFC 7644</xref>.
+	  </t>
+	  <t>
+	    The FastFed Attribute Reference is a string containing an
+	    attribute reference in the syntax of a particular schema grammar. 
+	  </t>
+	  <t>
+	    The following is a non-normative example of a list of
+	    SCIM 2.0 Attribute References:
+	  </t>
+	  <figure><artwork><![CDATA[
+ [username,
+  name.givenName,               
+  emails[primary eq true]
+ ]
+]]></artwork></figure>
+
+
+	  <section anchor="ScimSchemaGrammar"
+		   title="Using the SCIM 2.0 Schema Grammar for Attribute References">
+            <t>
+              This section defines the requirements for using SCIM 2.0
+              <xref target="RFC7643"/> as a schema grammar
+              for <xref target="AttributeReferences">Attribute References</xref>.
+            </t>
+            <t>
+              A Provider who includes the value
+              <spanx style="verb">"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</spanx>
+              as a supported <spanx style="verb">schema_grammar</spanx> in
+              their <xref target="ProviderMetadataCapabilities">Provider
+              Metadata</xref> <spanx style="verb">capabilities</spanx> MUST
+              comply with the following requirements:
+              <list style="numbers">
+		<t>
+		  The Provider MUST support the SCIM Core schema for "User", and MAY
+		  support "Group", as defined in Section 4.1 and 4.2
+		  of <xref target="RFC7643">RFC 7643</xref>. The Provider MAY
+		  support additional schema extensions, as defined in Section 3.3
+		  of <xref target="RFC7643">RFC 7643</xref>.<vspace/><vspace/>
+		</t>
+		<t>
+		  FastFed Attribute References MUST be specified using the SCIM PATH
+		  syntax as defined in Section 3.5.2 of <xref target="RFC7644">RFC
+		    7644</xref>. For example, the given name of a User is referenced
+		  as <spanx style="verb">"name.givenName"</spanx>.<vspace/><vspace/>
+		</t>
+		<t>
+		  As per Section 3.10 of the SCIM Protocol Specification
+		  <xref target="RFC7644">RFC 7644</xref>, attribute names are fully
+		  qualified by prefixing with a schema
+		  URI. E.g. <spanx style="verb">"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</spanx>.
+		  Clients MAY omit URN prefixes for core schema names, but SHOULD
+		  fully qualify extended attributes with the associated schema
+		  extension URI. When no prefix is specified, the default SCIM core
+		  schema is presumed.<vspace/><vspace/>
+		</t>
+		<t>
+		  For the multi-valued
+		  attributes <spanx style="verb">"emails"</spanx>,
+		  <spanx style="verb">"phoneNumbers"</spanx>, and
+		  <spanx style="verb">"addresses"</spanx>, it MUST be possible to
+		  reference one of the attributes in the multi-valued set using the
+		  filter <spanx style="verb">"primary eq true"</spanx>, as
+		  described in Section 2.4 of <xref target="RFC7643">RFC
+		    7643</xref>. If the Identity Provider does not
+		  natively represent any of the multi-valued attributes as the
+		  primary, it MUST be able to map a request for the primary into
+		  a deterministic answer.<vspace/><vspace/>
+		</t>
+		<t>
+		  If a SCIM PATH references a complex attribute type, it MUST be
+		  processed as equivalent to referencing each individual attribute
+		  within the complex type. For example, specifying the
+		  value <spanx style="verb">"name"</spanx> is equivalent to
+		  specifying <spanx style="verb">"name.formatted"</spanx>,
+		  <spanx style="verb">"name.familyName"</spanx>,
+		  <spanx style="verb">"name.givenName"</spanx>,
+		  etc.<vspace/><vspace/>
+		</t>
+		<t>
+		  If a SCIM PATH references a multi-valued attribute, it MUST be
+		  processed as equivalent to referencing all members of the
+		  list. For example, specifying the
+		  value <spanx style="verb">"emails"</spanx> as a desired
+		  attribute would result in the full list of emails being
+		  shared.<vspace/><vspace/>
+		</t>
+		<t>
+		  A trailing asterisk <spanx style="verb">"*"</spanx> wildcard in
+		  the SCIM PATH MUST be processed as equivalent to any fully
+		  qualified path that is prefixed with the string that precedes the
+		  wildcard. Wildcards MUST NOT be used in any position except the
+		  final character of the SCIM PATH. Wildcards MUST NOT be used in
+		  the <spanx style="verb">required_user_attributes</spanx> or
+		  <spanx style="verb">required_group_attributes</spanx> elements
+		  of the 
+		  <xref target="DesiredAttributes">Desired Attributes
+                  </xref> structure, but MAY be used in
+		  the <spanx style="verb">optional_user_attributes</spanx> or
+		  <spanx style="verb">optional_group_attributes</spanx>.<vspace/><vspace/>Wildcards
+		  can be useful when an application wants to receive user data
+		  without knowing in advance which attributes are defined or
+		  available for the user. For example, the
+		  value <spanx style="verb">"*"</spanx> would match all
+		  attributes from any schema, including custom-defined
+		  extensions. The effectively results in a full copy of the user
+		  object. Wildcards also allow for requesting all attributes
+		  within a particular schema. For
+		  example, <spanx style="verb">"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*"</spanx>
+		  would match all attributes in the SCIM Enterprise User
+		  extension.<vspace/><vspace/>
+		</t>
+              </list>
+            </t>
+	  </section> <!-- End SCIM Grammar -->
+
+	</section> <!-- End of Attribute References -->
+
+        <section anchor="DesiredAttributes"
+                 title="Desired Attributes">
+
+	  <t>
+            A structure describing the user and group attributes that the
+            Application Provider desires from the Identity Provider. During the
+            FastFed Handshake, Administrators have an opportunity to review and
+            consent to the release of the desired attributes.
+	  </t>
+	  <t>
+	    As a reference, the set of attributes can vary across protocols. For
+            example, the attributes included in a SAML Assertion may differ from
+            the attributes included in a SCIM provisioning activity. Due to this
+            variability, each FastFed Profile will generally define its own
+            rules for declaring the desired attributes, as well as rules about
+            which attributes are required versus optional.
+	  </t>
+	  <t>
+	    As such, the structure defined in this section is not directly
+            referenced in any of the FastFed Core metadata documents. Rather, it
+            exists as a re-usable element which the various FastFed Profiles may
+            reference in their own extensions, to declare their
+            desired attributes.
+	  </t>
+	  <t>
+	    The structure has the following properties.
+	  </t>
+	  <t>
+	    It MUST contain a member for
+            each <spanx style="verb">schema_grammar</spanx> in the list of
+            Provider <spanx style="verb">capabilities</spanx>, where the member
+            name is the URN of the <spanx style="verb">schema_grammar</spanx>.
+	  </t>
+	  <t>
+	    The value of each element is another structure with the following members:
+            <list style="hanging">
+              <t hangText="required_user_attributes">
+                REQUIRED. A list
+                of <xref target="AttributeReferences">Attribute
+                  References</xref> describing the end-user attributes which
+                the Identity Provider MUST release to the Application
+                Provider. The value of the attributes MUST NOT be null,
+                empty, or consist of only whitespace characters.
+		
+                <vspace/><vspace/>If a required attribute is not defined for
+                an end-user, the Identity Provider MUST NOT perform any
+                authentication or provisioning activity into the Application
+                Provider for the affected end-user. To
+                assist with diagnostics, the Identity Provider SHOULD signal
+                to the end-user that the attribute is missing and is
+                required by the Application. The means of doing so are
+                outside the scope of the specification, but could include
+                displaying an informative error message when the end-user
+                attempts to authenticate into the application, or making
+                error logs available to the administrators of the Identity
+                Provider if user provisioning fails due to the missing
+                attributes.
+		
+                <vspace/><vspace/>To encourage interoperability, it is
+                RECOMMENDED that Providers avoid requiring any schema
+                extensions or custom attributes which are unlikely to be in
+                common use by potential integration partners.
+              </t>
+	      
+              <t hangText="optional_user_attributes">
+                OPTIONAL. A list
+                of <xref target="AttributeReferences">Attribute
+                  References</xref> describing the user attributes which the
+                Identity Provider MAY release to the Application
+                Provider.
+		
+                <vspace/><vspace/>The Application Provider MUST remain
+                functional if the attributes are undefined or if the
+                Identity Provider chooses not to release
+                the <spanx style="verb">optional_attributes</spanx>; albeit
+                with minor degradations in user experience; e.g. falling
+                back to labeling end-users with an opaque
+                <spanx style="verb">userName</spanx> instead of a more
+                human-readable
+                <spanx style="verb">displayName</spanx>.
+              </t>
+	      
+              <t hangText="required_group_attributes">
+                OPTIONAL. A list
+                of <xref target="AttributeReferences">Attribute
+                  References</xref> describing the group attributes which
+                the Identity Provider MUST release to the Application
+                Provider.
+		
+                <vspace/><vspace/>If a required attribute is not defined for
+                a group, the Identity Provider MUST NOT attempt to provision
+                the group to the Application.
+		
+                <vspace/><vspace/>To encourage interoperability, it is
+                RECOMMENDED that Providers avoid requiring any schema
+                extensions or custom attributes which are unlikely to be in
+                common use by potential integration partners.
+              </t>
+	      
+              <t hangText="optional_group_attributes">
+                OPTIONAL. A list
+                of <xref target="AttributeReferences">Attribute
+                  References</xref> describing the group attributes which the
+                Identity Provider MAY release to the Application Provider.
+		
+                <vspace/><vspace/>The Application Provider MUST remain
+                functional if the attributes are undefined or if the
+                Identity Provider chooses not to release
+                the <spanx style="verb">optional_group_attributes</spanx>.
+              </t>
+	      
+            </list>
+          </t>
+	  <t>
+	    The following is a non-normative example of Desired Attributes
+	    using the SCIM 2.0 schema grammar:
+	  </t>
+          <figure><artwork><![CDATA[
+  {
+    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+      "required_user_attributes": [
+        "externalId",
+        "username",
+        "active",
+        "emails[primary eq true]"
+      ],
+      "optional_user_attributes": [
+        "displayName",
+        "name.givenName",
+        "name.familyName",
+        "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
+        "urn:scim:my:custom:schema:customAttribute"
+      ]
+      "required_group_attributes": [
+        "displayName"
+      ],
+      "optional_group_attributes": [
+	"externalId",
+        "members"
+      ]
+    }
+  }
+]]></artwork></figure>
+          <t>
+            The following is a non-normative example of the usage of wildcards
+            in the Desired Attributes. In this example, the Application Provider
+            accepts any user attribute that is defined using the SCIM 2.0
+            grammar, essentially resulting in a copy of the User object:
+          </t>
+          <figure><artwork><![CDATA[
+  {
+    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+      "required_user_attributes": [
+        "username",
+        "active"
+      ],
+      "optional_user_attributes": [
+        "*"
+      ]
+    }
+  }
+]]></artwork></figure>
+	</section>
 
 	<section anchor="CommonProviderMetadata"
 		 title="Common Provider Metadata">
@@ -810,7 +1107,7 @@
 	    both Identity Providers and Application Providers.
 	  </t>
 	  <t>
-	    Common Provider Metadata is a structure with the following values:
+	    Common Provider Metadata is a structure with the following members:
 
 	    <list style="hanging">
 	      <t hangText="entity_id">
@@ -861,6 +1158,7 @@
 	      </t>
 	    </list>
 	  </t>
+
 	</section> <!-- End of Common Provider Metadata -->
 
 	<section anchor="IdentityProviderMetadata"
@@ -873,8 +1171,8 @@
 	  </t>
 	  <t>
 	    The data type is a structure that includes all the
-	    elements defined in <xref target="CommonProviderMetadata">Common
-	    Provider Metadata</xref>, plus the following additional elements:
+	    members defined in <xref target="CommonProviderMetadata">Common
+	    Provider Metadata</xref>, plus the following additional members:
 
             <list style="hanging">
               <t hangText="jwks_uri">
@@ -911,10 +1209,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -950,9 +1248,9 @@
 	    in the advertised capabilities.
 	  </t>
 	  <t>
-	    The data type is a structure that includes all the elements defined
+	    The data type is a structure that includes all the members defined
 	    in <xref target="CommonProviderMetadata">Common Provider
-	    Metadata</xref>, plus the following additional elements:
+	    Metadata</xref>, plus the following additional members:
 
             <list style="hanging">
               <t hangText="fastfed_handshake_register_uri">
@@ -960,70 +1258,12 @@
                 registration endpoint. See
                 <xref target="HandshakeRegistrationRequest" />.
               </t>
-              <t hangText="desired_user_attributes">
-                REQUIRED. A structure describing the end-user attributes that
-                the Application Provider desires from the Identity
-                Provider. During the FastFed Handshake, Administrators have an
-                opportunity to review and consent to the release of the desired
-                attributes.  
-
-		<vspace/><vspace/>Each <spanx style="verb">schema_grammar</spanx>
-                from the list of
-                Provider <spanx style="verb">capabilities</spanx> MUST exist as
-                element in the structure. The value of each element is another
-                structure with the following attributes:
-
-                <list style="hanging">
-                  <t hangText="required_attributes">
-                    A list of attributes which the Identity Provider MUST
-                    release to the Application Provider. The value of the
-                    attributes MUST NOT be null or empty. Attributes are
-                    identified using the reference syntax for the particular
-                    schema grammar. See <xref target="ScimSchemaGrammar"/> for
-                    SCIM schemas.
-
-		    <vspace/><vspace/>If a required value is not defined for an
-		    end-user, the Application Provider MUST reject the end-user
-		    for any authentication or provisioning activity using an
-		    HTTP 4xx error message. To assist with debugging, the
-		    Identity Provider SHOULD signal to the end-user that the
-		    value is missing and is required by the Application. The
-		    means of doing so are outside the scope of the
-		    specification, but could include displaying an informative
-		    error message when the end-user attempts to authenticate into the
-		    application, or making error logs available to the
-		    administrators of the Identity Provider if user provisioning
-		    fails due to the missing attributes.
-
-		    <vspace/><vspace/>To encourage interoperability, it is
-		    RECOMMENDED that Providers avoid requiring any schema
-		    extensions or custom attributes which are unlikely to be in
-		    common use by potential integration partners.
-                  </t>
-                  <t hangText="optional_attributes">
-                    A list of attributes which the Identity Provider MAY release
-                    to the Application Provider. Attributes are identified using
-                    the reference syntax for the particular schema grammar. See
-                    <xref target="ScimSchemaGrammar"/> for SCIM schemas.
-
-		    <vspace/><vspace/>The application MUST remain
-                    functional if the attributes are undefined or if the
-                    Identity Provider chooses not to release
-                    the <spanx style="verb">optional_attributes</spanx>; albeit
-                    with minor degradations in user experience; e.g. falling
-                    back to labeling end-users with an opaque
-                    <spanx style="verb">userName</spanx> instead of a more
-                    human-readable
-                    <spanx style="verb">displayName</spanx>.
-                  </t>
-                </list>
-              </t>
-            </list>
+	    </list>
 	  </t>
-        <t>
-          The following is a non-normative example of Application Provider Metadata:
-        </t>
-        <figure><artwork><![CDATA[
+          <t>
+            The following is a non-normative example of Application Provider Metadata:
+          </t>
+          <figure><artwork><![CDATA[
  {
    "application_provider": {
      "entity_id": "https://tenant-67890.app.example.com/"
@@ -1041,10 +1281,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1054,195 +1294,12 @@
          "RS256"
        ]
      },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active",
-           "emails[primary eq true]"
-         ],
-         "optional_attributes": [
-           "displayName",
-           "name.givenName",
-           "name.familyName",
-           "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*",
-           "urn:scim:my:custom:schema:customAttribute"
-         ]
-       }
-    }
- }
-]]></artwork></figure>
-        <t>
-          The following is a non-normative example of an Application Provider
-          which accepts any user attribute from any schema that is defined using
-          the SCIM 2.0 grammar:
-	</t>
-        <figure><artwork><![CDATA[
- {
-   "application_provider": {
-     "entity_id": "https://tenant-67890.app.example.com/"
-     "provider_domain": "example.com",
-     "provider_contact_information": {
-       "organization": "Example Inc.",
-       "phone": "+1-800-555-5555",
-       "email": "support@example.com"
-     },
-     "display_settings": {
-       "display_name": "Example Application Provider",
-       "logo_uri": "https://app.example.com/images/logo.png",
-       "icon_uri": "https://app.example.com/images/icon.png",
-       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
-     }
-     "capabilities": {
-       "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
-       ],
-       "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
-       ],
-       "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
-       ],
-       "signing_alg_values_supported": [
-         "ES512",
-         "RS256"
-       ]
-     },
-     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
-     "desired_user_attributes": {
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
-         "required_attributes": [
-           "externalId",
-           "username",
-           "active"
-         ],
-         "optional_attributes": [
-           "*",
-         ]
-       }
-     }
-   }
+     "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register"
  }
 ]]></artwork></figure>
 	</section> <!-- End of Application Provider Metadata -->
-      </section> <!-- End of ProviderMetadata-->
 
-      <section anchor="ScimSchemaGrammar"
-	       title="SCIM 2.0 Schema Grammar">
-	
-	<t>
-	  Portions of the FastFed specification require references to
-	  attributes within a schema definition. For example, the
-	  <xref target="ApplicationProviderMetadata">Application Provider Metadata</xref> includes a set
-	  of <spanx style="verb">desired_user_attributes</spanx> which must be
-	  populated with lists of references to specific attributes.
-	</t>
-	<t>
-	  This section defines the requirements for using SCIM 2.0
-	  <xref target="RFC7643"/> as a schema grammar for attribute references.
-	</t>
-	<t>
-	  A Provider who includes the value
-	  <spanx style="verb">"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</spanx> as a
-	  supported <spanx style="verb">schema_grammar</spanx> in
-	  their <xref target="ProviderMetadataCapabilities">Provider Metadata</xref> <spanx style="verb">capabilities</spanx>
-	  MUST comply with the following requirements:
-	  <list style="numbers">
-	    <t>
-	      The Provider MUST support the SCIM Core schema for "User" and
-	      "Group", as defined in Section 4.1 and 4.2
-	      of <xref target="RFC7643">RFC 7643</xref>. The Provider MAY support
-	      additional schema extensions, as defined in Section 3.3
-	      of <xref target="RFC7643">RFC 7643</xref>.<vspace/><vspace/>
-	    </t>
-	    <t>
-	      Multi-valued attributes MUST have one value
-	      where <spanx style="verb">primary</spanx> equals "true", as
-	      defined in Section 2.4 of <xref target="RFC7643">RFC
-	      7643</xref>.<vspace/><vspace/>
-	    </t> 
-	    <t>
-	      FastFed attribute references MUST be specified using the SCIM PATH
-              syntax as defined in Section 3.5.2 of <xref target="RFC7644">RFC
-              7644</xref>. For example, the given name of a User is referenced
-              as <spanx style="verb">"name.givenName"</spanx>.<vspace/><vspace/>
-	    </t>
-	    <t>
-              As per Section 3.10 of the SCIM Protocol Specification
-              <xref target="RFC7644">RFC 7644</xref>, attribute names are fully
-              qualified by prefixing with a schema
-              URI. E.g. <spanx style="verb">"urn:ietf:params:scim:schemas:core:2.0:User:name.formatted"</spanx>.
-              Clients MAY omit URN prefixes for core schema names, but SHOULD
-              fully qualify extended attributes with the associated schema
-              extension URI. When no prefix is specified, the default SCIM core
-              schema is presumed.<vspace/><vspace/>
-	    </t>
-	    <t>
-	      If a SCIM PATH references a complex attribute type, it MUST be
-	      processed as equivalent to referencing each individual attribute
-	      within the complex type. For example, specifying the
-	      value <spanx style="verb">"name"</spanx> in the list
-	      of <spanx style="verb">optional_attributes</spanx> of the
-              <xref target="ApplicationProviderMetadata">Application Provider
-		Metadata</xref> is equivalent to
-              requesting <spanx style="verb">"name.formatted"</spanx>, 
-	      <spanx style="verb">"name.familyName"</spanx>,
-              <spanx style="verb">"name.givenName"</spanx>, etc.<vspace/><vspace/>
-	    </t>
-	    <t>
-	      If a SCIM PATH references a multi-valued attribute, it MUST be processed
-	      as equivalent to referencing all members of the list. For example,
-	      specifying the value <spanx style="verb">"emails"</spanx> in the list
-	      of <spanx style="verb">optional_attributes</spanx> of the
-              <xref target="ApplicationProviderMetadata">Application Provider
-		Metadata</xref> would result in the full list of emails being shared
-              with the Application.<vspace/><vspace/>
-	    </t> 
-	    <t>
-              A trailing asterisk <spanx style="verb">"*"</spanx> wildcard in
-              the SCIM PATH MUST be processed as equivalent to any fully
-              qualified path that is prefixed with the string that precedes the
-              wildcard. Wildcards MUST NOT be used in any position except the
-              final character of the SCIM PATH. Wildcards MUST NOT be used in
-              the <spanx style="verb">required_attributes</spanx> of the
-              <xref target="ApplicationProviderMetadata">Application Provider
-                Metadata</xref>, but MAY be used in
-              the <spanx style="verb">optional_attributes</spanx>.<vspace/><vspace/>Wildcards
-              can be useful when an application wants to receive user data
-              without knowing in advance which attributes are defined or
-              available for the user. For example, the
-              value <spanx style="verb">"*"</spanx> would match all attributes
-              from any schema, including custom-defined extensions. The
-              effectively results in a full copy of the user object. Wildcards
-              also allow for requesting all attributes within a particular
-              schema. For
-              example, <spanx style="verb">"urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:*"</spanx>
-              would match all attributes in the SCIM Enterprise User
-              extension.<vspace/><vspace/>
-	    </t>
-	    <t>
-	      Application Providers MUST include the following SCIM Core User
-	      attributes in
-              the <spanx style="verb">required_attributes</spanx> of the
-              <xref target="ApplicationProviderMetadata">Application Provider
-                Metadata</xref>:
-	      <list style="symbols">
-		<t>
-                  <spanx style="verb">externalId</spanx>
-                </t>
-		<t>
-		  <spanx style="verb">userName</spanx>
-		</t>
-		<t>
-		  <spanx style="verb">active</spanx>
-		</t>
-	      </list>
-	    </t>
-	  </list>
-	</t>
-      </section> <!-- End SCIM Grammar -->
+      </section> <!-- End of ProviderMetadata-->
       
     </section> <!-- End of Metadata -->
 
@@ -1344,12 +1401,12 @@
               </t>
               <t>
 		However, administrators at large enterprises can experience
-		organizational roadblocks when attempting to host this type of
+		organizational roadblocks when attempting to host a WebFinger
 		discovery endpoint at the root domain. This is because the root
-		domain is often the public-facing product or web presence for
-		an organization and is maintained by different owners who possess
-		security and operational privileges that FastFed administrators
-		may not normally share.
+		domain is often the public-facing product or web presence for an
+		organization. This domain is often maintained by different
+		owners who possess security and operational privileges that
+		FastFed administrators may not share.
               </t>
               <t>
 		Therefore, to simplify adoption, FastFed supports WebFinger
@@ -1407,9 +1464,14 @@
 		The WebFinger endpoint MAY return a static response to any query,
 		regardless of input parameters. This can be useful, for
 		example, when all users under the same domain will share the
-		same Identity Provider. A static response allows the Webfinger
+		same Identity Provider. A static response allows the WebFinger
 		hosting provider to use a static file and avoid the overhead of
 		operating a full-featured WebFinger service.
+	      </t>
+	      <t>
+		To allow the use of static responses,
+		<spanx style="verb">subject</spanx> MAY be omitted from the WebFinger
+		response.
 	      </t>
 	      <t>
 		The following non-normative example demonstrates the discovery of
@@ -1525,10 +1587,10 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
        ],
        "schema_grammars": [
          "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
@@ -1870,7 +1932,7 @@
             </t>
 	    <t hangText="exp">
 	      Expiration time SHOULD be as short as possible. As a reference to
-	      implementors, a 10 minute expiration window is often sufficient to
+	      implementors, a 10-minute expiration window is often sufficient to
 	      reduce the risk of replays while still allowing a small
 	      degree of clock skew between participants.
             </t>
@@ -2191,8 +2253,8 @@
 		</t>
 		<t>
 		  <spanx style="verb">provisioning_profiles</spanx> that the
-	      Identity Provider is permitted to use, as specified in the
-	      Application Provider Metadata.
+		  Identity Provider is permitted to use, as specified in the
+		  Application Provider Metadata.
 		</t>
 		<t>
 		  <spanx style="verb">schemas</spanx> that the
@@ -2456,14 +2518,14 @@
 	    </t>
 	    <t>
 	      If new values exist in the capabilities that don't exist in the
-	      current configuration, the Administrator SHOULD be given the choice
-	      to add or update to the new value. For example, if SCIM
+	      current configuration, the Administrator SHOULD be given the
+	      choice to add or update to the new value. For example, if SCIM
 	      provisioning is not currently enabled, but the capabilities now
-	      include SCIM provisioning, the the Administrator can choose to
-	      enable it.
+	      include SCIM provisioning, the Administrator can choose to enable
+	      it.
 	    </t>
 	    <t>
-	      If a value is missing from the capabilities that was previously
+	      If values are missing from the capabilities that were previously
 	      configured, then completion of the FastFed handshake MUST result
 	      in disabling the capability. For example, if SCIM provisioning
 	      was previously enabled, but the new capabilities don't include
@@ -2529,6 +2591,16 @@
 	  <section anchor="HandshakeRegistrationRequest"
 		   title="Identity Provider Sends Registration Request">
 	    <t>
+	      The Identity Provider MUST choose the set of capabilities to be
+	      activated and enabled, based upon the mutually supported
+	      capabilities between the Providers. The choice may
+	      include all the mutually supported capabilities, or a subset.
+
+	      The Identity Provider conveys its choices in the registration
+	      request by populating the contents of the message with the
+	      capabilities that it seeks to enable. Unspecified capabilities
+	      will not be enabled.
+
 	      The Identity Provider registers with the Application Provider by
 	      issuing an HTTP POST to
 	      the <spanx style="verb">fastfed_handshake_register_uri</spanx>
@@ -2597,20 +2669,20 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:SAML:Basic"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle"],
+   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
+   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
    "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-6666",
        "email": "provisioning@example.com"
      },
      "provider_authentication_methods": {
-       "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile": {
+       "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
          "jwks_uri": "https://provisioning.example.com/keys"
        }
      }
@@ -2710,11 +2782,11 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	      MUST be removed from the whitelisting entry.
 	    </t>
 	    <t>
-              Due to transient failures or redrive scenarios, it is possible
-              that an Identity Provider may send duplicate registration
-              requests. The Application Provider MUST preserve enough whitelist
-              context to provide an idempotent response to duplicate requests.
-              If the request is still valid when compared against the current
+              Due to transient failures and retry scenarios, it is possible that
+              an Identity Provider may send duplicate registration requests. The
+              Application Provider MUST preserve enough whitelist context to
+              provide an idempotent response to duplicate requests.  If a
+              duplicate request is still valid when compared against the current
               whitelist, the Application Provider MUST return the same response
               contents as in the original response, as specified in
               <xref target="HandshakeRegistrationResponse"/>.
@@ -2790,13 +2862,13 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
  {  
    "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:SAML:Basic": {
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
      "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:SCIM:FullLifeCycle": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
      "scim_service_uri": "https://tenant-67890.app.example.com/scim",
-     "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile",
-     "urn:ietf:params:fastfed:1.0:provider_authentication:OAuth-2.0:JWTProfile":
+     "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
+     "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
      {
        "token_endpoint": "https://tenant-67890.app.example.com/oauth",
        "scope": "scim"
@@ -3134,7 +3206,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
     
     <section anchor="IANA" title="IANA Considerations">
       <t>
-	TODO
+	Pending
       </t>
     </section>
 
@@ -3168,7 +3240,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
           </author>
-          <date day="3" month="October" year="2019"/>
+          <date day="9" month="March" year="2020"/>
         </front>
       </reference>
 
@@ -3177,7 +3249,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
           <title>FastFed Profile for SCIM</title>
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
-          </author> <date day="3" month="October" year="2019"/>
+          </author> <date day="9" month="March" year="2020"/>
         </front>
       </reference>
 
@@ -3275,7 +3347,39 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
       </t>
       <t>
         <list style="empty">
-          <t>TODO</t>
+	  <t>
+	    Brian Campbell (bcampbell@pingidentity.com), Ping Identity
+	  </t>
+	  <t>
+	    Zhen Chien Chia (chiazhenchien@outlook.com), Microsoft
+	  </t>
+	  <t>
+	    Pamela Dingle (pamela.dingle@microsoft.com), Microsoft
+	  </t>
+	  <t>
+	    Matt Domsch (matt.domsch@sailpoint.com), Sailpoint
+	  </t>
+	  <t>
+	    Wesley Dunnington (wesleydunnington@pingidentity.com), Ping Identity
+	  </t>
+	  <t>
+	    Erik Gustavson (erikgustavson@google.com), Google
+	  </t>
+	  <t>
+	    Dick Hardt (dick.hardt@gmail.com), Independent
+	  </t>
+	  <t>
+	    Romain Lenglet (rlenglet@google.com), Google
+	  </t>
+	  <t>
+	    Karl McGuinness (kmcguinness@okta.com), Okta
+	  </t>
+	  <t>
+	    Chuck Mortimore (cmortimore@salesforce.com), Salesforce
+	  </t>
+	  <t>
+	    Brian Rose (brian.rose@sailpoint.com), Sailpoint
+	  </t>
         </list>
       </t>
     </section>
