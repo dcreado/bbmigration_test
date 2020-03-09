@@ -715,25 +715,25 @@
                     OPTONAL. A URL that points to a square image file. Commonly
                     used in scenarios where clicking the icon results in
                     launching an instance of the application for the user. Image
-                    dimensions MUST be 180x180 pixels. Image files SHOULD be in
-                    PNG format, but Providers MAY accept alternative
-                    formats. Providers who consume and display the image MAY
-                    resize the image to make it smaller (while preserving aspect
-                    ratios) and/or convert to alternative file formats.
-                    If desired, representation of this value in
+                    dimensions MUST NOT exceed 512x512 pixels. Image files
+                    SHOULD be in PNG format, but Providers MAY accept
+                    alternative formats. Providers who consume and display the
+                    image MAY resize it to smaller dimensions (while
+                    preserving aspect ratios) and/or convert to alternative file
+                    formats.  If desired, representation of this value in
                     different languages and scripts is represented as described
                     in <xref target="MetadataLanguages"/>.
                   </t>
                   <t hangText="logo_uri">
                     OPTIONAL. A URL that points to a logo file for the business
-                    or organization. Image dimensions must be 180x80
-                    pixels. Image files SHOULD be in PNG format, but Providers
-                    MAY accept alternative formats. Providers who consume and
-                    display the image MAY resize the image to make it smaller
-                    (while preserving aspect ratios) and/or convert to
-                    alternative file formats. If desired,
-                    representation of this value in different languages and
-                    scripts is represented as described in
+                    or organization. Image dimensions MUST NOT exceed 512 pixels
+                    in width or 256 pixels in height. Image files SHOULD be in
+                    PNG format, but Providers MAY accept alternative
+                    formats. Providers who consume and display the image MAY
+                    resize it to smaller dimensions (while preserving aspect
+                    ratios) and/or convert to alternative file formats. If
+                    desired, representation of this value in different languages
+                    and scripts is represented as described in
                     <xref target="MetadataLanguages" />.
                   </t>
                   <t hangText="license">
