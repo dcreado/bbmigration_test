@@ -11,7 +11,7 @@
   document and not a private document, as the private="..." declaration could
   be taken to indicate.
 -->
-<rfc category="std" docName="fastfedprofile-scim-1_0-02" ipr="none">
+<rfc category="std" docName="fastfed-scim-1_0" ipr="none">
 
   <?rfc toc="yes" ?>
   <?rfc tocdepth="5" ?>
@@ -22,8 +22,8 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Profile for SCIM 2.0 Provisioning">FastFed Profile for
-    SCIM 2.0 Provisioning - draft 02</title>
+    <title abbrev="FastFed Profile for SCIM 2.0">FastFed Profile for
+    SCIM 2.0</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -1602,9 +1602,9 @@
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?>
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?>
 
-      <reference anchor="FastFed.Core" target="http://example.com">
+      <reference anchor="FastFed.Core" target="http://openid.net/specs/fastfed-core-1_0.html">
         <front>
-          <title>FastFed Core</title>
+          <title>FastFed Core 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">                         
             <organization abbrev="Amazon">Amazon</organization>               
           </author>
@@ -1630,7 +1630,7 @@
 	    Pamela Dingle (pamela.dingle@microsoft.com), Microsoft
 	  </t>
 	  <t>
-	    Matt Domsch (matt.domsch@sailpoint.com), Sailpoint
+	    Matt Domsch (matt.domsch@sailpoint.com), SailPoint
 	  </t>
 	  <t>
 	    Wesley Dunnington (wesleydunnington@pingidentity.com), Ping Identity
@@ -1651,7 +1651,7 @@
 	    Chuck Mortimore (cmortimore@salesforce.com), Salesforce
 	  </t>
 	  <t>
-	    Brian Rose (brian.rose@sailpoint.com), Sailpoint
+	    Brian Rose (brian.rose@sailpoint.com), SailPoint
 	  </t>
         </list>
       </t>

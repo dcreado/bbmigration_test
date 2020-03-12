@@ -7,8 +7,8 @@
                                                            March 9, 2020
 
 
-                      FastFed Core 1.0 - draft 02
-                               fastfed-01
+                            FastFed Core 1.0
+                            fastfed-core-1_0
 
 Abstract
 
@@ -2953,12 +2953,12 @@ McAdams                Expires September 10, 2020              [Page 52]
 10.  Normative References
 
    [FastFedProfile.SAML]
-              McAdams, K., "FastFed Profile for SAML", March 2020,
-              <http://example.com>.
+              McAdams, K., "FastFed Profile for SAML 2.0", March 2020,
+              <http://openid.net/specs/fastfed-saml-1_0.html>.
 
    [FastFedProfile.SCIM]
-              McAdams, K., "FastFed Profile for SCIM", March 2020,
-              <http://example.com>.
+              McAdams, K., "FastFed Profile for SCIM 2.0", March 2020,
+              <http://openid.net/specs/fastfed-scim-1_0.html>.
 
 
 
@@ -3109,7 +3109,7 @@ Appendix A.  Acknowledgements
 
       Pamela Dingle (pamela.dingle@microsoft.com), Microsoft
 
-      Matt Domsch (matt.domsch@sailpoint.com), Sailpoint
+      Matt Domsch (matt.domsch@sailpoint.com), SailPoint
 
       Wesley Dunnington (wesleydunnington@pingidentity.com), Ping
       Identity
@@ -3124,7 +3124,7 @@ Appendix A.  Acknowledgements
 
       Chuck Mortimore (cmortimore@salesforce.com), Salesforce
 
-      Brian Rose (brian.rose@sailpoint.com), Sailpoint
+      Brian Rose (brian.rose@sailpoint.com), SailPoint
 
 
 

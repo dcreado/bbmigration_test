@@ -7,8 +7,8 @@
                                                            March 9, 2020
 
 
-                FastFed Profile for SAML 2.0 - draft 02
-                       fastfedprofile-saml-01-01
+                      FastFed Profile for SAML 2.0
+                            fastfed-saml-1_0
 
 Abstract
 
@@ -793,8 +793,8 @@ McAdams                Expires September 10, 2020              [Page 14]
 8.  Normative References
 
    [FastFed.Core]
-              McAdams, K., "FastFed Core", March 2020,
-              <http://example.com>.
+              McAdams, K., "FastFed Core 1.0", March 2020,
+              <http://openid.net/specs/fastfed-core-1_0.html>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -867,7 +867,7 @@ Appendix A.  Acknowledgements
 
       Pamela Dingle (pamela.dingle@microsoft.com), Microsoft
 
-      Matt Domsch (matt.domsch@sailpoint.com), Sailpoint
+      Matt Domsch (matt.domsch@sailpoint.com), SailPoint
 
       Wesley Dunnington (wesleydunnington@pingidentity.com), Ping
       Identity
@@ -882,7 +882,7 @@ Appendix A.  Acknowledgements
 
       Chuck Mortimore (cmortimore@salesforce.com), Salesforce
 
-      Brian Rose (brian.rose@sailpoint.com), Sailpoint
+      Brian Rose (brian.rose@sailpoint.com), SailPoint
 
 Appendix B.  Notices
 
