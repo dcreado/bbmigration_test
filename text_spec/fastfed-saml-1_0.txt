@@ -7,13 +7,13 @@
                                                            March 9, 2020
 
 
-                      FastFed Profile for SAML 2.0
+               FastFed Basic SAML Profile 1.0 - draft 02
                             fastfed-saml-1_0
 
 Abstract
 
    This specification defines the requirements to implement the FastFed
-   Basic SAML 2.0 Profile.
+   Basic SAML Profile.
 
 Table of Contents
 
@@ -55,13 +55,13 @@ Table of Contents
 
 McAdams                Expires September 10, 2020               [Page 1]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 1.  Introduction
 
    This specification defines the functionality which a provider must
-   implement to satisfy the Basic SAML 2.0 Profile for FastFed.
+   implement to satisfy the Basic SAMLProfile for FastFed.
 
    It consists of the following extensions to the FastFed Core
    [FastFed.Core] specification:
@@ -111,7 +111,7 @@ McAdams                Expires September 10, 2020               [Page 1]
 
 McAdams                Expires September 10, 2020               [Page 2]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    The Application Provider fulfills the role of a SAML Application
@@ -167,7 +167,7 @@ McAdams                Expires September 10, 2020               [Page 2]
 
 McAdams                Expires September 10, 2020               [Page 3]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
       When using this profile, the Application Provider MUST include the
@@ -223,7 +223,7 @@ McAdams                Expires September 10, 2020               [Page 3]
 
 McAdams                Expires September 10, 2020               [Page 4]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
  {
@@ -279,7 +279,7 @@ McAdams                Expires September 10, 2020               [Page 4]
 
 McAdams                Expires September 10, 2020               [Page 5]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 3.2.  FastFed Handshake
@@ -335,7 +335,7 @@ McAdams                Expires September 10, 2020               [Page 5]
 
 McAdams                Expires September 10, 2020               [Page 6]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    The following is a non-normative example of the contents of a
@@ -391,7 +391,7 @@ McAdams                Expires September 10, 2020               [Page 6]
 
 McAdams                Expires September 10, 2020               [Page 7]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 4.1.2.  SAML Attributes
@@ -447,7 +447,7 @@ McAdams                Expires September 10, 2020               [Page 7]
 
 McAdams                Expires September 10, 2020               [Page 8]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
        +---------------------+-------------------------------------+
@@ -503,7 +503,7 @@ McAdams                Expires September 10, 2020               [Page 8]
 
 McAdams                Expires September 10, 2020               [Page 9]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 4.2.  Privacy Considerations
@@ -559,7 +559,7 @@ McAdams                Expires September 10, 2020               [Page 9]
 
 McAdams                Expires September 10, 2020              [Page 10]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
       reference to implementors, a 10 minute window is often sufficient
@@ -615,7 +615,7 @@ McAdams                Expires September 10, 2020              [Page 10]
 
 McAdams                Expires September 10, 2020              [Page 11]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 5.3.  Login Hint
@@ -671,7 +671,7 @@ McAdams                Expires September 10, 2020              [Page 11]
 
 McAdams                Expires September 10, 2020              [Page 12]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    o  MUST publish the new certificate in the SAML Metadata at least 14
@@ -727,7 +727,7 @@ McAdams                Expires September 10, 2020              [Page 12]
 
 McAdams                Expires September 10, 2020              [Page 13]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    When preemptively querying for updates on a recurring basis, the
@@ -783,7 +783,7 @@ McAdams                Expires September 10, 2020              [Page 13]
 
 McAdams                Expires September 10, 2020              [Page 14]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
 7.  IANA Considerations
@@ -839,7 +839,7 @@ McAdams                Expires September 10, 2020              [Page 14]
 
 McAdams                Expires September 10, 2020              [Page 15]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    [SAML.Profiles]
@@ -886,7 +886,7 @@ Appendix A.  Acknowledgements
 
 Appendix B.  Notices
 
-   Copyright (c) 2017 The OpenID Foundation.
+   Copyright (c) 2020 The OpenID Foundation.
 
    The OpenID Foundation (OIDF) grants to any Contributor, developer,
    implementer, or other interested party a non-exclusive, royalty free,
@@ -895,7 +895,7 @@ Appendix B.  Notices
 
 McAdams                Expires September 10, 2020              [Page 16]
 
-                      FastFed Profile for SAML 2.0            March 2020
+                     FastFed Basic SAML Profile 1.0           March 2020
 
 
    worldwide copyright license to reproduce, prepare derivative works

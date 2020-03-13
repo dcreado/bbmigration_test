@@ -22,7 +22,7 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Core 1.0">FastFed Core 1.0</title>
+    <title abbrev="FastFed Core 1.0">FastFed Core 1.0 - draft 02</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -3236,7 +3236,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
       <reference anchor="FastFedProfile.SAML" target="http://openid.net/specs/fastfed-saml-1_0.html">
         <front>
-          <title>FastFed Profile for SAML 2.0</title>
+          <title>FastFed Basic SAML Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
           </author>
@@ -3246,7 +3246,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
       <reference anchor="FastFedProfile.SCIM" target="http://openid.net/specs/fastfed-scim-1_0.html">
         <front>
-          <title>FastFed Profile for SCIM 2.0</title>
+          <title>FastFed Basic SCIM Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
           </author> <date day="9" month="March" year="2020"/>
@@ -3385,7 +3385,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
     </section>
 
     <section anchor="Notices" title="Notices">
-      <t>Copyright (c) 2017 The OpenID Foundation.</t>
+      <t>Copyright (c) 2020 The OpenID Foundation.</t>
 
       <t>The OpenID Foundation (OIDF) grants to any Contributor, developer,
       implementer, or other interested party a non-exclusive, royalty free,

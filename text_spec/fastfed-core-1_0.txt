@@ -7,7 +7,7 @@
                                                            March 9, 2020
 
 
-                            FastFed Core 1.0
+                      FastFed Core 1.0 - draft 02
                             fastfed-core-1_0
 
 Abstract
@@ -2953,11 +2953,11 @@ McAdams                Expires September 10, 2020              [Page 52]
 10.  Normative References
 
    [FastFedProfile.SAML]
-              McAdams, K., "FastFed Profile for SAML 2.0", March 2020,
+              McAdams, K., "FastFed Basic SAML Profile 1.0", March 2020,
               <http://openid.net/specs/fastfed-saml-1_0.html>.
 
    [FastFedProfile.SCIM]
-              McAdams, K., "FastFed Profile for SCIM 2.0", March 2020,
+              McAdams, K., "FastFed Basic SCIM Profile 1.0", March 2020,
               <http://openid.net/specs/fastfed-scim-1_0.html>.
 
 
@@ -3140,7 +3140,7 @@ McAdams                Expires September 10, 2020              [Page 56]
 
 Appendix B.  Notices
 
-   Copyright (c) 2017 The OpenID Foundation.
+   Copyright (c) 2020 The OpenID Foundation.
 
    The OpenID Foundation (OIDF) grants to any Contributor, developer,
    implementer, or other interested party a non-exclusive, royalty free,

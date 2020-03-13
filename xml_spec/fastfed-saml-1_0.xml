@@ -22,7 +22,8 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Profile for SAML 2.0">FastFed Profile for SAML 2.0</title>
+    <title abbrev="FastFed Basic SAML Profile 1.0">FastFed Basic SAML Profile
+    1.0 - draft 02</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -38,7 +39,7 @@
     <abstract>
       <t>
 	This specification defines the requirements to implement the FastFed
-	Basic SAML 2.0  Profile.
+	Basic SAML Profile.
       </t>
     </abstract>
   </front>
@@ -47,7 +48,7 @@
     <section anchor="Introduction" title="Introduction">
       <t>
 	This specification defines the functionality which a provider must
-	implement to satisfy the Basic SAML 2.0 Profile for FastFed. 
+	implement to satisfy the Basic SAMLProfile for FastFed. 
       </t>
       <t>
 	It consists of the following extensions to
@@ -1019,7 +1020,7 @@
     </section>
 
     <section anchor="Notices" title="Notices">
-      <t>Copyright (c) 2017 The OpenID Foundation.</t>
+      <t>Copyright (c) 2020 The OpenID Foundation.</t>
 
       <t>The OpenID Foundation (OIDF) grants to any Contributor, developer,
       implementer, or other interested party a non-exclusive, royalty free,
