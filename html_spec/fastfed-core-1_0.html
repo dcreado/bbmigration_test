@@ -5,7 +5,7 @@
 <head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
   <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
 
-  <title>FastFed Core 1.0 - draft 02</title>
+  <title>FastFed Core 1.0 - draft 03</title>
 
   <style type="text/css" title="Xml2Rfc (sans serif)">
   /*<![CDATA[*/
@@ -463,14 +463,14 @@
 <link href="#rfc.authors" rel="Chapter">
 
 
-  <meta name="generator" content="xml2rfc version 2.15.4 - https://tools.ietf.org/tools/xml2rfc" />
+  <meta name="generator" content="xml2rfc version 2.47.0 - https://tools.ietf.org/tools/xml2rfc" />
   <link rel="schema.dct" href="http://purl.org/dc/terms/" />
 
   <meta name="dct.creator" content="McAdams, D." />
   <meta name="dct.identifier" content="urn:ietf:id:fastfed-core-1_0" />
-  <meta name="dct.issued" scheme="ISO8601" content="2020-03-09" />
-  <meta name="dct.abstract" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
-  <meta name="description" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.  " />
+  <meta name="dct.issued" scheme="ISO8601" content="2020-07-27" />
+  <meta name="dct.abstract" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.   " />
+  <meta name="description" content="FastFed simplifies the administrative effort to configure identity federation between an identity provider and a hosted application. The specification defines metadata documents, APIs, and flows to enable an administrator to quickly connect two providers that support common standards such as OpenID Connect, SAML, and SCIM, and allows configuration changes to be communicated directly between the identity provider and hosted application on a recurring basis.   " />
 
 </head>
 
@@ -489,14 +489,14 @@
 </tr>
 <tr>
 <td class="left"></td>
-<td class="right">March 9, 2020</td>
+<td class="right">July 27, 2020</td>
 </tr>
 
     	
     </tbody>
   </table>
 
-  <p class="title">FastFed Core 1.0 - draft 02<br />
+  <p class="title">FastFed Core 1.0 - draft 03<br />
   <span class="filename">fastfed-core-1_0</span></p>
   
   <h1 id="rfc.abstract"><a href="#rfc.abstract">Abstract</a></h1>
@@ -775,15 +775,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -876,7 +876,7 @@
      capabilities: {
        ...
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
      }
      ...
@@ -889,7 +889,7 @@
 <p id="rfc.section.2.5.2.p.3">The following is a non-normative example showing a snippet of FastFed Metadata for an Application Provider who desires 3 attributes from a SCIM User Resource.  </p>
 <pre>
      "desired_attributes": [
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+       "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
           "required_user_attributes": [
             "username", 
             "emails[primary eq true]"
@@ -938,12 +938,12 @@
 
 <dl>
 <dt>authentication_profiles</dt>
-<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the single sign-in authentication protocols supported by the Provider. For example, the value "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic" indicates the provider implements the <a href="#FastFedProfile.SAML" class="xref">FastFed Basic Profile for SAML</a>.  <br><br> If no value is specified by the Application Provider for <samp>authentication_profiles</samp>, this indicates the Provider does not require authentication, perhaps because FastFed is being used only to configure synchronization of user data between systems in a context without a need for single sign-on. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
+<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the single sign-in authentication protocols supported by the Provider. For example, the value "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise" indicates the provider implements the <a href="#FastFedProfile.SAML" class="xref">FastFed Enterprise Profile for SAML</a>.  <br><br> If no value is specified by the Application Provider for <samp>authentication_profiles</samp>, this indicates the Provider does not require authentication, perhaps because FastFed is being used only to configure synchronization of user data between systems in a context without a need for single sign-on. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
 <dt>provisioning_profiles</dt>
-<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the user provisioning capabilities supported by the Provider.  <br><br>For example, the value <samp>"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</samp> indicates a Provider supports full user provisioning (and deprovisioning) as defined in the <a href="#FastFedProfile.SCIM" class="xref">FastFed Profile For SCIM Provisioning</a>.  <br><br> If no value is specified by the Application Provider for <samp>provisioning_profiles</samp>, this indicates the Provider does not require provisioning or that provisioning happens through a non-standard mechanism that is out of scope of the FastFed specification. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
+<dd style="margin-left: 8">OPTIONAL. A list of URNs specifying the user provisioning capabilities supported by the Provider.  <br><br>For example, the value <samp>"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</samp> indicates a Provider supports full user provisioning (and deprovisioning) as defined in the <a href="#FastFedProfile.SCIM" class="xref">FastFed Profile For SCIM Provisioning</a>.  <br><br> If no value is specified by the Application Provider for <samp>provisioning_profiles</samp>, this indicates the Provider does not require provisioning or that provisioning happens through a non-standard mechanism that is out of scope of the FastFed specification. See <a href="#ProviderCompatibilityEvaluationEmptyList" class="xref">Section 5.1</a> for handling empty capabilities.  </dd>
 <dt>schema_grammars</dt>
 <dd style="margin-left: 8">REQUIRED. A list of URNs specifying the schemas grammars understood by the Provider. FastFed does not mandate a specific schema grammar, but RECOMMENDS the use of SCIM as defined in <a href="#ScimSchemaGrammar" class="xref">Section 3.3.4.1</a>.  </dd>
-<dt>signing_alg_values_supported</dt>
+<dt>signing_algorithms</dt>
 <dd style="margin-left: 8">REQUIRED. A list of JWA <a href="#RFC7518" class="xref">[RFC7518]</a> signing algorithms supported by the Provider. Used for signing request objects within the FastFed Handshake. May also be used by FastFed Profiles (for example, SCIM provisioning) which require authentication of a Provider.<br>At minimum, all Providers SHOULD support <samp>RS256</samp>, but MAY support additional algorithms.  </dd>
 </dl>
 
@@ -1007,7 +1007,7 @@
 <a href="#rfc.section.3.3.4.1">3.3.4.1.</a> <a href="#ScimSchemaGrammar" id="ScimSchemaGrammar">Using the SCIM 2.0 Schema Grammar for Attribute References</a>
 </h1>
 <p id="rfc.section.3.3.4.1.p.1">This section defines the requirements for using SCIM 2.0 <a href="#RFC7643" class="xref">[RFC7643]</a> as a schema grammar for <a href="#AttributeReferences" class="xref">Attribute References</a>.  </p>
-<p id="rfc.section.3.3.4.1.p.2">A Provider who includes the value <samp>"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</samp> as a supported <samp>schema_grammar</samp> in their <a href="#ProviderMetadataCapabilities" class="xref">Provider Metadata</a> <samp>capabilities</samp> MUST comply with the following requirements: </p>
+<p id="rfc.section.3.3.4.1.p.2">A Provider who includes the value <samp>"urn:ietf:params:fastfed:1.0:schemas:scim:2.0"</samp> as a supported <samp>schema_grammar</samp> in their <a href="#ProviderMetadataCapabilities" class="xref">Provider Metadata</a> <samp>capabilities</samp> MUST comply with the following requirements: </p>
 
 <ol>
 <li>The Provider MUST support the SCIM Core schema for "User", and MAY support "Group", as defined in Section 4.1 and 4.2 of <a href="#RFC7643" class="xref">RFC 7643</a>. The Provider MAY support additional schema extensions, as defined in Section 3.3 of <a href="#RFC7643" class="xref">RFC 7643</a>.<br><br> </li>
@@ -1045,7 +1045,7 @@
 <p id="rfc.section.3.3.5.p.7">The following is a non-normative example of Desired Attributes using the SCIM 2.0 schema grammar: </p>
 <pre>
   {
-    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
         "externalId",
         "username",
@@ -1072,7 +1072,7 @@
 <p id="rfc.section.3.3.5.p.8">The following is a non-normative example of the usage of wildcards in the Desired Attributes. In this example, the Application Provider accepts any user attribute that is defined using the SCIM 2.0 grammar, essentially resulting in a copy of the User object: </p>
 <pre>
   {
-    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
         "username",
         "active"
@@ -1136,15 +1136,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1185,15 +1185,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1355,15 +1355,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1410,7 +1410,7 @@
 <li>authentication_profiles</li>
 <li>provisioning_profiles</li>
 <li>schema_grammars</li>
-<li>signing_alg_values_supported</li>
+<li>signing_algorithms</li>
 </ul>
 
 <p> </p>
@@ -1459,7 +1459,7 @@
 <h1 id="rfc.section.6.3">
 <a href="#rfc.section.6.3">6.3.</a> <a href="#ProviderAuthenticationMethodsAlgSelection" id="ProviderAuthenticationMethodsAlgSelection">Algorithm Selection</a>
 </h1>
-<p id="rfc.section.6.3.p.1">The signing algorithms supported by a Provider are specified in the <samp>signing_alg_values_supported</samp> attribute in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities Metadata</a>.  </p>
+<p id="rfc.section.6.3.p.1">The signing algorithms supported by a Provider are specified in the <samp>signing_algorithms</samp> attribute in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities Metadata</a>.  </p>
 <p id="rfc.section.6.3.p.2">Current best practices for signing algorithms can evolve over time. Therefore, Providers SHOULD publish updated FastFed Metadata with new signing algorithms as necessary to evolve with current best practices. Consumers of the FastFed Metadata MUST periodically refresh any cached information as described in <a href="#MetadataRefresh" class="xref">Section 4.1.5</a> in order to maintain a current list of supported algorithms for a Provider.  </p>
 <p id="rfc.section.6.3.p.3">When updating, Providers SHOULD add new algorithms but SHOULD NOT remove existing algorithms that are actively being used unless necessary for security purposes, since removing an algorithm may break existing federation relationships.  </p>
 <p id="rfc.section.6.3.p.4">If two Providers are compatible for multiple signing algorithms, the signer may select any mutually compatible algorithm. The Provider SHOULD avoid known weak algorithms which do not reflect current best practices.  </p>
@@ -1472,7 +1472,7 @@
 
 <dl>
 <dt>alg</dt>
-<dd style="margin-left: 8">The signing algorithm MUST be a compatible <a href="#RFC7515" class="xref">JWS</a> <samp>alg</samp> algorithm <a href="#RFC7518" class="xref">[JWA]</a> specified by both Providers in the <samp>signing_alg_values_supported</samp> attribute of the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
+<dd style="margin-left: 8">The signing algorithm MUST be a compatible <a href="#RFC7515" class="xref">JWS</a> <samp>alg</samp> algorithm <a href="#RFC7518" class="xref">[JWA]</a> specified by both Providers in the <samp>signing_algorithms</samp> attribute of the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
 <dt>kid</dt>
 <dd style="margin-left: 8">The JWS signing key MUST exist in the JSON Web Key Set <a href="#RFC7517" class="xref">[JWK]</a>. For the FastFed Handshake, the location of the key set is specified by the <samp>jwks_uri</samp> parameter of the <a href="#IdentityProviderMetadata" class="xref">Identity Provider Metadata</a>. Other profiles, such as <a href="#FastFedProfile.SCIM" class="xref">SCIM provisioning</a>, may specify alternative key sets. The <samp>alg</samp> associated with the signing key MUST match the <samp>alg</samp> used to sign the JWT.  </dd>
 </dl>
@@ -1508,7 +1508,7 @@
 <ol>
 <li>Providers MUST be compliant with Section 2.1 of <a href="#RFC7523" class="xref">RFC 7523</a>, "Using JWTs as Authorization Grants".  </li>
 <li>The JWT MUST be formatted according to the <a href="#ProviderAuthenticationMethodsJWT" class="xref">FastFed JWT Requirements</a>.  </li>
-<li>The JWT MUST be signed using one of the mutually compatible algorithms negotiated during the FastFed Handshake based upon the contents of the <samp>signing_alg_values_supported</samp> attribute defined in <a href="#ProviderMetadataCapabilities" class="xref">Section 3.3.1</a> of Provider Metadata.  </li>
+<li>The JWT MUST be signed using one of the mutually compatible algorithms negotiated during the FastFed Handshake based upon the contents of the <samp>signing_algorithms</samp> attribute defined in <a href="#ProviderMetadataCapabilities" class="xref">Section 3.3.1</a> of Provider Metadata.  </li>
 <li>The token endpoint MUST NOT require an OAuth 2.0 <samp>client_id</samp>. FastFed does not require the exchange of a <samp>client_id</samp>.  </li>
 </ol>
 
@@ -1596,8 +1596,6 @@
 <li>
 <samp>provisioning_profiles</samp> that the Identity Provider is permitted to use, as specified in the Application Provider Metadata.  </li>
 <li>
-<samp>schemas</samp> that the Identity Provider is permitted to use, as specified in the Application Provider Metadata.  </li>
-<li>
 <samp>expiration_date</samp> after which the whitelisting will be considered expired. If a FastFed Handshake with the whitelisted properties is never completed during the validity window, the whitelisting SHOULD expire after a reasonable amount of time. The amount of time is an implementation detail. As a reference to implementors, some enterprises require multiple parties to approve a new Application for single sign-in. These approvals may take days or weeks to acquire.  </li>
 </ol>
 
@@ -1678,8 +1676,6 @@
 <samp>authentication_profiles</samp> </li>
 <li>
 <samp>provisioning_profiles</samp> </li>
-<li>
-<samp>schema_grammars</samp> </li>
 </ul>
 
 <p> </p>
@@ -1716,8 +1712,6 @@
 <dd style="margin-left: 8">OPTIONAL. A list containing the authentication protocols to be enabled for sign-in between the Identity Provider and the Application Provider, chosen from the list of compatible <samp>authentication_profiles</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
 <dt>provisioning_profiles</dt>
 <dd style="margin-left: 8">OPTIONAL. A list containing the user provisioning profiles to be enabled by the Identity Provider and Application Provider, chosen from the list of compatible <samp>provisioning_profiles</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
-<dt>schema_grammar</dt>
-<dd style="margin-left: 8">REQUIRED. A string value containing the schema grammar to be used by the Identity Provider and Application Provider, chosen from the list of <samp>schema_grammars</samp> defined in the <a href="#ProviderMetadataCapabilities" class="xref">Provider Capabilities</a>.  </dd>
 </dl>
 
 <p> </p>
@@ -1728,13 +1722,12 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"],
+   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"],
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-6666",
@@ -1768,12 +1761,12 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <li>Verify the <samp>exp</samp> DateTime in the JWT is prior to current DateTime.  </li>
 <li>Verify the <samp>kid</samp> matches an entry in the whitelisted key set hosted at the <samp>jwks_uri</samp> captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 7.2.1.6</a>.  </li>
 <li>Verify the JWT signature using the key from the key set. The signing algorithm for the <samp>kid</samp> in the key set MUST match the signing algorithm in the JWT.  </li>
-<li>Verify that the values of <samp>authentication_profiles</samp>, <samp>provisioning_profiles</samp>, and <samp>schema_grammar</samp> are compatible with the whitelisted capabilities captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 7.2.1.6</a>.  </li>
+<li>Verify that the values of <samp>authentication_profiles</samp> and <samp>provisioning_profiles</samp> are compatible with the whitelisted capabilities captured in <a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 7.2.1.6</a>.  </li>
 <li>If an expiration date exists on the whitelist (<a href="#HandshakeApplicationProviderWhitelistsIdentityProvider" class="xref">Section 7.2.1.6</a>), verify the expiration date has not been exceeded.  </li>
 </ol>
 
 <p> </p>
-<p id="rfc.section.7.2.3.2.p.2">If verification succeeds, the Application Provider MUST capture the configuration information and initiate any actions necessary to activate or update the federation relationship to reflect the desired <samp>authentication_profiles</samp>, <samp>provisioning_profiles</samp>, and <samp>schema_grammar</samp> indicated in the registration request. These actions are defined in the FastFed Profile for each profile.  </p>
+<p id="rfc.section.7.2.3.2.p.2">If verification succeeds, the Application Provider MUST capture the configuration information and initiate any actions necessary to activate or update the federation relationship to reflect the desired <samp>authentication_profiles</samp> and <samp>provisioning_profiles</samp>, indicated in the registration request. These actions are defined in the FastFed Profile for each profile.  </p>
 <p id="rfc.section.7.2.3.2.p.3">For example, if SCIM provisioning was enabled, one of the actions may include activating the SCIM endpoint and registering the Identity Provider as an authorized client. This is an implementation detail outside the scope of the specification.  </p>
 <p id="rfc.section.7.2.3.2.p.4">If the registration request applies to an existing federation relationship, it can result in capabilities being added or removed. For example, if a federation relationship previously used SCIM provisioning, but the new registration request contains an empty value for <samp>provisioning_profile</samp>, then the existing SCIM capabilities will be disabled to reflect the new settings.  </p>
 <p id="rfc.section.7.2.3.2.p.5">After processing the registration request, the expiration date MUST be removed from the whitelisting entry.  </p>
@@ -1805,10 +1798,10 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
  {  
    "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "scim_service_uri": "https://tenant-67890.app.example.com/scim",
      "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
@@ -1943,12 +1936,12 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <tr>
 <td class="reference"><b id="FastFedProfile.SAML">[FastFedProfile.SAML]</b></td>
 <td class="top">
-<a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-saml-1_0.html">FastFed Basic SAML Profile 1.0</a>", March 2020.</td>
+<a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-saml-1_0.html">FastFed Enterprise SAML Profile 1.0</a>", July 2020.</td>
 </tr>
 <tr>
 <td class="reference"><b id="FastFedProfile.SCIM">[FastFedProfile.SCIM]</b></td>
 <td class="top">
-<a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-scim-1_0.html">FastFed Basic SCIM Profile 1.0</a>", March 2020.</td>
+<a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-scim-1_0.html">FastFed Enterprise SCIM Profile 1.0</a>", July 2020.</td>
 </tr>
 <tr>
 <td class="reference"><b id="OpenID.Registration">[OpenID.Registration]</b></td>
@@ -1958,7 +1951,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 <tr>
 <td class="reference"><b id="POSIX.1">[POSIX.1]</b></td>
 <td class="top">
-<a>IEEE Std 1003.1, 2018 Edition</a>, "<a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16">The Open Group Base Specifications Issue 7</a>", 2018.</td>
+<a title="IEEE Std 1003.1, 2018 Edition">IEEE</a>, "<a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16">The Open Group Base Specifications Issue 7</a>", 2018.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC1034">[RFC1034]</b></td>

@@ -22,8 +22,8 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Basic SAML Profile 1.0">FastFed Basic SAML Profile
-    1.0 - draft 02</title>
+    <title abbrev="FastFed Enterprise SAML Profile 1.0">FastFed Enterprise SAML Profile
+    1.0 - draft 03</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -32,14 +32,14 @@
       </address>
     </author>
 
-    <date day="9" month="March" year="2020" />
+    <date day="27" month="July" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
     <abstract>
       <t>
 	This specification defines the requirements to implement the FastFed
-	Basic SAML Profile.
+	Enterprise SAML Profile.
       </t>
     </abstract>
   </front>
@@ -48,7 +48,7 @@
     <section anchor="Introduction" title="Introduction">
       <t>
 	This specification defines the functionality which a provider must
-	implement to satisfy the Basic SAMLProfile for FastFed. 
+	implement to satisfy the Enterprise SAMLProfile for FastFed. 
       </t>
       <t>
 	It consists of the following extensions to
@@ -137,7 +137,7 @@
               Core</xref> Provider Metadata (Section 3.3.1) with the following value
             for <spanx style="verb">authentication_profiles</spanx>:
 	    <list style="hanging">
-	      <t hangText="urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic">
+	      <t hangText="urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise">
 		A Provider who includes this URN in their list of capabilities MUST
 		comply with the requirements described in this specification.
 	      </t>
@@ -151,7 +151,7 @@
  {
    "application_provider": {
      "capabilities": {
-       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"],
    ...
  }
 ]]></artwork></figure> 
@@ -164,7 +164,7 @@
             This specification extends the Application Provider Metadata defined
             in Section 3.3.8 of <xref target="FastFed.Core">FastFed Core</xref>
             with an additional member having the name:
-            <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"</spanx>.
+            <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"</spanx>.
           </t>
           <t>
             The value of the element is a structure containing the following
@@ -222,21 +222,21 @@
      }
      "capabilities": {
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
      },
      "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
 
-     "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:basic": {
+     "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
        "desired_attributes": {
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
              "username",
              "emails[primary eq true].value"
@@ -261,7 +261,7 @@
 	    Registration Request (Section 7.2.3.1
 	    of <xref target="FastFed.Core">FastFed Core</xref>) with an
 	    additional member sharing the same name as the profile:
-	    <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"</spanx>.
+	    <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"</spanx>.
 	  </t>
 	  <t>
 	    The value of the element is a structure with the following members:
@@ -280,12 +280,11 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "authentication_profiles": [
-     "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+     "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
    ],
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    }
  }
 ]]></artwork></figure>
@@ -298,7 +297,7 @@
             Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
             Core</xref>) with an additional member sharing the same name as the
             profile: 
-	    <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"</spanx>.
+	    <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"</spanx>.
 	  </t>
 	  <t>
 	    The value of the element is a structure with the following members:
@@ -322,8 +321,8 @@
           </t>
           <figure><artwork><![CDATA[
  {
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
      "saml_response_attributes": [
        "displayName",
        "emails[primary eq true].value"
@@ -875,7 +874,7 @@
           <author fullname="Darin" initials="K." surname="McAdams">                         
             <organization abbrev="Amazon">Amazon</organization>               
           </author>
-          <date day="9" month="March" year="2020"/>
+          <date day="27" month="July" year="2020"/>
         </front>
       </reference>
 

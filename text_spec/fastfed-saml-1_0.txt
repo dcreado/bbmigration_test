@@ -4,16 +4,16 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                           March 9, 2020
+                                                           July 27, 2020
 
 
-               FastFed Basic SAML Profile 1.0 - draft 02
+             FastFed Enterprise SAML Profile 1.0 - draft 03
                             fastfed-saml-1_0
 
 Abstract
 
    This specification defines the requirements to implement the FastFed
-   Basic SAML Profile.
+   Enterprise SAML Profile.
 
 Table of Contents
 
@@ -31,7 +31,7 @@ Table of Contents
    4.  Schema Binding  . . . . . . . . . . . . . . . . . . . . . . .   7
      4.1.  SCIM-to-SAML Attribute Mapping  . . . . . . . . . . . . .   7
        4.1.1.  SAML Subject  . . . . . . . . . . . . . . . . . . . .   7
-       4.1.2.  SAML Attributes . . . . . . . . . . . . . . . . . . .   8
+       4.1.2.  SAML Attributes . . . . . . . . . . . . . . . . . . .   7
      4.2.  Privacy Considerations  . . . . . . . . . . . . . . . . .  10
    5.  Interoperability Requirements . . . . . . . . . . . . . . . .  10
      5.1.  Identity Provider Requirements  . . . . . . . . . . . . .  10
@@ -53,15 +53,15 @@ Table of Contents
 
 
 
-McAdams                Expires September 10, 2020               [Page 1]
+McAdams                 Expires January 28, 2021                [Page 1]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
 1.  Introduction
 
    This specification defines the functionality which a provider must
-   implement to satisfy the Basic SAMLProfile for FastFed.
+   implement to satisfy the Enterprise SAMLProfile for FastFed.
 
    It consists of the following extensions to the FastFed Core
    [FastFed.Core] specification:
@@ -109,9 +109,9 @@ McAdams                Expires September 10, 2020               [Page 1]
 
 
 
-McAdams                Expires September 10, 2020               [Page 2]
+McAdams                 Expires January 28, 2021                [Page 2]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
    The Application Provider fulfills the role of a SAML Application
@@ -132,9 +132,9 @@ McAdams                Expires September 10, 2020               [Page 2]
    Metadata (Section 3.3.1) with the following value for
    "authentication_profiles":
 
-   urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic  A Provider
-      who includes this URN in their list of capabilities MUST comply
-      with the requirements described in this specification.
+   urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise  A Pro
+      vider who includes this URN in their list of capabilities MUST
+      comply with the requirements described in this specification.
 
    The following is a non-normative example of Provider Metadata showing
    the usage of the value:
@@ -142,7 +142,7 @@ McAdams                Expires September 10, 2020               [Page 2]
  {
    "application_provider": {
      "capabilities": {
-       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
+       "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"],
    ...
  }
 
@@ -151,7 +151,7 @@ McAdams                Expires September 10, 2020               [Page 2]
    This specification extends the Application Provider Metadata defined
    in Section 3.3.8 of FastFed Core [FastFed.Core] with an additional
    member having the name:
-   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"".
+   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"".
 
    The value of the element is a structure containing the following
    members:
@@ -165,9 +165,9 @@ McAdams                Expires September 10, 2020               [Page 2]
 
 
 
-McAdams                Expires September 10, 2020               [Page 3]
+McAdams                 Expires January 28, 2021                [Page 3]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
       When using this profile, the Application Provider MUST include the
@@ -221,9 +221,9 @@ McAdams                Expires September 10, 2020               [Page 3]
 
 
 
-McAdams                Expires September 10, 2020               [Page 4]
+McAdams                 Expires January 28, 2021                [Page 4]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
  {
@@ -243,21 +243,21 @@ McAdams                Expires September 10, 2020               [Page 4]
      }
      "capabilities": {
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
      },
      "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
 
-     "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:basic": {
+     "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
        "desired_attributes": {
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
              "username",
              "emails[primary eq true].value"
@@ -277,9 +277,9 @@ McAdams                Expires September 10, 2020               [Page 4]
 
 
 
-McAdams                Expires September 10, 2020               [Page 5]
+McAdams                 Expires January 28, 2021                [Page 5]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
 3.2.  FastFed Handshake
@@ -289,7 +289,7 @@ McAdams                Expires September 10, 2020               [Page 5]
    This specification extends the JWT contents of the FastFed
    Registration Request (Section 7.2.3.1 of FastFed Core [FastFed.Core])
    with an additional member sharing the same name as the profile:
-   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"".
+   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"".
 
    The value of the element is a structure with the following members:
 
@@ -303,12 +303,11 @@ McAdams                Expires September 10, 2020               [Page 5]
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "authentication_profiles": [
-     "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+     "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
    ],
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    }
  }
 
@@ -317,7 +316,7 @@ McAdams                Expires September 10, 2020               [Page 5]
    This specification extends the contents of the FastFed Registration
    Response (Section 7.2.3.3 of FastFed Core [FastFed.Core]) with an
    additional member sharing the same name as the profile:
-   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"".
+   ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"".
 
    The value of the element is a structure with the following members:
 
@@ -329,21 +328,19 @@ McAdams                Expires September 10, 2020               [Page 5]
       attributes to be included in the SAML response.  See Section 4.1.2
       for details.
 
-
-
-
-
-McAdams                Expires September 10, 2020               [Page 6]
-
-                     FastFed Basic SAML Profile 1.0           March 2020
-
-
    The following is a non-normative example of the contents of a
    registration response message:
 
+
+
+McAdams                 Expires January 28, 2021                [Page 6]
+
+                   FastFed Enterprise SAML Profile 1.0         July 2020
+
+
  {
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
      "saml_response_attributes": [
        "displayName",
        "emails[primary eq true].value"
@@ -382,18 +379,6 @@ McAdams                Expires September 10, 2020               [Page 6]
    <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">babs@example.com</saml:NameID>
  </saml:Subject>
 
-
-
-
-
-
-
-
-McAdams                Expires September 10, 2020               [Page 7]
-
-                     FastFed Basic SAML Profile 1.0           March 2020
-
-
 4.1.2.  SAML Attributes
 
    If users have been pre-provisioned into the Application through
@@ -401,6 +386,13 @@ McAdams                Expires September 10, 2020               [Page 7]
    correlate the incoming SAML message with the appropriate pre-existing
    user.  However, there can be circumstances when additional user
    attributes are necessary.
+
+
+
+McAdams                 Expires January 28, 2021                [Page 7]
+
+                   FastFed Enterprise SAML Profile 1.0         July 2020
+
 
    One such situation occurs when an application is using Just-In-Time
    provisioning instead of pre-provisioning.  In this mode of behavior,
@@ -445,9 +437,17 @@ McAdams                Expires September 10, 2020               [Page 7]
 
 
 
-McAdams                Expires September 10, 2020               [Page 8]
+
+
+
+
+
+
+
+
+McAdams                 Expires January 28, 2021                [Page 8]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
        +---------------------+-------------------------------------+
@@ -501,9 +501,9 @@ McAdams                Expires September 10, 2020               [Page 8]
 
 
 
-McAdams                Expires September 10, 2020               [Page 9]
+McAdams                 Expires January 28, 2021                [Page 9]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
 4.2.  Privacy Considerations
@@ -557,9 +557,9 @@ McAdams                Expires September 10, 2020               [Page 9]
 
 
 
-McAdams                Expires September 10, 2020              [Page 10]
+McAdams                 Expires January 28, 2021               [Page 10]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
       reference to implementors, a 10 minute window is often sufficient
@@ -613,9 +613,9 @@ McAdams                Expires September 10, 2020              [Page 10]
 
 
 
-McAdams                Expires September 10, 2020              [Page 11]
+McAdams                 Expires January 28, 2021               [Page 11]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
 5.3.  Login Hint
@@ -669,9 +669,9 @@ McAdams                Expires September 10, 2020              [Page 11]
 
 
 
-McAdams                Expires September 10, 2020              [Page 12]
+McAdams                 Expires January 28, 2021               [Page 12]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
    o  MUST publish the new certificate in the SAML Metadata at least 14
@@ -725,9 +725,9 @@ McAdams                Expires September 10, 2020              [Page 12]
 
 
 
-McAdams                Expires September 10, 2020              [Page 13]
+McAdams                 Expires January 28, 2021               [Page 13]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
    When preemptively querying for updates on a recurring basis, the
@@ -781,9 +781,9 @@ McAdams                Expires September 10, 2020              [Page 13]
 
 
 
-McAdams                Expires September 10, 2020              [Page 14]
+McAdams                 Expires January 28, 2021               [Page 14]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
 7.  IANA Considerations
@@ -793,7 +793,7 @@ McAdams                Expires September 10, 2020              [Page 14]
 8.  Normative References
 
    [FastFed.Core]
-              McAdams, K., "FastFed Core 1.0", March 2020,
+              McAdams, K., "FastFed Core 1.0", July 2020,
               <http://openid.net/specs/fastfed-core-1_0.html>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -821,8 +821,8 @@ McAdams                Expires September 10, 2020              [Page 14]
               Cantor, S., Kemp, J., Philpott, R., and E. Maler, "SAML
               V2.0 Metadata Interoperability Profile Version 1.0",
               August 2009, <https://www.oasis-
-              open.org/committees/download.php/36645/
-              draft-sstc-metadata-iop-2.0-01.pdf>.
+              open.org/committees/download.php/36645/draft-sstc-
+              metadata-iop-2.0-01.pdf>.
 
    [SAML.Metadata]
               Cantor, S., Moreh, J., Philpott, R., and E. Maler,
@@ -837,24 +837,24 @@ McAdams                Expires September 10, 2020              [Page 14]
 
 
 
-McAdams                Expires September 10, 2020              [Page 15]
+McAdams                 Expires January 28, 2021               [Page 15]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
    [SAML.Profiles]
               Hughes, J., Cantor, S., Hodges, J., Hirsch, F., Mishra,
               P., Philpott, R., and E. Maler, "Profiles for the OASIS
               Security Assertion Markup Language (SAML) V2.0"", March
-              2005, <http://docs.oasis-open.org/security/saml/v2.0/
-              saml-profiles-2.0-os.pdf>.
+              2005, <http://docs.oasis-open.org/security/saml/v2.0/saml-
+              profiles-2.0-os.pdf>.
 
    [SAML.SecurityConsiderations]
               Hirsch, F., Philpott, R., and E. Maler, "Security and
               Privacy Considerations for the OASIS Security Assertion
               Markup Language (SAML) V2.0", March 2005,
-              <http://docs.oasis-open.org/security/saml/v2.0/
-              saml-sec-consider-2.0-os.pdf>.
+              <http://docs.oasis-open.org/security/saml/v2.0/saml-sec-
+              consider-2.0-os.pdf>.
 
 Appendix A.  Acknowledgements
 
@@ -893,9 +893,9 @@ Appendix B.  Notices
 
 
 
-McAdams                Expires September 10, 2020              [Page 16]
+McAdams                 Expires January 28, 2021               [Page 16]
 
-                     FastFed Basic SAML Profile 1.0           March 2020
+                   FastFed Enterprise SAML Profile 1.0         July 2020
 
 
    worldwide copyright license to reproduce, prepare derivative works
@@ -949,4 +949,4 @@ Author's Address
 
 
 
-McAdams                Expires September 10, 2020              [Page 17]
+McAdams                 Expires January 28, 2021               [Page 17]

@@ -22,8 +22,8 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Basic SCIM Profile 1.0">FastFed Basic SCIM Profile
-    1.0 - draft 02</title>
+    <title abbrev="FastFed Enterprise SCIM Profile 1.0">FastFed Enterprise SCIM Profile
+    1.0 - draft 03</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -32,14 +32,14 @@
       </address>
     </author>
 
-    <date day="9" month="March" year="2020" />
+    <date day="27" month="July" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
     <abstract>
       <t>
 	This specification defines the requirements to implement the FastFed
-	Profile for SCIM 2.0 Basic provisioning. This profile supports continual
+	Profile for SCIM 2.0 Enterprise provisioning. This profile supports continual
 	provisioning, update, and deprovisioning of end-users between the
 	Identity Provider and Application Provider.
       </t>
@@ -51,7 +51,7 @@
 
       <t>
         This specification defines the functionality which a provider must
-        implement to satisfy the FastFed Profile for SCIM 2.0 Basic
+        implement to satisfy the FastFed Profile for SCIM 2.0 Enterprise
         provisioning.
       </t>
       <t>
@@ -160,7 +160,7 @@
             Core</xref> metadata (Section 3.3.1) with the following value
           for <spanx style="verb">provisioning_profiles</spanx>:
           <list style="hanging">
-            <t hangText="urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic">
+            <t hangText="urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise">
               A Provider who includes this URN in their list of capabilities MUST
               comply with the requirements described in this specification.
             </t>
@@ -174,7 +174,7 @@
  {
    "application_provider": {
      "capabilities": {
-       "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
+       "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"],
    ...
  }
 ]]></artwork></figure>
@@ -187,7 +187,7 @@
 	  in Section 3.3.8 of <xref target="FastFed.Core">FastFed Core</xref>
 	  with an additional member having the
 	  name:
-	  <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</spanx>.
+	  <vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</spanx>.
 	</t>
 	<t>
 	  The value of the element is a structure containing the following members:
@@ -283,23 +283,23 @@
      }
      "capabilities": {
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
      },
      "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
 
-     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
        "can_support_nested_groups": true,
        "max_group_membership_changes": 1000,
        "desired_attributes": {
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
              "externalId",
              "username",
@@ -358,7 +358,7 @@
           This specification extends the contents of the FastFed Registration
           Request (Section 7.2.3.1 of <xref target="FastFed.Core">FastFed
           Core</xref>) with an additional member sharing the same name as the
-          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</spanx>.
+          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</spanx>.
         </t>
         <t>
           The value of the element is a structure with the following members:
@@ -396,19 +396,18 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
-     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
    ],
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-5555",
        "email": "support@example.com"
      },
-     "provider_authentication_methods": {
-        ...protocol-specific values...
-     }
+     "provider_authentication_methods_supported": [
+       {...protocol-specific values...}
+     ]
    }
  }
 ]]></artwork></figure>
@@ -451,21 +450,22 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
-     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
    ],
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-5555",
        "email": "support@example.com"
      },
-     "provider_authentication_methods": {
-       "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
-         "jwks_uri": "https://provisioning.example.com/keys"
+     "provider_authentication_methods_supported": [
+       {
+         "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
+           "jwks_uri": "https://provisioning.example.com/keys"
+         }
        }
-     }
+     ]
    }
  }
 ]]></artwork></figure>
@@ -479,7 +479,7 @@
           This specification extends the contents of the FastFed Registration
           Response (Section 7.2.3.3 of <xref target="FastFed.Core">FastFed
           Core</xref>) with an additional member sharing the same name as the
-          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</spanx>
+          profile:<vspace/><vspace/><spanx style="verb">"urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</spanx>
 	</t>
 	<t>
 	  The value of the element is a structure with the following members:
@@ -501,7 +501,7 @@
         </t>
         <figure><artwork><![CDATA[
  {
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "scim_service_uri": "https://tenant-56789.app.example.com/scim",
      "provider_authentication_method": ...,
    }
@@ -542,7 +542,7 @@
           </t>
           <figure><artwork><![CDATA[
  {
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "scim_service_uri": "https://tenant-56789.app.example.com/scim",
      "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
@@ -1426,11 +1426,10 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
    "provisioning_profiles": [
-     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+     "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
    ],
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-5555",
@@ -1464,7 +1463,7 @@
       </t>
 <figure><artwork><![CDATA[
  {
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "scim_service_uri": "https://tenant-56789.app.example.com/scim",
      "provider_authentication_method": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
@@ -1608,7 +1607,7 @@
           <author fullname="Darin" initials="K." surname="McAdams">                         
             <organization abbrev="Amazon">Amazon</organization>               
           </author>
-          <date day="9" month="March" year="2020"/>
+          <date day="27" month="July" year="2020"/>
         </front>
       </reference>
     </references>

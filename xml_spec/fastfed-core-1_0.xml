@@ -22,7 +22,7 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Core 1.0">FastFed Core 1.0 - draft 02</title>
+    <title abbrev="FastFed Core 1.0">FastFed Core 1.0 - draft 03</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -31,7 +31,7 @@
       </address>
     </author>
 
-    <date day="9" month="March" year="2020" />
+    <date day="27" month="July" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -289,15 +289,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -490,7 +490,7 @@
      capabilities: {
        ...
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
      }
      ...
@@ -520,7 +520,7 @@
 	  </t>
 	  <figure><artwork><![CDATA[
      "desired_attributes": [
-       "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+       "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
           "required_user_attributes": [
             "username", 
             "emails[primary eq true]"
@@ -636,9 +636,9 @@
 		OPTIONAL. A list of URNs specifying the single sign-in
 		authentication protocols supported by the Provider. For example,
 		the value
-		"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+		"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
 		indicates the provider implements
-		the <xref target="FastFedProfile.SAML">FastFed Basic Profile for
+		the <xref target="FastFedProfile.SAML">FastFed Enterprise Profile for
 		SAML</xref>.
 
                 <vspace/><vspace/> If no value is specified by the Application
@@ -656,7 +656,7 @@
 		capabilities supported by the Provider. 
 
 		<vspace/><vspace/>For example, the value <spanx style="verb">
-                "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"</spanx>
+                "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</spanx>
                 indicates a Provider supports full user provisioning (and
                 deprovisioning) as defined in
                 the <xref target="FastFedProfile.SCIM">
@@ -676,7 +676,7 @@
 		schema grammar, but RECOMMENDS the use of SCIM as defined in
 		<xref target="ScimSchemaGrammar"/>.
 	      </t>
-              <t hangText="signing_alg_values_supported">
+              <t hangText="signing_algorithms">
                 REQUIRED. A list of JWA <xref target="RFC7518"/> signing
                 algorithms supported by the Provider. Used for signing request
                 objects within the FastFed Handshake. May also be used by FastFed
@@ -845,7 +845,7 @@
             </t>
             <t>
               A Provider who includes the value
-              <spanx style="verb">"urn:ietf:params:fastfed:1:0:schemas:scim:2.0"</spanx>
+              <spanx style="verb">"urn:ietf:params:fastfed:1.0:schemas:scim:2.0"</spanx>
               as a supported <spanx style="verb">schema_grammar</spanx> in
               their <xref target="ProviderMetadataCapabilities">Provider
               Metadata</xref> <spanx style="verb">capabilities</spanx> MUST
@@ -1055,7 +1055,7 @@
 	  </t>
           <figure><artwork><![CDATA[
   {
-    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
         "externalId",
         "username",
@@ -1087,7 +1087,7 @@
           </t>
           <figure><artwork><![CDATA[
   {
-    "urn:ietf:params:fastfed:1:0:schemas:scim:2.0": {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
         "username",
         "active"
@@ -1209,15 +1209,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1281,15 +1281,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1587,15 +1587,15 @@
      }
      "capabilities": {
        "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
        ],
        "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"
+         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
        ],
        "schema_grammars": [
-         "urn:ietf:params:fastfed:1:0:schemas:scim:2.0"
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
        ],
-       "signing_alg_values_supported": [
+       "signing_algorithms": [
          "ES512",
          "RS256"
        ]
@@ -1694,7 +1694,7 @@
 	  <t>authentication_profiles</t>
 	  <t>provisioning_profiles</t>
 	  <t>schema_grammars</t>
-	  <t>signing_alg_values_supported</t>
+	  <t>signing_algorithms</t>
 	</list>
       </t>
       <t>
@@ -1851,7 +1851,7 @@
 	       title="Algorithm Selection">
         <t>
 	  The signing algorithms supported by a Provider are specified in the
-	  <spanx style="verb">signing_alg_values_supported</spanx> attribute in 
+	  <spanx style="verb">signing_algorithms</spanx> attribute in 
 	  the <xref target="ProviderMetadataCapabilities">Provider Capabilities Metadata</xref>.
 	</t>
 	<t>
@@ -1895,7 +1895,7 @@
 	      compatible <xref target="RFC7515">JWS</xref>
                <spanx style="verb">alg</spanx> algorithm
               <xref target="RFC7518">[JWA]</xref> specified by both Providers in
-	      the <spanx style="verb">signing_alg_values_supported</spanx>
+	      the <spanx style="verb">signing_algorithms</spanx>
 	      attribute of
 	      the <xref target="ProviderMetadataCapabilities">Provider
 	      Capabilities</xref>.
@@ -2000,7 +2000,7 @@
 	      The JWT MUST be signed using one of the mutually compatible
 	      algorithms negotiated during the FastFed Handshake based upon the
 	      contents of
-	      the <spanx style="verb">signing_alg_values_supported</spanx>
+	      the <spanx style="verb">signing_algorithms</spanx>
 	      attribute defined in <xref target="ProviderMetadataCapabilities"/>
 	      of Provider Metadata.
 	    </t>
@@ -2257,11 +2257,6 @@
 		  Application Provider Metadata.
 		</t>
 		<t>
-		  <spanx style="verb">schemas</spanx> that the
-		  Identity Provider is permitted to use, as specified in the
-		  Application Provider Metadata.
-                </t>
-		<t>
 		  <spanx style="verb">expiration_date</spanx> after which the
 		  whitelisting will be considered expired. If a FastFed
 		  Handshake with the whitelisted properties is
@@ -2511,9 +2506,6 @@
                 <t>
                   <spanx style="verb">provisioning_profiles</spanx>
                 </t>
-                <t>
-                  <spanx style="verb">schema_grammars</spanx>
-                </t>
 	      </list>
 	    </t>
 	    <t>
@@ -2640,15 +2632,7 @@
                   <spanx style="verb">provisioning_profiles</spanx> defined
                   in the <xref target="ProviderMetadataCapabilities">Provider
                   Capabilities</xref>.
-                </t>
-                <t hangText="schema_grammar">
-                  REQUIRED. A string value containing the schema grammar to be used
-                  by the Identity Provider and Application Provider, chosen from
-                  the list of <spanx style="verb">schema_grammars</spanx> defined in
-                  the <xref target="ProviderMetadataCapabilities">Provider
-                  Capabilities</xref>.
-                </t>
-		    
+                </t>		    
 	      </list>
 	    </t>
 	    <t>
@@ -2669,13 +2653,12 @@
    "iss": "https://tenant-12345.idp.example.com",
    "aud": "https://tenant-67890.app.example.com",
    "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic"],
-   "schema_grammar": "urn:ietf:params:fastfed:1:0:schemas:scim:2.0",
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"],
+   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"],
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "provider_contact_information": {
        "organization": "Example Inc.",
        "phone": "+1-800-555-6666",
@@ -2738,12 +2721,11 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 		  the key set MUST match the signing algorithm in the JWT.
 		</t>
 		<t>
-		  Verify that the values
-		  of <spanx style="verb">authentication_profiles</spanx>,
-		  <spanx style="verb">provisioning_profiles</spanx>,
-		  and <spanx style="verb">schema_grammar</spanx> are compatible with the
-		  whitelisted capabilities captured in
-		  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
+		  Verify that the values of <spanx
+		  style="verb">authentication_profiles</spanx> and <spanx
+		  style="verb">provisioning_profiles</spanx> are compatible with
+		  the whitelisted capabilities captured in <xref
+		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
 		</t>
 		<t>
 		  If an expiration date exists on the whitelist
@@ -2756,10 +2738,9 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	      If verification succeeds, the Application Provider MUST capture
 	      the configuration information and initiate any actions necessary
 	      to activate or update the federation relationship to reflect the
-	      desired <spanx style="verb">authentication_profiles</spanx>,
-	      <spanx style="verb">provisioning_profiles</spanx>,
-	      and <spanx style="verb">schema_grammar</spanx> indicated in the
-	      registration request. These actions are defined in the FastFed
+	      desired <spanx style="verb">authentication_profiles</spanx> and
+	      <spanx style="verb">provisioning_profiles</spanx>, indicated in
+	      the registration request. These actions are defined in the FastFed
 	      Profile for each profile.
 	    </t>
 	    <t>
@@ -2862,10 +2843,10 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
  {  
    "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:basic": {
-     "saml_metatadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
+   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+     "saml_metadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
    },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:basic": {
+   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
      "scim_service_uri": "https://tenant-67890.app.example.com/scim",
      "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
      "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
@@ -3236,20 +3217,20 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 
       <reference anchor="FastFedProfile.SAML" target="http://openid.net/specs/fastfed-saml-1_0.html">
         <front>
-          <title>FastFed Basic SAML Profile 1.0</title>
+          <title>FastFed Enterprise SAML Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
           </author>
-          <date day="9" month="March" year="2020"/>
+          <date day="27" month="July" year="2020"/>
         </front>
       </reference>
 
       <reference anchor="FastFedProfile.SCIM" target="http://openid.net/specs/fastfed-scim-1_0.html">
         <front>
-          <title>FastFed Basic SCIM Profile 1.0</title>
+          <title>FastFed Enterprise SCIM Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">
             <organization abbrev="Amazon">Amazon</organization>
-          </author> <date day="9" month="March" year="2020"/>
+          </author> <date day="27" month="July" year="2020"/>
         </front>
       </reference>
 
