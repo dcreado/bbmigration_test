@@ -395,9 +395,10 @@
 <link href="#rfc.section.3.3.4" rel="Chapter" title="3.3.4 Attribute Reference">
 <link href="#rfc.section.3.3.4.1" rel="Chapter" title="3.3.4.1 Using the SCIM 2.0 Schema Grammar for Attribute References">
 <link href="#rfc.section.3.3.5" rel="Chapter" title="3.3.5 Desired Attributes">
-<link href="#rfc.section.3.3.6" rel="Chapter" title="3.3.6 Common Provider Metadata">
-<link href="#rfc.section.3.3.7" rel="Chapter" title="3.3.7 Identity Provider Metadata">
-<link href="#rfc.section.3.3.8" rel="Chapter" title="3.3.8 Application Provider Metadata">
+<link href="#rfc.section.3.3.6" rel="Chapter" title="3.3.6 User Attribute">
+<link href="#rfc.section.3.3.7" rel="Chapter" title="3.3.7 Common Provider Metadata">
+<link href="#rfc.section.3.3.8" rel="Chapter" title="3.3.8 Identity Provider Metadata">
+<link href="#rfc.section.3.3.9" rel="Chapter" title="3.3.9 Application Provider Metadata">
 <link href="#rfc.section.4" rel="Chapter" title="4 Metadata Endpoints">
 <link href="#rfc.section.4.1" rel="Chapter" title="4.1 Provider Metadata Endpoint">
 <link href="#rfc.section.4.1.1" rel="Chapter" title="4.1.1 Endpoint Validation">
@@ -549,11 +550,13 @@
 </li>
 </ul><li>3.3.5.   <a href="#rfc.section.3.3.5">Desired Attributes</a>
 </li>
-<li>3.3.6.   <a href="#rfc.section.3.3.6">Common Provider Metadata</a>
+<li>3.3.6.   <a href="#rfc.section.3.3.6">User Attribute</a>
 </li>
-<li>3.3.7.   <a href="#rfc.section.3.3.7">Identity Provider Metadata</a>
+<li>3.3.7.   <a href="#rfc.section.3.3.7">Common Provider Metadata</a>
 </li>
-<li>3.3.8.   <a href="#rfc.section.3.3.8">Application Provider Metadata</a>
+<li>3.3.8.   <a href="#rfc.section.3.3.8">Identity Provider Metadata</a>
+</li>
+<li>3.3.9.   <a href="#rfc.section.3.3.9">Application Provider Metadata</a>
 </li>
 </ul></ul><li>4.   <a href="#rfc.section.4">Metadata Endpoints</a>
 </li>
@@ -923,9 +926,9 @@
 
 <dl>
 <dt>identity_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.7</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Identity Provider Metadata (<a href="#IdentityProviderMetadata" class="xref">Section 3.3.8</a>).  The existence of this element indicates the entity is capable of acting as an Identity Provider.  </dd>
 <dt>application_provider</dt>
-<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.8</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
+<dd style="margin-left: 8">OPTIONAL. Structure containing the members described by Application Provider Metadata (<a href="#ApplicationProviderMetadata" class="xref">Section 3.3.9</a>) The existence of this element indicates the entity is capable of acting as an Application Provider.  </dd>
 </dl>
 
 <p> </p>
@@ -1086,10 +1089,25 @@
   }
 </pre>
 <h1 id="rfc.section.3.3.6">
-<a href="#rfc.section.3.3.6">3.3.6.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+<a href="#rfc.section.3.3.6">3.3.6.</a> <a href="#UserAttribute" id="UserAttribute">User Attribute</a>
 </h1>
-<p id="rfc.section.3.3.6.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
-<p id="rfc.section.3.3.6.p.2">Common Provider Metadata is a structure with the following members: </p>
+<p id="rfc.section.3.3.6.p.1">This entity is similar to the <a href="#DesiredAttributes" class="xref">Desired Attributes</a>, but describes only a single user attribute as opposed to a collection of user/group attributes.  </p>
+<p id="rfc.section.3.3.6.p.2">It is not directly referenced in any of the FastFed Core metadata documents. Rather, it exists as a re-usable element which other FastFed Profiles may reference in their own extensions.  </p>
+<p id="rfc.section.3.3.6.p.3">The structure has the following properties.  </p>
+<p id="rfc.section.3.3.6.p.4">It MUST contain a member for each <samp>schema_grammar</samp> in the list of Provider <samp>capabilities</samp>, where the member name is the URN of the <samp>schema_grammar</samp>.  </p>
+<p id="rfc.section.3.3.6.p.5">The value of each element is a string containing an <a href="#AttributeReferences" class="xref">Attribute Reference</a> which specifies a singular end-user attribute.  </p>
+<p id="rfc.section.3.3.6.p.6">The <a href="#AttributeReferences" class="xref">Attribute Reference</a> MUST NOT reference a complex or multi-value attribute.  </p>
+<p id="rfc.section.3.3.6.p.7">The following is a non-normative example of a User Attribute which specifies a user's primary email address via the SCIM 2.0 schema grammar: </p>
+<pre>
+  {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": "emails[primary eq true].value"
+  }	    
+	  </pre>
+<h1 id="rfc.section.3.3.7">
+<a href="#rfc.section.3.3.7">3.3.7.</a> <a href="#CommonProviderMetadata" id="CommonProviderMetadata">Common Provider Metadata</a>
+</h1>
+<p id="rfc.section.3.3.7.p.1">Common Provider Metadata describes properties that are shared by both Identity Providers and Application Providers.  </p>
+<p id="rfc.section.3.3.7.p.2">Common Provider Metadata is a structure with the following members: </p>
 
 <dl>
 <dt>entity_id</dt>
@@ -1105,11 +1123,11 @@
 </dl>
 
 <p> </p>
-<h1 id="rfc.section.3.3.7">
-<a href="#rfc.section.3.3.7">3.3.7.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
+<h1 id="rfc.section.3.3.8">
+<a href="#rfc.section.3.3.8">3.3.8.</a> <a href="#IdentityProviderMetadata" id="IdentityProviderMetadata">Identity Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.7.p.1">Identity Provider Metadata represents the configuration and preferences of a single tenant within the Identity Provider. The same metadata is advertised to all Application Providers who initiate a FastFed Handshake.  </p>
-<p id="rfc.section.3.3.7.p.2">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
+<p id="rfc.section.3.3.8.p.1">Identity Provider Metadata represents the configuration and preferences of a single tenant within the Identity Provider. The same metadata is advertised to all Application Providers who initiate a FastFed Handshake.  </p>
+<p id="rfc.section.3.3.8.p.2">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
 
 <dl>
 <dt>jwks_uri</dt>
@@ -1119,7 +1137,7 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.3.7.p.3">The following is a non-normative example of Identity Provider Metadata: </p>
+<p id="rfc.section.3.3.8.p.3">The following is a non-normative example of Identity Provider Metadata: </p>
 <pre>
  {
    "identity_provider": {
@@ -1155,12 +1173,12 @@
      "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
  }
 </pre>
-<h1 id="rfc.section.3.3.8">
-<a href="#rfc.section.3.3.8">3.3.8.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
+<h1 id="rfc.section.3.3.9">
+<a href="#rfc.section.3.3.9">3.3.9.</a> <a href="#ApplicationProviderMetadata" id="ApplicationProviderMetadata">Application Provider Metadata</a>
 </h1>
-<p id="rfc.section.3.3.8.p.1">Application Provider Metadata represents the configuration and preferences of a single tenant within the Application Provider. The Application MAY expose different metadata contents to different Identity Providers as a means to control which capabilities the Identity Provider is permitted to utilize.  </p>
-<p id="rfc.section.3.3.8.p.2">For example, if an Application Provider supports both SAML and OpenID Connect as authentication protocols, but only wishes to allow the Identity Provider to use SAML, the Application would vend a metadata document that only includes SAML in the list of supported authentication methods. Similarly, if the Application supports SCIM for user provisioning, but doesn't wish to use SCIM with the Identity Provider, then the metadata would not include SCIM in the advertised capabilities.  </p>
-<p id="rfc.section.3.3.8.p.3">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
+<p id="rfc.section.3.3.9.p.1">Application Provider Metadata represents the configuration and preferences of a single tenant within the Application Provider. The Application MAY expose different metadata contents to different Identity Providers as a means to control which capabilities the Identity Provider is permitted to utilize.  </p>
+<p id="rfc.section.3.3.9.p.2">For example, if an Application Provider supports both SAML and OpenID Connect as authentication protocols, but only wishes to allow the Identity Provider to use SAML, the Application would vend a metadata document that only includes SAML in the list of supported authentication methods. Similarly, if the Application supports SCIM for user provisioning, but doesn't wish to use SCIM with the Identity Provider, then the metadata would not include SCIM in the advertised capabilities.  </p>
+<p id="rfc.section.3.3.9.p.3">The data type is a structure that includes all the members defined in <a href="#CommonProviderMetadata" class="xref">Common Provider Metadata</a>, plus the following additional members: </p>
 
 <dl>
 <dt>fastfed_handshake_register_uri</dt>
@@ -1168,7 +1186,7 @@
 </dl>
 
 <p> </p>
-<p id="rfc.section.3.3.8.p.4">The following is a non-normative example of Application Provider Metadata: </p>
+<p id="rfc.section.3.3.9.p.4">The following is a non-normative example of Application Provider Metadata: </p>
 <pre>
  {
    "application_provider": {
@@ -1215,7 +1233,7 @@
 <h1 id="rfc.section.4.1.1">
 <a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#ProviderMetadataEndpointValidation" id="ProviderMetadataEndpointValidation">Endpoint Validation</a>
 </h1>
-<p id="rfc.section.4.1.1.p.1">To prevent impersonation of Providers, the value of the <samp>provider_domain</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.6</a>) MUST suffix-match the domain of the Metadata Endpoint.  </p>
+<p id="rfc.section.4.1.1.p.1">To prevent impersonation of Providers, the value of the <samp>provider_domain</samp> returned in the Metadata (<a href="#CommonProviderMetadata" class="xref">Section 3.3.7</a>) MUST suffix-match the domain of the Metadata Endpoint.  </p>
 <p id="rfc.section.4.1.1.p.2">The Metadata Endpoint MAY be hosted at a subdomain of the <samp>provider_domain</samp>.  </p>
 <p id="rfc.section.4.1.1.p.3">A TLS server certificate check MUST be performed when connecting to the Metadata Endpoint to verify Provider ownership of the domain. See <a href="#SecurityAppTrust" class="xref">Section 8.3</a>.  </p>
 <p id="rfc.section.4.1.1.p.4">The following is a non-normative example showing valid and invalid Metadata Endpoints.  </p>

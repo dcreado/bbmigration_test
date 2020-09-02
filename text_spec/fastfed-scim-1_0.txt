@@ -194,7 +194,7 @@ McAdams                 Expires January 28, 2021                [Page 3]
 3.1.2.  Application Metadata
 
    This specification extends the Application Provider Metadata defined
-   in Section 3.3.8 of FastFed Core [FastFed.Core] with an additional
+   in Section 3.3.9 of FastFed Core [FastFed.Core] with an additional
    member having the name:
    ""urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"".
 

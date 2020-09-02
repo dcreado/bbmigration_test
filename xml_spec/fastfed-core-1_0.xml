@@ -1109,6 +1109,49 @@
 ]]></artwork></figure>
 	</section>
 
+        <section anchor="UserAttribute"
+                 title="User Attribute">
+
+          <t>                                            
+	    This entity is similar to the <xref target="DesiredAttributes">Desired
+	    Attributes</xref>, but describes only a single user attribute as
+	    opposed to a collection of user/group attributes.
+	  </t>
+	  <t>
+            It is not directly referenced in any of the FastFed Core metadata
+            documents. Rather, it exists as a re-usable element which other
+            FastFed Profiles may reference in their own extensions.
+          </t>
+	  <t>
+	    The structure has the following properties.
+          </t>
+          <t>
+	    It MUST contain a member for each <spanx
+            style="verb">schema_grammar</spanx> in the list of Provider <spanx
+            style="verb">capabilities</spanx>, where the member name is the URN
+            of the <spanx style="verb">schema_grammar</spanx>.
+          </t>
+	  <t>
+	    The value of each element is a string containing an <xref
+	    target="AttributeReferences">Attribute Reference</xref> which
+	    specifies a singular end-user attribute.
+	  </t>
+	  <t>
+	    The <xref target="AttributeReferences">Attribute Reference</xref>
+	    MUST NOT reference a complex or multi-value attribute.
+	  </t>
+	  <t>
+	    The following is a non-normative example of a User Attribute which
+	    specifies a user's primary email address via the SCIM 2.0 schema
+	    grammar:
+          </t>
+          <figure><artwork><![CDATA[
+  {
+    "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": "emails[primary eq true].value"
+  }	    
+	  ]]></artwork></figure>
+	</section>
+	    
 	<section anchor="CommonProviderMetadata"
 		 title="Common Provider Metadata">
 	  <t>

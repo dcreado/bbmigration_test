@@ -570,12 +570,14 @@
 <h1 id="rfc.section.3.1.2">
 <a href="#rfc.section.3.1.2">3.1.2.</a> <a href="#FastFedMetadataApplicationMetadata" id="FastFedMetadataApplicationMetadata">Application Metadata</a>
 </h1>
-<p id="rfc.section.3.1.2.p.1">This specification extends the Application Provider Metadata defined in Section 3.3.8 of <a href="#FastFed.Core" class="xref">FastFed Core</a> with an additional member having the name: <br><br><samp>"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"</samp>.  </p>
+<p id="rfc.section.3.1.2.p.1">This specification extends the Application Provider Metadata defined in Section 3.3.9 of <a href="#FastFed.Core" class="xref">FastFed Core</a> with an additional member having the name: <br><br><samp>"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"</samp>.  </p>
 <p id="rfc.section.3.1.2.p.2">The value of the element is a structure containing the following members: </p>
 
 <dl>
+<dt>saml_subject</dt>
+<dd style="margin-left: 8">REQUIRED. A structure describing the attribute to use as the SAML Subject. The format of the structure is a "User Attribute" as defined in Section 3.3.6 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. The usage of the structure in this profile, including contraints upon the contents, is described in <a href="#SchemaBindingScimToSamlSubject" class="xref">Section 4.1.1</a>.  </dd>
 <dt>desired_attributes</dt>
-<dd style="margin-left: 8">REQUIRED. A structure specifying the attributes to be provisioned, as described in Section 3.3.5 of <a href="#FastFed.Core" class="xref">FastFed Core</a>.  <br><br>When using this profile, the Application Provider MUST include the SCIM Core User attribute <samp>userName</samp> in the list of <samp>required_user_attributes</samp>.  <br><br>The Application Provider MAY include additional attributes if a mapping exists in the table in <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a>. If a mapping does not exist, the attribute MUST NOT be included in the desired attributes.  <br><br>Groups are not supported by this SAML profile. Therefore, the following MUST be omitted from the desired attributes: <ul>
+<dd style="margin-left: 8">OPTIONAL. A structure specifying the values to be included in the SAML Attributes. The format of the structure is described in Section 3.3.5 of <a href="#FastFed.Core" class="xref">FastFed Core</a>. The usage of the structure in this profile, including constraints upon the contents, is described in <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a>.  <br><br>Groups are not supported by this SAML profile. Therefore, the following MUST be omitted from the desired attributes: <ul>
 <li>
 <samp>required_group_attributes</samp> </li>
 <li>
@@ -618,14 +620,16 @@
      "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
 
      "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
+       "saml_subject": {
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": 
+           "emails[primary eq true].value"
+       },
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
-             "userName",
-             "emails[primary eq true].value"
+             "displayName"
            ],
            "optional_user_attributes": [
-             "displayName",
              "phoneNumbers[primary eq true].value"
            ]
          }
@@ -693,20 +697,49 @@
 <h1 id="rfc.section.4.1.1">
 <a href="#rfc.section.4.1.1">4.1.1.</a> <a href="#SchemaBindingScimToSamlSubject" id="SchemaBindingScimToSamlSubject">SAML Subject</a>
 </h1>
-<p id="rfc.section.4.1.1.p.1">A SAML document contains a <samp>Subject</samp> element which identifies the authenticated user.  </p>
-<p id="rfc.section.4.1.1.p.2">The <samp>Subject</samp> element MUST contain a <samp>NameID</samp> with the following properties: </p>
-
-<ul>
-<li>A <samp>Format</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified"</samp> </li>
-<li>A value populated with the SCIM <samp>userName</samp>.  </li>
-</ul>
-
-<p> </p>
-<p id="rfc.section.4.1.1.p.3">The following is a non-normative example of a SAML Subject: </p>
+<p id="rfc.section.4.1.1.p.1">A SAML Response document contains a <samp>Subject</samp> element which identifies the authenticated user.  </p>
+<p id="rfc.section.4.1.1.p.2">The Application Provider declares the attribute to populate in the SAML Subject via the <samp>saml_subject</samp> element in <a href="#FastFedMetadataApplicationMetadata" class="xref">Section 3.1.2</a> </p>
+<p id="rfc.section.4.1.1.p.3">The value of the <samp>saml_subject</samp> MUST be one of the SCIM Attributes in the table below.  </p>
+<p id="rfc.section.4.1.1.p.4">Note: In the table, SCIM attributes refer to the "User" Resource Schema defined in Section 4.1 of the <a href="#RFC7643" class="xref">SCIM Core Specification</a>. Individual members of a JSON structure are referenced in the table using the JSON path syntax defined in Section 3.5.2 of the <a href="#RFC7644" class="xref">SCIM Protocol</a>.  </p>
+<table cellpadding="3" cellspacing="0" class="tt full center">
+<thead><tr>
+<th class="left">SCIM Attribute</th>
+<th class="left">SAML NameID Format</th>
+</tr></thead>
+<tbody>
+<tr>
+<td class="left">externalId</td>
+<td class="left">urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</td>
+</tr>
+<tr>
+<td class="left">emails[primary eq true].value</td>
+<td class="left">urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</td>
+</tr>
+<tr>
+<td class="left">userName</td>
+<td class="left">urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</td>
+</tr>
+</tbody>
+</table>
+<p id="rfc.section.4.1.1.p.5">When generating a SAML Response, the Identity Provider MUST populate the SAML Subject with a NameID containing the attribute requested by the Application Provider, and the associated NameID Format from the table above.  </p>
+<p id="rfc.section.4.1.1.p.6">If a value for the attribute is not defined for an end-user, the Identity Provider MUST NOT perform any authentication activity into the Application Provider for the affected end-user. To assist with diagnostics, the Identity Provider SHOULD signal to the end-user that the attribute is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to authenticate into the application, or making error logs available to the administrators of the Identity Provider.  </p>
+<p id="rfc.section.4.1.1.p.7">The following is a non-normative example of the use of <samp>"externalId"</samp> as the SAML Subject: </p>
 <pre>
  &lt;saml:Subject&gt;
-   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"&gt;babs@example.com&lt;/saml:NameID&gt;
+   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"&gt;1fc58220-7213-47bb-9161-bbd39ad75937&lt;/saml:NameID&gt;
  &lt;/saml:Subject&gt;
+</pre>
+<p id="rfc.section.4.1.1.p.8">The following is a non-normative example of the use of <samp>"email[primary eq true].value"</samp> as the SAML Subject: </p>
+<pre>
+ &lt;saml:Subject&gt;
+   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress"&gt;babs@example.com&lt;/saml:NameID&gt;
+ &lt;/saml:Subject&gt;
+</pre>
+<p id="rfc.section.4.1.1.p.9">The following is a non-normative example of the use of <samp>"userName"</samp> as the SAML Subject: </p>
+<pre>
+  &lt;saml:Subject&gt;
+    &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified"&gt;bjensen&lt;/saml:NameID&gt;
+  &lt;/saml:Subject&gt;
 </pre>
 <h1 id="rfc.section.4.1.2">
 <a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlAttributes" id="SchemaBindingScimToSamlAttributes">SAML Attributes</a>
@@ -730,8 +763,8 @@
 <p id="rfc.section.4.1.2.p.6">Note: In the table below, SCIM attributes refer to the "User" Resource Schema defined in Section 4.1 of the <a href="#RFC7643" class="xref">SCIM Core Specification</a>. Individual members of a JSON structure are referenced in the table using the JSON path syntax defined in Section 3.5.2 of the <a href="#RFC7644" class="xref">SCIM Protocol</a>.  </p>
 <table cellpadding="3" cellspacing="0" class="tt full center">
 <thead><tr>
-<th class="left">SAML Attribute Name</th>
 <th class="left">SCIM Attribute</th>
+<th class="left">SAML Attribute Name</th>
 </tr></thead>
 <tbody>
 <tr>
@@ -739,28 +772,32 @@
 <td class="left">externalId</td>
 </tr>
 <tr>
+<td class="left">userName</td>
+<td class="left">userName</td>
+</tr>
+<tr>
 <td class="left">displayName</td>
 <td class="left">displayName</td>
 </tr>
 <tr>
-<td class="left">givenName</td>
 <td class="left">name.givenName</td>
+<td class="left">givenName</td>
 </tr>
 <tr>
-<td class="left">familyName</td>
 <td class="left">name.familyName</td>
+<td class="left">familyName</td>
 </tr>
 <tr>
-<td class="left">middleName</td>
 <td class="left">name.middleName</td>
+<td class="left">middleName</td>
 </tr>
 <tr>
-<td class="left">email</td>
 <td class="left">emails[primary eq true].value</td>
+<td class="left">email</td>
 </tr>
 <tr>
-<td class="left">phoneNumber</td>
 <td class="left">phoneNumbers[primary eq true].value</td>
+<td class="left">phoneNumber</td>
 </tr>
 </tbody>
 </table>
@@ -769,6 +806,9 @@
  &lt;saml:AttributeStatement&gt;
    &lt;saml:Attribute Name="externalId" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
         &lt;saml:AttributeValue xsi:type="xs:string"&gt;1fc58220-7213-47bb-9161-bbd39ad75937&lt;/saml:AttributeValue&gt;
+   &lt;/saml:Attribute&gt;
+   &lt;saml:Attribute Name="userName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
+        &lt;saml:AttributeValue xsi:type="xs:string"&gt;bjensen&lt;/saml:AttributeValue&gt;
    &lt;/saml:Attribute&gt;
    &lt;saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified"&gt;
         &lt;saml:AttributeValue xsi:type="xs:string"&gt;Babs Jensen&lt;/saml:AttributeValue&gt;

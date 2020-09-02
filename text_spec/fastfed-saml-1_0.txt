@@ -31,23 +31,23 @@ Table of Contents
    4.  Schema Binding  . . . . . . . . . . . . . . . . . . . . . . .   7
      4.1.  SCIM-to-SAML Attribute Mapping  . . . . . . . . . . . . .   7
        4.1.1.  SAML Subject  . . . . . . . . . . . . . . . . . . . .   7
-       4.1.2.  SAML Attributes . . . . . . . . . . . . . . . . . . .   7
-     4.2.  Privacy Considerations  . . . . . . . . . . . . . . . . .   9
-   5.  Interoperability Requirements . . . . . . . . . . . . . . . .   9
-     5.1.  Identity Provider Requirements  . . . . . . . . . . . . .  10
-     5.2.  Application Provider Requirements . . . . . . . . . . . .  10
-     5.3.  Login Hint  . . . . . . . . . . . . . . . . . . . . . . .  11
-     5.4.  Certificate Rotation  . . . . . . . . . . . . . . . . . .  12
+       4.1.2.  SAML Attributes . . . . . . . . . . . . . . . . . . .   9
+     4.2.  Privacy Considerations  . . . . . . . . . . . . . . . . .  11
+   5.  Interoperability Requirements . . . . . . . . . . . . . . . .  11
+     5.1.  Identity Provider Requirements  . . . . . . . . . . . . .  12
+     5.2.  Application Provider Requirements . . . . . . . . . . . .  12
+     5.3.  Login Hint  . . . . . . . . . . . . . . . . . . . . . . .  13
+     5.4.  Certificate Rotation  . . . . . . . . . . . . . . . . . .  14
        5.4.1.  Certificate Rotation Requirements for an Identity
-               Provider  . . . . . . . . . . . . . . . . . . . . . .  12
+               Provider  . . . . . . . . . . . . . . . . . . . . . .  14
        5.4.2.  Certificate Rotation Requirements for an Application
-               Provider  . . . . . . . . . . . . . . . . . . . . . .  13
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  14
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  14
-   8.  Normative References  . . . . . . . . . . . . . . . . . . . .  14
-   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  16
-   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  16
-   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  17
+               Provider  . . . . . . . . . . . . . . . . . . . . . .  15
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .  16
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  16
+   8.  Normative References  . . . . . . . . . . . . . . . . . . . .  16
+   Appendix A.  Acknowledgements . . . . . . . . . . . . . . . . . .  18
+   Appendix B.  Notices  . . . . . . . . . . . . . . . . . . . . . .  18
+   Author's Address  . . . . . . . . . . . . . . . . . . . . . . . .  19
 
 
 
@@ -149,19 +149,19 @@ McAdams                 Expires January 28, 2021                [Page 2]
 3.1.2.  Application Metadata
 
    This specification extends the Application Provider Metadata defined
-   in Section 3.3.8 of FastFed Core [FastFed.Core] with an additional
+   in Section 3.3.9 of FastFed Core [FastFed.Core] with an additional
    member having the name:
    ""urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"".
 
    The value of the element is a structure containing the following
    members:
 
-   desired_attributes  REQUIRED.  A structure specifying the attributes
-      to be provisioned, as described in Section 3.3.5 of FastFed Core
-      [FastFed.Core].
-
-
-
+   saml_subject  REQUIRED.  A structure describing the attribute to use
+      as the SAML Subject.  The format of the structure is a "User
+      Attribute" as defined in Section 3.3.6 of FastFed Core
+      [FastFed.Core].  The usage of the structure in this profile,
+      including contraints upon the contents, is described in
+      Section 4.1.1.
 
 
 
@@ -170,14 +170,11 @@ McAdams                 Expires January 28, 2021                [Page 3]
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
 
-      When using this profile, the Application Provider MUST include the
-      SCIM Core User attribute "userName" in the list of
-      "required_user_attributes".
-
-      The Application Provider MAY include additional attributes if a
-      mapping exists in the table in Section 4.1.2.  If a mapping does
-      not exist, the attribute MUST NOT be included in the desired
-      attributes.
+   desired_attributes  OPTIONAL.  A structure specifying the values to
+      be included in the SAML Attributes.  The format of the structure
+      is described in Section 3.3.5 of FastFed Core [FastFed.Core].  The
+      usage of the structure in this profile, including constraints upon
+      the contents, is described in Section 4.1.2.
 
       Groups are not supported by this SAML profile.  Therefore, the
       following MUST be omitted from the desired attributes:
@@ -188,6 +185,9 @@ McAdams                 Expires January 28, 2021                [Page 3]
 
    The following is a non-normative example of Application Provider
    Metadata with the profile extensions:
+
+
+
 
 
 
@@ -256,22 +256,22 @@ McAdams                 Expires January 28, 2021                [Page 4]
      "fastfed_handshake_register_uri": "https://tenant-67890.app.example.com/fastfed/register",
 
      "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
+       "saml_subject": {
+         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0":
+           "emails[primary eq true].value"
+       },
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
-             "userName",
-             "emails[primary eq true].value"
+             "displayName"
            ],
            "optional_user_attributes": [
-             "displayName",
              "phoneNumbers[primary eq true].value"
            ]
          }
       }
    }
  }
-
-
 
 
 
@@ -358,22 +358,101 @@ McAdams                 Expires January 28, 2021                [Page 6]
 
 4.1.1.  SAML Subject
 
-   A SAML document contains a "Subject" element which identifies the
-   authenticated user.
+   A SAML Response document contains a "Subject" element which
+   identifies the authenticated user.
 
-   The "Subject" element MUST contain a "NameID" with the following
-   properties:
+   The Application Provider declares the attribute to populate in the
+   SAML Subject via the "saml_subject" element in Section 3.1.2
 
-   o  A "Format" set to ""urn:oasis:names:tc:SAML:2.0:nameid-
-      format:unspecified""
+   The value of the "saml_subject" MUST be one of the SCIM Attributes in
+   the table below.
 
-   o  A value populated with the SCIM "userName".
+   Note: In the table, SCIM attributes refer to the "User" Resource
+   Schema defined in Section 4.1 of the SCIM Core Specification
+   [RFC7643].  Individual members of a JSON structure are referenced in
+   the table using the JSON path syntax defined in Section 3.5.2 of the
+   SCIM Protocol [RFC7644].
 
-   The following is a non-normative example of a SAML Subject:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                 Expires January 28, 2021                [Page 7]
+
+                   FastFed Enterprise SAML Profile 1.0         July 2020
+
+
+   +--------------+----------------------------------------------------+
+   | SCIM         | SAML NameID Format                                 |
+   | Attribute    |                                                    |
+   +--------------+----------------------------------------------------+
+   | externalId   | urn:oasis:names:tc:SAML:2.0:nameid-                |
+   |              | format:persistent                                  |
+   |              |                                                    |
+   | emails[prima | urn:oasis:names:tc:SAML:1.1:nameid-                |
+   | ry eq        | format:emailAddress                                |
+   | true].value  |                                                    |
+   |              |                                                    |
+   | userName     | urn:oasis:names:tc:SAML:1.1:nameid-                |
+   |              | format:unspecified                                 |
+   +--------------+----------------------------------------------------+
+
+   When generating a SAML Response, the Identity Provider MUST populate
+   the SAML Subject with a NameID containing the attribute requested by
+   the Application Provider, and the associated NameID Format from the
+   table above.
+
+   If a value for the attribute is not defined for an end-user, the
+   Identity Provider MUST NOT perform any authentication activity into
+   the Application Provider for the affected end-user.  To assist with
+   diagnostics, the Identity Provider SHOULD signal to the end-user that
+   the attribute is missing and is required by the Application.  The
+   means of doing so are outside the scope of the specification, but
+   could include displaying an informative error message when the end-
+   user attempts to authenticate into the application, or making error
+   logs available to the administrators of the Identity Provider.
+
+   The following is a non-normative example of the use of ""externalId""
+   as the SAML Subject:
 
  <saml:Subject>
-   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">babs@example.com</saml:NameID>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">1fc58220-7213-47bb-9161-bbd39ad75937</saml:NameID>
  </saml:Subject>
+
+   The following is a non-normative example of the use of
+   ""email[primary eq true].value"" as the SAML Subject:
+
+ <saml:Subject>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress">babs@example.com</saml:NameID>
+ </saml:Subject>
+
+   The following is a non-normative example of the use of ""userName""
+   as the SAML Subject:
+
+
+
+
+
+McAdams                 Expires January 28, 2021                [Page 8]
+
+                   FastFed Enterprise SAML Profile 1.0         July 2020
+
+
+  <saml:Subject>
+    <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified">bjensen</saml:NameID>
+  </saml:Subject>
 
 4.1.2.  SAML Attributes
 
@@ -385,15 +464,6 @@ McAdams                 Expires January 28, 2021                [Page 6]
 
    One such situation occurs when an application is using Just-In-Time
    provisioning instead of pre-provisioning.  In this mode of behavior,
-
-
-
-
-McAdams                 Expires January 28, 2021                [Page 7]
-
-                   FastFed Enterprise SAML Profile 1.0         July 2020
-
-
    the incoming user attributes are used to auto-instantiate a user in
    the Application.
 
@@ -425,37 +495,79 @@ McAdams                 Expires January 28, 2021                [Page 7]
    the table using the JSON path syntax defined in Section 3.5.2 of the
    SCIM Protocol [RFC7644].
 
-       +---------------------+-------------------------------------+
-       | SAML Attribute Name | SCIM Attribute                      |
-       +---------------------+-------------------------------------+
-       | externalId          | externalId                          |
-       |                     |                                     |
-       | displayName         | displayName                         |
-       |                     |                                     |
-       | givenName           | name.givenName                      |
-       |                     |                                     |
-       | familyName          | name.familyName                     |
-       |                     |                                     |
-       | middleName          | name.middleName                     |
-       |                     |                                     |
-       | email               | emails[primary eq true].value       |
-       |                     |                                     |
-       | phoneNumber         | phoneNumbers[primary eq true].value |
-       +---------------------+-------------------------------------+
 
 
 
-McAdams                 Expires January 28, 2021                [Page 8]
+
+
+
+McAdams                 Expires January 28, 2021                [Page 9]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
 
+       +-------------------------------------+---------------------+
+       | SCIM Attribute                      | SAML Attribute Name |
+       +-------------------------------------+---------------------+
+       | externalId                          | externalId          |
+       |                                     |                     |
+       | userName                            | userName            |
+       |                                     |                     |
+       | displayName                         | displayName         |
+       |                                     |                     |
+       | name.givenName                      | givenName           |
+       |                                     |                     |
+       | name.familyName                     | familyName          |
+       |                                     |                     |
+       | name.middleName                     | middleName          |
+       |                                     |                     |
+       | emails[primary eq true].value       | email               |
+       |                                     |                     |
+       | phoneNumbers[primary eq true].value | phoneNumber         |
+       +-------------------------------------+---------------------+
+
    The following is a non-normative example demonstrating a
    transformation from a SCIM User to SAML Attributes:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+McAdams                 Expires January 28, 2021               [Page 10]
+
+                   FastFed Enterprise SAML Profile 1.0         July 2020
+
 
  <saml:AttributeStatement>
    <saml:Attribute Name="externalId" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
         <saml:AttributeValue xsi:type="xs:string">1fc58220-7213-47bb-9161-bbd39ad75937</saml:AttributeValue>
+   </saml:Attribute>
+   <saml:Attribute Name="userName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
+        <saml:AttributeValue xsi:type="xs:string">bjensen</saml:AttributeValue>
    </saml:Attribute>
    <saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified">
         <saml:AttributeValue xsi:type="xs:string">Babs Jensen</saml:AttributeValue>
@@ -501,7 +613,7 @@ McAdams                 Expires January 28, 2021                [Page 8]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 9]
+McAdams                 Expires January 28, 2021               [Page 11]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -557,7 +669,7 @@ McAdams                 Expires January 28, 2021                [Page 9]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 10]
+McAdams                 Expires January 28, 2021               [Page 12]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -613,7 +725,7 @@ McAdams                 Expires January 28, 2021               [Page 10]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 11]
+McAdams                 Expires January 28, 2021               [Page 13]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -669,7 +781,7 @@ McAdams                 Expires January 28, 2021               [Page 11]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 12]
+McAdams                 Expires January 28, 2021               [Page 14]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -725,7 +837,7 @@ McAdams                 Expires January 28, 2021               [Page 12]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 13]
+McAdams                 Expires January 28, 2021               [Page 15]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -781,7 +893,7 @@ McAdams                 Expires January 28, 2021               [Page 13]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 14]
+McAdams                 Expires January 28, 2021               [Page 16]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -837,7 +949,7 @@ McAdams                 Expires January 28, 2021               [Page 14]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 15]
+McAdams                 Expires January 28, 2021               [Page 17]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -893,7 +1005,7 @@ Appendix B.  Notices
 
 
 
-McAdams                 Expires January 28, 2021               [Page 16]
+McAdams                 Expires January 28, 2021               [Page 18]
 
                    FastFed Enterprise SAML Profile 1.0         July 2020
 
@@ -949,4 +1061,4 @@ Author's Address
 
 
 
-McAdams                 Expires January 28, 2021               [Page 17]
+McAdams                 Expires January 28, 2021               [Page 19]
