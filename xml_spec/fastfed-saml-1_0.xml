@@ -186,9 +186,9 @@
 		does not exist, the attribute MUST NOT be included in the
 		desired attributes.
 
-		<vspace/><vspace/>Provisioning of Groups is not supported via
-		SAML. Therefore, the following MUST be omitted from the desired
-		attributes:
+		<vspace/><vspace/>Groups are not supported by this SAML
+		profile. Therefore, the following MUST be omitted from the
+		desired attributes:
 		<list style="symbols">
                   <t>
                     <spanx style="verb">required_group_attributes</spanx>
@@ -238,7 +238,7 @@
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
-             "username",
+             "userName",
              "emails[primary eq true].value"
            ],
            "optional_user_attributes": [
@@ -284,7 +284,7 @@
      "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
    ],
    "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
-     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml"
    }
  }
 ]]></artwork></figure>
@@ -306,13 +306,6 @@
 		REQUIRED. Contains the URL of the Application Provider's
 		SAML Metadata document.
               </t>
-	      <t hangText="saml_response_attributes">
-		OPTIONAL. A list of Attribute References (Section 3.3.4 of
-		<xref target="FastFed.Core">FastFed Core</xref>) defining
-		the user attributes to be included in the SAML response. See
-		<xref target="SchemaBindingScimToSamlAttributes"/> for
-		details.
-              </t>
             </list>
           </t> 
           <t>
@@ -323,10 +316,6 @@
  {
    "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
      "saml_metadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
-     "saml_response_attributes": [
-       "displayName",
-       "emails[primary eq true].value"
-     ]
    }
  }
 ]]></artwork></figure>
@@ -366,7 +355,7 @@
 	  <list style="symbols">
 	    <t>
 	      A <spanx style="verb">Format</spanx> set to
-	      <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"</spanx>
+	      <spanx style="verb">"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified"</spanx>
 	    </t>
 	    <t>
               A value populated with the SCIM <spanx style="verb">userName</spanx>.

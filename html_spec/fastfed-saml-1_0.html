@@ -575,7 +575,7 @@
 
 <dl>
 <dt>desired_attributes</dt>
-<dd style="margin-left: 8">REQUIRED. A structure specifying the attributes to be provisioned, as described in Section 3.3.5 of <a href="#FastFed.Core" class="xref">FastFed Core</a>.  <br><br>When using this profile, the Application Provider MUST include the SCIM Core User attribute <samp>userName</samp> in the list of <samp>required_user_attributes</samp>.  <br><br>The Application Provider MAY include additional attributes if a mapping exists in the table in <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a>. If a mapping does not exist, the attribute MUST NOT be included in the desired attributes.  <br><br>Provisioning of Groups is not supported via SAML. Therefore, the following MUST be omitted from the desired attributes: <ul>
+<dd style="margin-left: 8">REQUIRED. A structure specifying the attributes to be provisioned, as described in Section 3.3.5 of <a href="#FastFed.Core" class="xref">FastFed Core</a>.  <br><br>When using this profile, the Application Provider MUST include the SCIM Core User attribute <samp>userName</samp> in the list of <samp>required_user_attributes</samp>.  <br><br>The Application Provider MAY include additional attributes if a mapping exists in the table in <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a>. If a mapping does not exist, the attribute MUST NOT be included in the desired attributes.  <br><br>Groups are not supported by this SAML profile. Therefore, the following MUST be omitted from the desired attributes: <ul>
 <li>
 <samp>required_group_attributes</samp> </li>
 <li>
@@ -621,7 +621,7 @@
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
-             "username",
+             "userName",
              "emails[primary eq true].value"
            ],
            "optional_user_attributes": [
@@ -658,7 +658,7 @@
      "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
    ],
    "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
-     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml"
    }
  }
 </pre>
@@ -671,8 +671,6 @@
 <dl>
 <dt>saml_metadata_uri</dt>
 <dd style="margin-left: 8">REQUIRED. Contains the URL of the Application Provider's SAML Metadata document.  </dd>
-<dt>saml_response_attributes</dt>
-<dd style="margin-left: 8">OPTIONAL. A list of Attribute References (Section 3.3.4 of <a href="#FastFed.Core" class="xref">FastFed Core</a>) defining the user attributes to be included in the SAML response. See <a href="#SchemaBindingScimToSamlAttributes" class="xref">Section 4.1.2</a> for details.  </dd>
 </dl>
 
 <p> </p>
@@ -681,10 +679,6 @@
  {
    "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
      "saml_metadata_uri": "https://tenant-56789.app.example.com/saml-metadata.xml"
-     "saml_response_attributes": [
-       "displayName",
-       "emails[primary eq true].value"
-     ]
    }
  }
 </pre>
@@ -703,7 +697,7 @@
 <p id="rfc.section.4.1.1.p.2">The <samp>Subject</samp> element MUST contain a <samp>NameID</samp> with the following properties: </p>
 
 <ul>
-<li>A <samp>Format</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"</samp> </li>
+<li>A <samp>Format</samp> set to <samp>"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified"</samp> </li>
 <li>A value populated with the SCIM <samp>userName</samp>.  </li>
 </ul>
 

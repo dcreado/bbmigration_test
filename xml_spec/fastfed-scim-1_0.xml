@@ -302,7 +302,7 @@
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
              "externalId",
-             "username",
+             "userName",
              "active"
            ],
            "optional_user_attributes": [
@@ -799,12 +799,12 @@
 	 <t>
 	   Identity Providers SHOULD delete users when they have reason to
 	   believe the User will not be reactivated in the future. This may
-	   occur, for example, when a username is recycled and given to a new
+	   occur, for example, when a userName is recycled and given to a new
 	   actor, necessitating removal of the prior record.
 	 </t>
          <t>
 	   After a user is deleted, Application Providers MUST allow the
-	   creation of a new user with the same username.
+	   creation of a new user with the same userName.
 	 </t>
 	 <t>
 	 </t>
@@ -873,7 +873,7 @@
          <t>
 	   Application Providers MUST support the following filter expressions:
 	   <list style="symbols">
-	     <t><spanx style="verb">username eq {username}</spanx></t>
+	     <t><spanx style="verb">userName eq {userName}</spanx></t>
 	     <t><spanx style="verb">externalId eq {externalId}</spanx></t>
 	     <t><spanx style="verb">emails[value eq {email}]</spanx></t>
 	   </list>

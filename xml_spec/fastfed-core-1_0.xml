@@ -70,13 +70,14 @@
       
       <t>
 	Another area of difficulty arises because there is no standard mechanism
-	for an identity provider and application provider to directly exchange
-	metadata required by existing standards. Instead, a human administrator
-	must copy-and-paste information between the two providers. This is
-	typically done by opening a web page for each provider and following
-	online instructions to copy information between them. Copy-and-paste
-	errors, overlooked steps, or incomplete documentation can result in
-	non-functional configuration that is difficult to debug.
+	for an independent identity provider and application provider to
+	directly exchange the metadata required by existing standards. Instead,
+	a human administrator must copy-and-paste information between the two
+	providers. This is typically done by opening a web page for each
+	provider and following online instructions to copy information between
+	them. Copy-and-paste errors, overlooked steps, or incomplete
+	documentation can result in non-functional configuration that is
+	difficult to debug.
       </t>
       
       <t>
@@ -120,8 +121,8 @@
       <t>
 	Additional FastFed Profiles extend this specification with
 	protocol-specific requirements.  For reference, see the FastFed
-	Profiles for <xref target="FastFedProfile.SAML">SAML</xref>
-	and <xref target="FastFedProfile.SCIM">SCIM Provisioning</xref>.
+	Profiles for <xref target="FastFedProfile.EnterpriseSAML">Enterprise SAML</xref>
+	and <xref target="FastFedProfile.EnterpriseSCIM">Enterprise SCIM</xref>.
       </t>
 
       <section anchor="rnc" title="Requirements Notation and Conventions">
@@ -522,12 +523,13 @@
      "desired_attributes": [
        "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
           "required_user_attributes": [
-            "username", 
-            "emails[primary eq true]"
+	    "externalId",
+            "userName", 
+            "active"
           ],
           "optional_user_attributes": [
-            "externalId",
-            "name.formatted"
+            "displayName",
+            "emails[primary eq true]"
           ]
        }
      ]
@@ -638,8 +640,7 @@
 		the value
 		"urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
 		indicates the provider implements
-		the <xref target="FastFedProfile.SAML">FastFed Enterprise Profile for
-		SAML</xref>.
+		the <xref target="FastFedProfile.EnterpriseSAML">FastFed Enterprise SAML Profile</xref>.
 
                 <vspace/><vspace/> If no value is specified by the Application
                 Provider
@@ -659,7 +660,7 @@
                 "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"</spanx>
                 indicates a Provider supports full user provisioning (and
                 deprovisioning) as defined in
-                the <xref target="FastFedProfile.SCIM">
+                the <xref target="FastFedProfile.EnterpriseSCIM">
 		FastFed Profile For SCIM Provisioning</xref>.
 
                 <vspace/><vspace/> If no value is specified by the Application
@@ -829,7 +830,7 @@
 	    SCIM 2.0 Attribute References:
 	  </t>
 	  <figure><artwork><![CDATA[
- [username,
+ [userName,
   name.givenName,               
   emails[primary eq true]
  ]
@@ -887,6 +888,14 @@
 		  primary, it MUST be able to map a request for the primary into
 		  a deterministic answer.<vspace/><vspace/>
 		</t>
+		<t>
+                  To encourage interoperability, it is RECOMMENDED that
+                  Providers avoid the use of any other SCIM filter expression
+                  except <spanx style="verb">"primary eq true"</spanx> when
+                  specifying desired attributes, unless the filter expression is
+                  known to be supported by potential integration
+                  partners.<vspace/><vspace/>
+                </t>
 		<t>
 		  If a SCIM PATH references a complex attribute type, it MUST be
 		  processed as equivalent to referencing each individual attribute
@@ -1058,7 +1067,7 @@
     "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
         "externalId",
-        "username",
+        "userName",
         "active",
         "emails[primary eq true]"
       ],
@@ -1089,7 +1098,7 @@
   {
     "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
       "required_user_attributes": [
-        "username",
+        "userName",
         "active"
       ],
       "optional_user_attributes": [
@@ -1609,22 +1618,63 @@
 	<section anchor="MetadataRefresh"
 		 title="Metadata Refresh">
 	  <t>
-	    Provider Metadata contains information that is used on a recurring
+	    Provider Metadata contains information that may be used on a recurring
 	    basis, such as the list of supported signing algorithms and URLs of
 	    image files. Consumers of the metadata SHOULD locally cache the
-	    metadata information and image files.
+	    metadata information and image files that will be used on an ongoing
+	    basis after the FastFed Handshake completes.
 	  </t>
 	  <t>
-	    Any cached information that is used on an ongoing basis outside the
-	    context of the FastFed Handshake MUST be periodically refreshed. The
-	    following describes the responsibilities of metadata publishers and
-	    consumers to enable refresh activities.
+	    A Provider is permitted to refresh the following values from another
+	    Provider's Metadata Endpoint on a recurring basis, outside the
+	    context of a FastFed Handshake.
+	    <list style="symbols">
+	      <t>From the <xref target="ProviderContactInformation">Provider Contact
+	      Information</xref>:
+	        <list style="symbols">
+		  <t><spanx style="verb">organization</spanx></t>
+		  <t><spanx style="verb">phone</spanx></t>
+		  <t><spanx style="verb">email</spanx></t>
+		</list>
+	      </t>
+	      <t>From the <xref target="DisplaySettings">Display Settings</xref>:
+                <list style="symbols"> 
+		  <t><spanx style="verb">logo_uri</spanx></t>
+                  <t><spanx style="verb">icon_uri</spanx></t>
+                </list>                                                                                                                                      
+              </t>
+	      <t>From the <xref target="ProviderMetadataCapabilities">Capabilities</xref>:
+                <list style="symbols">
+                  <t><spanx style="verb">signing_algorithms</spanx></t>
+		</list>
+              </t>
+	    </list>
+	  </t>
+	  <t>
+	    The image files hosted at the <spanx style="verb">logo_uri</spanx>
+	    and <spanx style="verb">icon_uri</spanx> MAY be updated either by
+	    publishing a new URI in the metadata file or by modifying the
+	    contents hosted at the same URI.
+	  </t>
+	  <t>
+	    In addition to the attributes listed above, <xref
+	    target="ProviderAuthenticationMethods"/> specifies the requirements
+	    for key rotation and signing algorithm selection.
+	  </t>
+	  <t>
+	    Any other metadata defined in the FastFed Core specification MUST ONLY be
+	    updated by completing a FastFed Handshake.
+	  </t>
+	  <t>
+	   The following describes the responsibilities of metadata publishers
+	   and consumers to enable refresh activities of the FastFed Core metadata.
 	  </t> 
           <t>
 	    The following applies to a publisher of metadata information:
             <list style="symbols">
               <t> 
-		MAY periodically alter the content of objects referenced by a URL.
+		MAY alter the content returned from the Provider Metadata Endpoint or the
+		content of the image files referenced by URL within the Provider Metadata.
               </t>
               <t>
 		MUST support the HTTP 1.1 ETag semantics
@@ -1646,8 +1696,8 @@
 	    The following requirements apply to a consumer of metadata information:
             <list style="symbols">
               <t>
-		MUST re-query the URLs at least once every 24 hours to check if
-                a new version of an object is available to replace a local
+		For any locally cached data, MUST re-query the URLs at least once every 24 hours to check if
+                a new version of the object is available to replace a local
                 copy.
               </t>
               <t>
@@ -1659,6 +1709,11 @@
 		MUST handle an HTTP 304 response code which indicates that the
                 content is unchanged.
               </t>
+	      <t>
+		MUST ignore any changes to attributes that are not in the
+		permitted list of modifiable values enumerated in this
+		section.
+	      </t>
             </list>
           </t>
 	  <t>
@@ -1701,7 +1756,7 @@
 	Required attributes MUST have at least one valid element in the
 	list. Optional attributes MAY have any number of elements in the list,
 	including no elements. An optional attribute that is omitted from the
-	configuration, or defined as a null value, will be treated equivalently
+	configuration, or defined as a null value, MUST be treated equivalently
 	to an empty list.
       </t>
       <t>
@@ -1734,7 +1789,7 @@
 	The handling of incompatibilities depends on the context in which
 	evaluation occurred and is described elsewhere in the specification. The
 	most common situation is when compatibility is tested during the FastFed
-	handshake. In this situation, failure causes the handshake to halt and a
+	Handshake. In this situation, failure causes the handshake to halt and a
 	diagnostic error message is displayed to the end-user.
       </t>
       <section anchor="ProviderCompatibilityEvaluationEmptyList"
@@ -1749,30 +1804,29 @@
 	  The following rules MUST apply for handling empty values:
 	  <list style="symbols">
             <t>
-	      If the Application Provider returns an empty value for either
-	      <spanx style="verb">provisioning_profiles</spanx>
-              or <spanx style="verb">authentication_profiles</spanx>, the
-              Identity Provider MUST treat this as a signal that the
-              Application Provider does not need the capability. The Identity
-              Provider MUST omit the value from subsequent steps of the
-              FastFed Handshake and not enable the capability after the
-              handshake completes.
+	      If the Application Provider Metadata contains an empty value for
+	      either <spanx style="verb">provisioning_profiles</spanx> or <spanx
+	      style="verb">authentication_profiles</spanx>, the Identity
+	      Provider MUST treat this as a signal that the Application Provider
+	      does not need the capability. The Identity Provider MUST omit the
+	      value from subsequent steps of the FastFed Handshake and not
+	      enable the capability after the handshake completes.
             </t>
             <t>
-	      If the Application Provider returns an empty value for BOTH
-	      <spanx style="verb">provisioning_profiles</spanx>
-              and <spanx style="verb">authentication_profiles</spanx>, the
-              Identity Provider MUST treat this as a signal that the Application
-              Provider wishes to disable all functionality and deactivate the
-              federation relationship. If a federation relationship exists, the
-              Identity Provider MUST omit the values from subsequent steps of
-              the FastFed Handshake and disable all federation capabilities 
-              upon completion of the handshake. If a federation relationship does not
-              currently exist, this scenario MUST be treated as an invalid
-              request from the Application Provider and the FastFed Handshake halted. 
+	      If the Application Provider Metadata contains an empty value for
+	      BOTH <spanx style="verb">provisioning_profiles</spanx> and <spanx
+	      style="verb">authentication_profiles</spanx>, the Identity
+	      Provider MUST treat this as a signal that the Application Provider
+	      wishes to disable all functionality and deactivate the federation
+	      relationship. If a federation relationship exists, the Identity
+	      Provider MUST omit the values from subsequent steps of the FastFed
+	      Handshake and disable all federation capabilities upon completion
+	      of the handshake. If a federation relationship does not currently
+	      exist, this scenario MUST be treated as an invalid request from
+	      the Application Provider and the FastFed Handshake halted.
 	    </t>
             <t>
-	      If the Identity Provider returns an empty value for either
+	      If the Identity Provider Metadata contains an empty value for either
               <spanx style="verb">provisioning_profiles</spanx>
               or <spanx style="verb">authentication_profiles</spanx> and the
               Application Provider considers the capability to be essential for
@@ -1792,7 +1846,7 @@
 	Portions of the FastFed Handshake require the transmission of signed
 	messages from the Identity Provider to the Application
 	Provider. Additionally, some profiles such
-	as <xref target="FastFedProfile.SCIM">SCIM Provisioning</xref> also
+	as <xref target="FastFedProfile.EnterpriseSCIM">SCIM Provisioning</xref> also
 	require authentication by a Provider.
       </t>
       <t> 
@@ -1907,7 +1961,7 @@
 	      the <spanx style="verb">jwks_uri</spanx> parameter of
 	      the <xref target="IdentityProviderMetadata">Identity Provider
 	      Metadata</xref>. Other profiles, such
-	      as <xref target="FastFedProfile.SCIM">SCIM provisioning</xref>,
+	      as <xref target="FastFedProfile.EnterpriseSCIM">SCIM provisioning</xref>,
 	      may specify alternative key
 	      sets. The <spanx style="verb">alg</spanx> associated with the
 	      signing key MUST match the <spanx style="verb">alg</spanx> used to
@@ -1978,7 +2032,7 @@
 	</t>
 	<t>
 	  An end-to-end example of this approach can be found in Section 5 of the FastFed Profile for SCIM provisioning
-          <xref target="FastFedProfile.SCIM"/>.
+          <xref target="FastFedProfile.EnterpriseSCIM"/>.
         </t> 
 	<t>
 	  The following are common requirements for any profile utilizing
@@ -2640,13 +2694,13 @@
 	      set of attributes in the JWT with additional values necessary for
 	      the chosen protocol. These extensions are defined elsewhere within
 	      the profile specifications. See
-	      <xref target="FastFedProfile.SAML"/> and
-	      <xref target="FastFedProfile.SCIM"/>.
+	      <xref target="FastFedProfile.EnterpriseSAML"/> and
+	      <xref target="FastFedProfile.EnterpriseSCIM"/>.
 	    </t>
             <t>
               For example, the following is a non-normative example of the contents of a
               registration message prior to serialization, with protocol-specific values for
-              SAML and SCIM:
+              the Enterprise SAML and Enterprise SCIM profiles:
             </t>
             <figure><artwork><![CDATA[
  {
@@ -2710,27 +2764,51 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
                   JWT is prior to current DateTime.
 		</t>
 		<t> 
-		  Verify the <spanx style="verb">kid</spanx> matches an entry
-		  in the whitelisted key set hosted at
-		  the <spanx style="verb">jwks_uri</spanx> captured in
-		  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
+		  Verify the <spanx style="verb">kid</spanx> matches an entry in
+		  the key set hosted at the whitelisted <spanx
+		  style="verb">jwks_uri</spanx> captured in <xref
+		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
                 </t>
 		<t> 
 		  Verify the JWT signature using the key from the key set. The
 		  signing algorithm for the <spanx style="verb">kid</spanx> in
 		  the key set MUST match the signing algorithm in the JWT.
 		</t>
+                <t>
+                  If an expiration date exists on the whitelist (<xref
+                  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>),
+                  verify the expiration date has not been exceeded.
+                </t>
 		<t>
-		  Verify that the values of <spanx
+		  Verify the values of <spanx
 		  style="verb">authentication_profiles</spanx> and <spanx
-		  style="verb">provisioning_profiles</spanx> are compatible with
-		  the whitelisted capabilities captured in <xref
-		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
-		</t>
-		<t>
-		  If an expiration date exists on the whitelist
-		  (<xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>),
-		  verify the expiration date has not been exceeded.
+		  style="verb">provisioning_profiles</spanx> against the
+		  whitelisted capabilities captured in <xref
+		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>. The
+		  request MUST be treated as invalid if any of the following
+		  conditions are true:
+		  <list style="symbols">
+		    <t>
+		      The Identity Provider includes a value in the list of
+		      <spanx style="verb">authentication_profiles</spanx> or
+		      <spanx style="verb">provisioning_profiles</spanx> that
+		      does not exist in the Application Provider whitelist.
+		    </t>
+		    <t>
+		      The Identity Provider fails to include at least one value
+		      in <spanx style="verb">authentication_profiles</spanx>
+		      when the Application Provider whitelist contains one or
+		      more values for <spanx
+		      style="verb">authentication_profiles</spanx>.
+		    </t>
+                    <t>                                                                                                                                      
+                      The Identity Provider fails to include at least one value
+                      in <spanx style="verb">provisioning_profiles</spanx> when
+                      the Application Provider whitelist contains one or more
+                      values for <spanx
+                      style="verb">authentication_profiles</spanx>.
+                    </t> 
+		  </list>
 		</t>
 	      </list>
 	    </t>
@@ -2739,7 +2817,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	      the configuration information and initiate any actions necessary
 	      to activate or update the federation relationship to reflect the
 	      desired <spanx style="verb">authentication_profiles</spanx> and
-	      <spanx style="verb">provisioning_profiles</spanx>, indicated in
+	      <spanx style="verb">provisioning_profiles</spanx> indicated in
 	      the registration request. These actions are defined in the FastFed
 	      Profile for each profile.
 	    </t>
@@ -2812,7 +2890,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	    <t> 
 	      FastFed Profiles may extend the response with protocol-specific
 	      values. For example, the use of
-	      the <xref target="FastFedProfile.SCIM">SCIM Provisioning</xref>
+	      the <xref target="FastFedProfile.EnterpriseSCIM">SCIM Provisioning</xref>
 	      profile will result in the location of the SCIM endpoint being
 	      included in the response.
 	    </t>
@@ -2832,7 +2910,8 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	    </t>
 	    <t>
               The following is a non-normative example of a successful response
-              for a Provider who has chosen to use SAML and SCIM.
+              for a Provider who has chosen to use the Enterprise SAML and
+	      Enterprise SCIM profiles.
             </t>
             <figure><artwork><![CDATA[
 
@@ -3215,7 +3294,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7643"?><!--SCIMCore-->
       <?rfc include="http://xml2rfc.tools.ietf.org/public/rfc/bibxml/reference.RFC.7644"?><!--SCIMProtocol-->
 
-      <reference anchor="FastFedProfile.SAML" target="http://openid.net/specs/fastfed-saml-1_0.html">
+      <reference anchor="FastFedProfile.EnterpriseSAML" target="http://openid.net/specs/fastfed-saml-1_0.html">
         <front>
           <title>FastFed Enterprise SAML Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">
@@ -3225,7 +3304,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
         </front>
       </reference>
 
-      <reference anchor="FastFedProfile.SCIM" target="http://openid.net/specs/fastfed-scim-1_0.html">
+      <reference anchor="FastFedProfile.EnterpriseSCIM" target="http://openid.net/specs/fastfed-scim-1_0.html">
         <front>
           <title>FastFed Enterprise SCIM Profile 1.0</title>
           <author fullname="Darin" initials="K." surname="McAdams">

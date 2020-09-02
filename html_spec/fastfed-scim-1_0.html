@@ -703,7 +703,7 @@
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
            "required_user_attributes": [
              "externalId",
-             "username",
+             "userName",
              "active"
            ],
            "optional_user_attributes": [
@@ -992,8 +992,8 @@
 <a href="#rfc.section.4.2.4">4.2.4.</a> <a href="#SCIMInteroperabilityUserProvisioningDeleteUser" id="SCIMInteroperabilityUserProvisioningDeleteUser">Delete User</a>
 </h1>
 <p id="rfc.section.4.2.4.p.1">User deletions are performed via the SCIM operation: <samp>DELETE /Users/{id}</samp> </p>
-<p id="rfc.section.4.2.4.p.2">Identity Providers SHOULD delete users when they have reason to believe the User will not be reactivated in the future. This may occur, for example, when a username is recycled and given to a new actor, necessitating removal of the prior record.  </p>
-<p id="rfc.section.4.2.4.p.3">After a user is deleted, Application Providers MUST allow the creation of a new user with the same username.  </p>
+<p id="rfc.section.4.2.4.p.2">Identity Providers SHOULD delete users when they have reason to believe the User will not be reactivated in the future. This may occur, for example, when a userName is recycled and given to a new actor, necessitating removal of the prior record.  </p>
+<p id="rfc.section.4.2.4.p.3">After a user is deleted, Application Providers MUST allow the creation of a new user with the same userName.  </p>
 <p></p>
 <p id="rfc.section.4.2.4.p.5">The following is a non-normative example of deleting a User: </p>
 <pre>
@@ -1048,7 +1048,7 @@
 <p id="rfc.section.4.2.6.p.2">Application Providers MUST support the following filter expressions: </p>
 
 <ul>
-<li><samp>username eq {username}</samp></li>
+<li><samp>userName eq {userName}</samp></li>
 <li><samp>externalId eq {externalId}</samp></li>
 <li><samp>emails[value eq {email}]</samp></li>
 </ul>
