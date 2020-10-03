@@ -944,18 +944,24 @@
          Group provisioning operations defined in this section.
        </t>
        <t>
-	 The Identity Provider MUST query the Application Provider's SCIM
-         /ResourceTypes endpoint to determine if Groups are supported. As a
-         reference to implementors, this check can occur when the FastFed
-         Handshake completes, on-or-after Section 7.2.4.4 of
-         the <xref target="FastFed.Core">FastFed Core</xref> specification.
+	 If an Identity Provider holds information about Groups, then it MUST
+	 implement provisioning of the Group information to Applications who
+	 support it.
        </t>
        <t>
-	 If the Application Provider supports Group provisioning, the Identity
-         Provider SHOULD replicate Group information to the Application Provider
-         within 60 minutes of the Group being created or updated. Identity
-         Providers MAY use any combination of the operations to perform Group
-         provisioning.
+	 Before initiating Group provisioning, the Identity Provider MUST query
+	 the Application Provider's SCIM /ResourceTypes endpoint to confirm
+	 Groups are supported by the Application. As a reference to
+	 implementors, this check can occur when the FastFed Handshake
+	 completes, on-or-after Section 7.2.4.4 of the <xref
+	 target="FastFed.Core">FastFed Core</xref> specification.
+       </t>
+       <t>
+	 If both the Identity Provider and the Application Provider support
+	 Group provisioning, the Identity Provider SHOULD replicate Group
+	 information to the Application Provider within 60 minutes of the Group
+	 being created or updated. Identity Providers MAY use any combination of
+	 the operations to perform Group provisioning.
        </t>
 
        <section anchor="SCIMInteroperabilityGroupProvisioningCreateGroup"
@@ -1156,7 +1162,7 @@
        <section anchor="SCIMInteroperabilityUserProvisioningSearchGroupsByAlternateIds"
                 title="List Groups By Alternate Identifier">
          <t>
-           User lookups by alternate identifier are performed via the SCIM
+           Group lookups by alternate identifier are performed via the SCIM
            operation:
            <spanx style="verb">GET /Groups?filter={filterExpression}&amp;excludedAttributes=members</spanx>
          </t>

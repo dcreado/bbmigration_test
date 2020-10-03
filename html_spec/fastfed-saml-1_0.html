@@ -622,7 +622,7 @@
      "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
        "saml_subject": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": 
-           "emails[primary eq true].value"
+           "userName"
        },
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
@@ -712,34 +712,45 @@
 <td class="left">urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</td>
 </tr>
 <tr>
-<td class="left">emails[primary eq true].value</td>
-<td class="left">urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</td>
-</tr>
-<tr>
 <td class="left">userName</td>
 <td class="left">urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</td>
 </tr>
+<tr>
+<td class="left">emails[primary eq true].value</td>
+<td class="left">urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</td>
+</tr>
 </tbody>
 </table>
-<p id="rfc.section.4.1.1.p.5">When generating a SAML Response, the Identity Provider MUST populate the SAML Subject with a NameID containing the attribute requested by the Application Provider, and the associated NameID Format from the table above.  </p>
-<p id="rfc.section.4.1.1.p.6">If a value for the attribute is not defined for an end-user, the Identity Provider MUST NOT perform any authentication activity into the Application Provider for the affected end-user. To assist with diagnostics, the Identity Provider SHOULD signal to the end-user that the attribute is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to authenticate into the application, or making error logs available to the administrators of the Identity Provider.  </p>
-<p id="rfc.section.4.1.1.p.7">The following is a non-normative example of the use of <samp>"externalId"</samp> as the SAML Subject: </p>
+<p id="rfc.section.4.1.1.p.5">As a reference to implementors, the following considerations can be taken into account when choosing a SAML subject: </p>
+
+<ul>
+<li>The format of <samp>externalId</samp> is defined in section 3.1 of the SCIM Core specification <a href="#RFC7643" class="xref">[RFC7643]</a>.  It is a persistent identifier, often a GUID, which is intended to reliably identify a user within the Identity Provider. However, it will vary between Identity Providers. Therefore, if an Application anticipates that Administrators may occasionally switch Identity Providers (as can happen in commercial settings, for example), additional matching rules may be necessary to reconcile provisioning events arriving from different sources.  <br><br> Note that while the SCIM Core specification defines the <samp>externalId</samp> as optional, this profile requires Identity Providers to support it, and hence Applications can depend upon it being available.  <br><br> </li>
+<li>The format of <samp>userName</samp> is defined in section 4.1.1 of the SCIM Core specification <a href="#RFC7643" class="xref">[RFC7643]</a>.  It is a displayable, user-friendly identifier for a user. In practice, the userName can often be an email, but other formats occur.  No assumptions should be made about the format of the userName other than it being a string that the end-user typically enters as a login when authenticating.  <br><br> If the Administrator switches Identity Providers, it is usually the case that the <samp>userName</samp> remains consistent across providers, making it easier to correlate authentication and provisioning events to a single user when events are arriving from different sources.  <br><br> Note that <samp>userName</samp> is mutable, meaning an end-user can change their <samp>userName</samp>. In addition <samp>userName</samp> can be recycled and reassigned to other end-users. Therefore, Applications should consider how such situations will be handled. The ability to be notified when <samp>userName</samp> is changed or recycled, such as via the SCIM profile <a href="#FastFedProfile.EnterpriseSCIM" class="xref">[FastFedProfile.EnterpriseSCIM]</a>, can help keep an Application Provider up-to-date with changes.  <br><br> </li>
+<li>The attribute "<samp>emails[primary eq true].value"</samp> represents the primary email address of the user, where <samp>emails</samp> is defined in section 4.1.2 of the SCIM Core specification <a href="#RFC7643" class="xref">[RFC7643]</a>.  <br><br> If an end-user does not have a value for email defined within the Identity Provider, the end-user will be unable to authenticate to the Application. As a result, choosing email as a SAML Subject is appropriate only when an Application requires an email address and is willing to reject end-users who lack it.  <br><br> In addition, emails can be changed or recycled in the same manner as the <samp>userName</samp>. Therefore, similar mechanisms are necessary to handle such events.  <br><br> </li>
+<li>In some circumstances, it may be necessary to use multiple attributes to best match a SAML Authentication response against a specific end-user in the Application. If this occurs, it is acceptable to use both the SAML Subject and the SAML Attributes in combination to perform the matching. In this scenario, the choice of SAML Subject becomes somewhat flexible, and one may choose whichever option is most likely to be available and useful.  </li>
+</ul>
+
+<p> </p>
+<p id="rfc.section.4.1.1.p.6">When generating a SAML Response, the Identity Provider MUST populate the SAML Subject with a NameID containing the attribute requested by the Application Provider, and the associated NameID Format from the table above.  </p>
+<p id="rfc.section.4.1.1.p.7">The Identity Provider MUST be able to provide a value of <samp>externalId</samp> and <samp>userName</samp> for all end-users. Email address is optional.  </p>
+<p id="rfc.section.4.1.1.p.8">If a value for an optional attribute is not defined for an end-user, the Identity Provider MUST NOT perform any authentication activity into the Application Provider for the affected end-user. To assist with diagnostics, the Identity Provider SHOULD signal to the end-user that the attribute is missing and is required by the Application. The means of doing so are outside the scope of the specification, but could include displaying an informative error message when the end-user attempts to authenticate into the application, or making error logs available to the administrators of the Identity Provider.  </p>
+<p id="rfc.section.4.1.1.p.9">The following is a non-normative example of the use of <samp>"externalId"</samp> as the SAML Subject: </p>
 <pre>
  &lt;saml:Subject&gt;
    &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"&gt;1fc58220-7213-47bb-9161-bbd39ad75937&lt;/saml:NameID&gt;
  &lt;/saml:Subject&gt;
 </pre>
-<p id="rfc.section.4.1.1.p.8">The following is a non-normative example of the use of <samp>"email[primary eq true].value"</samp> as the SAML Subject: </p>
-<pre>
- &lt;saml:Subject&gt;
-   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress"&gt;babs@example.com&lt;/saml:NameID&gt;
- &lt;/saml:Subject&gt;
-</pre>
-<p id="rfc.section.4.1.1.p.9">The following is a non-normative example of the use of <samp>"userName"</samp> as the SAML Subject: </p>
+<p id="rfc.section.4.1.1.p.10">The following is a non-normative example of the use of <samp>"userName"</samp> as the SAML Subject: </p>
 <pre>
   &lt;saml:Subject&gt;
     &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified"&gt;bjensen&lt;/saml:NameID&gt;
   &lt;/saml:Subject&gt;
+</pre>
+<p id="rfc.section.4.1.1.p.11">The following is a non-normative example of the use of <samp>"email[primary eq true].value"</samp> as the SAML Subject: </p>
+<pre>                                                                                          
+ &lt;saml:Subject&gt;
+   &lt;saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress"&gt;babs@example.com&lt;/saml:NameID&gt;               
+ &lt;/saml:Subject&gt;
 </pre>
 <h1 id="rfc.section.4.1.2">
 <a href="#rfc.section.4.1.2">4.1.2.</a> <a href="#SchemaBindingScimToSamlAttributes" id="SchemaBindingScimToSamlAttributes">SAML Attributes</a>
@@ -834,7 +845,7 @@
 <h1 id="rfc.section.4.2">
 <a href="#rfc.section.4.2">4.2.</a> <a href="#SchemaBindingPrivacyConsiderations" id="SchemaBindingPrivacyConsiderations">Privacy Considerations</a>
 </h1>
-<p id="rfc.section.4.2.p.1">When exposing user information through SAML Attributes, FastFed Identity Providers MUST NOT expose any attributes which were not in the <samp>desired_attributes</samp> element of the Application Provider Metadata (<a href="#FastFedMetadataApplicationMetadata" class="xref">Section 3.1.2</a>).  </p>
+<p id="rfc.section.4.2.p.1">When exposing user information through SAML Attributes, FastFed Identity Providers MUST NOT expose any attributes which were not in the <samp>desired_attributes</samp> or <samp>saml_subject</samp> elements of the Application Provider Metadata (<a href="#FastFedMetadataApplicationMetadata" class="xref">Section 3.1.2</a>).  </p>
 <h1 id="rfc.section.5">
 <a href="#rfc.section.5">5.</a> <a href="#Interoperability" id="Interoperability">Interoperability Requirements</a>
 </h1>
@@ -964,6 +975,11 @@
 <td class="reference"><b id="FastFed.Core">[FastFed.Core]</b></td>
 <td class="top">
 <a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-core-1_0.html">FastFed Core 1.0</a>", July 2020.</td>
+</tr>
+<tr>
+<td class="reference"><b id="FastFedProfile.EnterpriseSCIM">[FastFedProfile.EnterpriseSCIM]</b></td>
+<td class="top">
+<a title="Amazon">McAdams, K.</a>, "<a href="http://openid.net/specs/fastfed-scim-1_0.html">FastFed Enterprise SCIM Profile 1.0</a>", July 2020.</td>
 </tr>
 <tr>
 <td class="reference"><b id="RFC2119">[RFC2119]</b></td>

@@ -238,7 +238,7 @@
      "urn:ietf:params:fastfed:1.0:provisioning:saml:2.0:enterprise": {
        "saml_subject": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": 
-           "emails[primary eq true].value"
+           "userName"
        },
        "desired_attributes": {
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
@@ -375,13 +375,97 @@
 	    
             <c>externalId</c>
             <c>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</c>
-	    
+
+	    <c>userName</c>
+	    <c>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</c>
+			
             <c>emails[primary eq true].value</c>
             <c>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</c>
-	    
-            <c>userName</c>
-            <c>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</c>
           </texttable>
+	  <t>
+	    As a reference to implementors, the following considerations can be
+	    taken into account when choosing a SAML subject:
+	    <list style="symbols">
+	      <t>
+		The format of <spanx style="verb">externalId</spanx> is defined
+		in section 3.1 of the SCIM Core specification <xref
+		target="RFC7643"/>.  It is a persistent identifier, often a
+		GUID, which is intended to reliably identify a user within the
+		Identity Provider. However, it will vary between Identity
+		Providers. Therefore, if an Application anticipates that
+		Administrators may occasionally switch Identity Providers (as
+		can happen in commercial settings, for example), additional
+		matching rules may be necessary to reconcile provisioning events
+		arriving from different sources.
+		
+		<vspace/><vspace/>
+		Note that while the SCIM Core specification defines the <spanx
+		style="verb">externalId</spanx> as optional, this profile
+		requires Identity Providers to support it, and hence
+		Applications can depend upon it being available.
+		<vspace/><vspace/>
+	      </t>
+	      <t>
+		The format of <spanx style="verb">userName</spanx> is defined in
+		section 4.1.1 of the SCIM Core specification <xref
+		target="RFC7643"/>.  It is a displayable, user-friendly
+		identifier for a user. In practice, the userName can often be an
+		email, but other formats occur.  No assumptions should be made
+		about the format of the userName other than it being a string
+		that the end-user typically enters as a login when
+		authenticating.
+
+		<vspace/><vspace/>
+		If the Administrator switches Identity Providers, it is
+		usually the case that the <spanx style="verb">userName</spanx>
+		remains consistent across providers, making it easier to correlate
+		authentication and provisioning events to a single user when events are
+		arriving from different sources.
+
+		<vspace/><vspace/> Note that <spanx
+		style="verb">userName</spanx> is mutable, meaning an end-user
+		can change their <spanx style="verb">userName</spanx>. In
+		addition <spanx style="verb">userName</spanx> can be recycled
+		and reassigned to other end-users. Therefore, Applications should
+		consider how such situations will be handled. The ability to be
+		notified when <spanx style="verb">userName</spanx> is changed or
+		recycled, such as via the SCIM profile <xref
+		target="FastFedProfile.EnterpriseSCIM"/>, can help keep an
+		Application Provider up-to-date with changes.
+		<vspace/><vspace/>
+	      </t>
+	      <t>
+		The attribute "<spanx style="verb">emails[primary eq true].value"</spanx>
+		represents the primary email address of the user, where <spanx
+		style="verb">emails</spanx> is defined in section 4.1.2 of the
+		SCIM Core specification <xref target="RFC7643"/>.
+
+		<vspace/><vspace/>
+		If an end-user does not have a value for
+		email defined within the Identity Provider, the end-user will be
+		unable to authenticate to the Application. As a result, choosing
+		email as a SAML Subject is appropriate only when an Application
+		requires an email address and is willing to reject end-users who
+		lack it.
+
+		<vspace/><vspace/> In addition, emails can be
+		changed or recycled in the same manner as the <spanx
+		style="verb">userName</spanx>. Therefore, similar mechanisms are
+		necessary to handle such events.
+		<vspace/><vspace/>
+	      </t>
+	      <t>
+		In some circumstances, it may be necessary to use multiple
+		attributes to best match a SAML Authentication response against
+		a specific end-user in the Application. If this occurs, it is
+		acceptable to use both the SAML Subject and the SAML Attributes
+		in combination to perform the matching. In this scenario, the
+		choice of SAML Subject becomes somewhat flexible, and one may
+		choose whichever option is most likely to be available and
+		useful.
+	      </t>
+	    </list>
+	  </t>
 	  <t>
 	    When generating a SAML Response, the Identity Provider MUST populate
 	    the SAML Subject with a NameID containing the attribute requested by
@@ -389,7 +473,12 @@
 	    table above. 
 	  </t>
 	  <t>
-	    If a value for the attribute is not defined for an end-user, the
+	    The Identity Provider MUST be able to provide a value of <spanx
+	    style="verb">externalId</spanx> and <spanx style="verb">
+	    userName</spanx> for all end-users. Email address is optional.
+	  </t>
+	  <t>
+	    If a value for an optional attribute is not defined for an end-user, the
 	    Identity Provider MUST NOT perform any authentication activity into
 	    the Application Provider for the affected end-user. To assist with
 	    diagnostics, the Identity Provider SHOULD signal to the end-user that
@@ -410,15 +499,6 @@
 ]]></artwork></figure>
 	  <t>
 	    The following is a non-normative example of the use of <spanx
-	    style="verb">"email[primary eq true].value"</spanx> as the SAML Subject:
-          </t>
-          <figure><artwork><![CDATA[
- <saml:Subject>
-   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress">babs@example.com</saml:NameID>
- </saml:Subject>
-]]></artwork></figure>
-	  <t>
-	    The following is a non-normative example of the use of <spanx
 	    style="verb">"userName"</spanx> as the SAML
 	    Subject:
           </t>
@@ -426,6 +506,16 @@
   <saml:Subject>
     <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified">bjensen</saml:NameID>
   </saml:Subject>
+]]></artwork></figure>
+	  <t>
+            The following is a non-normative example of the use of <spanx
+            style="verb">"email[primary eq true].value"</spanx> as the SAML
+            Subject:
+          </t>
+          <figure><artwork><![CDATA[                                                                                          
+ <saml:Subject>
+   <saml:NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress">babs@example.com</saml:NameID>               
+ </saml:Subject>
 ]]></artwork></figure>
 	</section>
 	
@@ -555,8 +645,9 @@
         <t>
           When exposing user information through SAML Attributes, FastFed
           Identity Providers MUST NOT expose any attributes which were not in
-          the <spanx style="verb">desired_attributes</spanx> element of the
-          Application Provider Metadata
+          the <spanx style="verb">desired_attributes</spanx> or <spanx
+	  style="verb">saml_subject</spanx>
+	  elements of the Application Provider Metadata
           (<xref target="FastFedMetadataApplicationMetadata"/>).
         </t>
       </section>
@@ -930,6 +1021,15 @@
         </front>
       </reference>
 
+      <reference anchor="FastFedProfile.EnterpriseSCIM" target="http://openid.net/specs/fastfed-scim-1_0.html">
+        <front>
+          <title>FastFed Enterprise SCIM Profile 1.0</title>
+          <author fullname="Darin" initials="K." surname="McAdams">
+            <organization abbrev="Amazon">Amazon</organization>
+          </author> <date day="27" month="July" year="2020"/>
+        </front>
+      </reference>
+  
       <reference anchor="SAML.Interoperability" target="https://www.oasis-open.org/committees/download.php/36645/draft-sstc-metadata-iop-2.0-01.pdf">
 	<front>
 	  <title>SAML V2.0 Metadata Interoperability Profile Version 1.0</title>

@@ -944,8 +944,8 @@ McAdams                 Expires January 28, 2021               [Page 16]
    If the Application Provider supports Groups, it MUST implement all
    the Group provisioning operations defined in this section.
 
-   The Identity Provider MUST query the Application Provider's SCIM
-   /ResourceTypes endpoint to determine if Groups are supported.  As a
+
+
 
 
 
@@ -954,15 +954,22 @@ McAdams                 Expires January 28, 2021               [Page 17]
                    FastFed Enterprise SCIM Profile 1.0         July 2020
 
 
-   reference to implementors, this check can occur when the FastFed
-   Handshake completes, on-or-after Section 7.2.4.4 of the FastFed Core
+   If an Identity Provider holds information about Groups, then it MUST
+   implement provisioning of the Group information to Applications who
+   support it.
+
+   Before initiating Group provisioning, the Identity Provider MUST
+   query the Application Provider's SCIM /ResourceTypes endpoint to
+   confirm Groups are supported by the Application.  As a reference to
+   implementors, this check can occur when the FastFed Handshake
+   completes, on-or-after Section 7.2.4.4 of the FastFed Core
    [FastFed.Core] specification.
 
-   If the Application Provider supports Group provisioning, the Identity
-   Provider SHOULD replicate Group information to the Application
-   Provider within 60 minutes of the Group being created or updated.
-   Identity Providers MAY use any combination of the operations to
-   perform Group provisioning.
+   If both the Identity Provider and the Application Provider support
+   Group provisioning, the Identity Provider SHOULD replicate Group
+   information to the Application Provider within 60 minutes of the
+   Group being created or updated.  Identity Providers MAY use any
+   combination of the operations to perform Group provisioning.
 
 4.3.1.  Create Group
 
@@ -995,13 +1002,6 @@ McAdams                 Expires January 28, 2021               [Page 17]
    Group in the same PATCH request that updates other Group attributes.
    See Section 4.3.7 for information on Group membership changes.
 
-   The following is a non-normative example of updating a Group:
-
-
-
-
-
-
 
 
 
@@ -1009,6 +1009,8 @@ McAdams                 Expires January 28, 2021               [Page 18]
 
                    FastFed Enterprise SCIM Profile 1.0         July 2020
 
+
+   The following is a non-normative example of updating a Group:
 
     PATCH /Groups/{id}  HTTP/1.1
     Host: example.com
@@ -1055,9 +1057,7 @@ McAdams                 Expires January 28, 2021               [Page 18]
    group is being created with a recycled name that requires cleanup of
    the prior record.
 
-   To allow this behavior, Application Providers MUST support removing
-   all Group members via the SCIM operation "PATCH Groups/{id}" with an
-   "Operation" element containing the following contents:
+
 
 
 
@@ -1065,6 +1065,10 @@ McAdams                 Expires January 28, 2021               [Page 19]
 
                    FastFed Enterprise SCIM Profile 1.0         July 2020
 
+
+   To allow this behavior, Application Providers MUST support removing
+   all Group members via the SCIM operation "PATCH Groups/{id}" with an
+   "Operation" element containing the following contents:
 
    o  The "op" attribute set to ""remove"".
 
@@ -1110,10 +1114,6 @@ McAdams                 Expires January 28, 2021               [Page 19]
 
    The following is a non-normative example of retrieving a Group by id:
 
-    GET /Groups/{id}?excludedAttributes=members
-    Host: example.com
-    Accept: application/scim+json
-    Authorization: Bearer h480djs93hd8
 
 
 
@@ -1121,6 +1121,11 @@ McAdams                 Expires January 28, 2021               [Page 20]
 
                    FastFed Enterprise SCIM Profile 1.0         July 2020
 
+
+    GET /Groups/{id}?excludedAttributes=members
+    Host: example.com
+    Accept: application/scim+json
+    Authorization: Bearer h480djs93hd8
 
     HTTP/1.1 200 OK
     Content-Type: application/scim+json
@@ -1140,7 +1145,7 @@ McAdams                 Expires January 28, 2021               [Page 20]
 
 4.3.6.  List Groups By Alternate Identifier
 
-   User lookups by alternate identifier are performed via the SCIM
+   Group lookups by alternate identifier are performed via the SCIM
    operation: "GET
    /Groups?filter={filterExpression}&excludedAttributes=members"
 
@@ -1155,11 +1160,6 @@ McAdams                 Expires January 28, 2021               [Page 20]
  Host: example.com
  Accept: application/scim+json
  Authorization: Bearer h480djs93hd8
-
-
-
-
-
 
 
 

@@ -1100,8 +1100,9 @@
 </h1>
 <p id="rfc.section.4.3.p.1">Application Providers MAY support Group Provisioning. Support is indicated by including values for <samp>required_group_attributes</samp> and <samp>optional_group_attributes</samp> in the desired attributes, as specified in <a href="#FastFedMetadataApplicationMetadata" class="xref">Section 3.1.2</a>. In addition, the Application Provider must include Groups as a supported resource type in the response from the SCIM /ResourceTypes endpoint, as defined in Section 4 of the SCIM Protocol <a href="#RFC7644" class="xref">[RFC7644]</a>.  </p>
 <p id="rfc.section.4.3.p.2">If the Application Provider supports Groups, it MUST implement all the Group provisioning operations defined in this section.  </p>
-<p id="rfc.section.4.3.p.3">The Identity Provider MUST query the Application Provider's SCIM /ResourceTypes endpoint to determine if Groups are supported. As a reference to implementors, this check can occur when the FastFed Handshake completes, on-or-after Section 7.2.4.4 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification.  </p>
-<p id="rfc.section.4.3.p.4">If the Application Provider supports Group provisioning, the Identity Provider SHOULD replicate Group information to the Application Provider within 60 minutes of the Group being created or updated. Identity Providers MAY use any combination of the operations to perform Group provisioning.  </p>
+<p id="rfc.section.4.3.p.3">If an Identity Provider holds information about Groups, then it MUST implement provisioning of the Group information to Applications who support it.  </p>
+<p id="rfc.section.4.3.p.4">Before initiating Group provisioning, the Identity Provider MUST query the Application Provider's SCIM /ResourceTypes endpoint to confirm Groups are supported by the Application. As a reference to implementors, this check can occur when the FastFed Handshake completes, on-or-after Section 7.2.4.4 of the <a href="#FastFed.Core" class="xref">FastFed Core</a> specification.  </p>
+<p id="rfc.section.4.3.p.5">If both the Identity Provider and the Application Provider support Group provisioning, the Identity Provider SHOULD replicate Group information to the Application Provider within 60 minutes of the Group being created or updated. Identity Providers MAY use any combination of the operations to perform Group provisioning.  </p>
 <h1 id="rfc.section.4.3.1">
 <a href="#rfc.section.4.3.1">4.3.1.</a> <a href="#SCIMInteroperabilityGroupProvisioningCreateGroup" id="SCIMInteroperabilityGroupProvisioningCreateGroup">Create Group</a>
 </h1>
@@ -1228,7 +1229,7 @@
 <h1 id="rfc.section.4.3.6">
 <a href="#rfc.section.4.3.6">4.3.6.</a> <a href="#SCIMInteroperabilityUserProvisioningSearchGroupsByAlternateIds" id="SCIMInteroperabilityUserProvisioningSearchGroupsByAlternateIds">List Groups By Alternate Identifier</a>
 </h1>
-<p id="rfc.section.4.3.6.p.1">User lookups by alternate identifier are performed via the SCIM operation: <samp>GET /Groups?filter={filterExpression}&amp;excludedAttributes=members</samp> </p>
+<p id="rfc.section.4.3.6.p.1">Group lookups by alternate identifier are performed via the SCIM operation: <samp>GET /Groups?filter={filterExpression}&amp;excludedAttributes=members</samp> </p>
 <p id="rfc.section.4.3.6.p.2">Application Providers MUST support the following filter expressions: </p>
 
 <ul><li><samp>displayName eq {displayName}</samp></li></ul>
