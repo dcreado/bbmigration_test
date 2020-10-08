@@ -4,7 +4,7 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                           July 27, 2020
+                                                         October 7, 2020
 
 
              FastFed Enterprise SCIM Profile 1.0 - draft 03
@@ -53,9 +53,9 @@ Table of Contents
 
 
 
-McAdams                 Expires January 28, 2021                [Page 1]
+McAdams                  Expires April 10, 2021                 [Page 1]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
        4.3.7.  Add or Remove Group Members . . . . . . . . . . . . .  22
@@ -109,9 +109,9 @@ McAdams                 Expires January 28, 2021                [Page 1]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 2]
+McAdams                  Expires April 10, 2021                 [Page 2]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
 1.2.  Terminology
@@ -165,9 +165,9 @@ McAdams                 Expires January 28, 2021                [Page 2]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 3]
+McAdams                  Expires April 10, 2021                 [Page 3]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
 3.1.  FastFed Metadata
@@ -221,9 +221,9 @@ McAdams                 Expires January 28, 2021                [Page 3]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 4]
+McAdams                  Expires April 10, 2021                 [Page 4]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
       *  Include the SCIM Core Group attributes "displayName" and
@@ -277,9 +277,9 @@ McAdams                 Expires January 28, 2021                [Page 4]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 5]
+McAdams                  Expires April 10, 2021                 [Page 5]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
        ],
@@ -333,9 +333,9 @@ McAdams                 Expires January 28, 2021                [Page 5]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 6]
+McAdams                  Expires April 10, 2021                 [Page 6]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    The Application Provider fulfills the role of a SCIM Service.  It has
@@ -389,9 +389,9 @@ McAdams                 Expires January 28, 2021                [Page 6]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 7]
+McAdams                  Expires April 10, 2021                 [Page 7]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     {
@@ -445,9 +445,9 @@ McAdams                 Expires January 28, 2021                [Page 7]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 8]
+McAdams                  Expires April 10, 2021                 [Page 8]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
  {
@@ -501,9 +501,9 @@ McAdams                 Expires January 28, 2021                [Page 8]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 9]
+McAdams                  Expires April 10, 2021                 [Page 9]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     {
@@ -557,9 +557,9 @@ McAdams                 Expires January 28, 2021                [Page 9]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 10]
+McAdams                  Expires April 10, 2021                [Page 10]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    However, a consequence of the flexibility is that two Providers may
@@ -613,9 +613,9 @@ McAdams                 Expires January 28, 2021               [Page 10]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 11]
+McAdams                  Expires April 10, 2021                [Page 11]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
 4.2.1.  Create User
@@ -669,9 +669,9 @@ McAdams                 Expires January 28, 2021               [Page 11]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 12]
+McAdams                  Expires April 10, 2021                [Page 12]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     PATCH /Users/{id}  HTTP/1.1
@@ -725,9 +725,9 @@ McAdams                 Expires January 28, 2021               [Page 12]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 13]
+McAdams                  Expires April 10, 2021                [Page 13]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     PATCH /Users/{id}  HTTP/1.1
@@ -781,9 +781,9 @@ McAdams                 Expires January 28, 2021               [Page 13]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 14]
+McAdams                  Expires April 10, 2021                [Page 14]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     DELETE /Users/{id}
@@ -837,9 +837,9 @@ McAdams                 Expires January 28, 2021               [Page 14]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 15]
+McAdams                  Expires April 10, 2021                [Page 15]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
 4.2.6.  List Users By Alternate Identifier
@@ -893,9 +893,9 @@ McAdams                 Expires January 28, 2021               [Page 15]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 16]
+McAdams                  Expires April 10, 2021                [Page 16]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     HTTP/1.1 200 OK
@@ -949,9 +949,9 @@ McAdams                 Expires January 28, 2021               [Page 16]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 17]
+McAdams                  Expires April 10, 2021                [Page 17]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    If an Identity Provider holds information about Groups, then it MUST
@@ -1005,9 +1005,9 @@ McAdams                 Expires January 28, 2021               [Page 17]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 18]
+McAdams                  Expires April 10, 2021                [Page 18]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    The following is a non-normative example of updating a Group:
@@ -1061,9 +1061,9 @@ McAdams                 Expires January 28, 2021               [Page 18]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 19]
+McAdams                  Expires April 10, 2021                [Page 19]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    To allow this behavior, Application Providers MUST support removing
@@ -1117,9 +1117,9 @@ McAdams                 Expires January 28, 2021               [Page 19]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 20]
+McAdams                  Expires April 10, 2021                [Page 20]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     GET /Groups/{id}?excludedAttributes=members
@@ -1173,9 +1173,9 @@ McAdams                 Expires January 28, 2021               [Page 20]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 21]
+McAdams                  Expires April 10, 2021                [Page 21]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     HTTP/1.1 200 OK
@@ -1229,9 +1229,9 @@ McAdams                 Expires January 28, 2021               [Page 21]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 22]
+McAdams                  Expires April 10, 2021                [Page 22]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
       *  The "value" attribute MUST be unspecified.
@@ -1285,9 +1285,9 @@ McAdams                 Expires January 28, 2021               [Page 22]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 23]
+McAdams                  Expires April 10, 2021                [Page 23]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
     PATCH /Groups/{id}  HTTP/1.1
@@ -1341,9 +1341,9 @@ McAdams                 Expires January 28, 2021               [Page 23]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 24]
+McAdams                  Expires April 10, 2021                [Page 24]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    Additional capabilities MAY be supported, but are not required for
@@ -1397,9 +1397,9 @@ McAdams                 Expires January 28, 2021               [Page 24]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 25]
+McAdams                  Expires April 10, 2021                [Page 25]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    Upon receiving this information, the Application Provider may
@@ -1453,9 +1453,9 @@ McAdams                 Expires January 28, 2021               [Page 25]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 26]
+McAdams                  Expires April 10, 2021                [Page 26]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    Next, a request is made to the OAuth token endpoint, using the signed
@@ -1509,9 +1509,9 @@ McAdams                 Expires January 28, 2021               [Page 26]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 27]
+McAdams                  Expires April 10, 2021                [Page 27]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    When the access token expires, the SCIM service returns an HTTP 401
@@ -1533,7 +1533,7 @@ McAdams                 Expires January 28, 2021               [Page 27]
 8.  Normative References
 
    [FastFed.Core]
-              McAdams, K., "FastFed Core 1.0", July 2020,
+              McAdams, K., "FastFed Core 1.0", October 2020,
               <http://openid.net/specs/fastfed-core-1_0.html>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
@@ -1565,9 +1565,9 @@ McAdams                 Expires January 28, 2021               [Page 27]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 28]
+McAdams                  Expires April 10, 2021                [Page 28]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
 Appendix A.  Acknowledgements
@@ -1621,9 +1621,9 @@ Appendix B.  Notices
 
 
 
-McAdams                 Expires January 28, 2021               [Page 29]
+McAdams                  Expires April 10, 2021                [Page 29]
 
-                   FastFed Enterprise SCIM Profile 1.0         July 2020
+                   FastFed Enterprise SCIM Profile 1.0      October 2020
 
 
    pertain to the implementation or use of the technology described in
@@ -1677,4 +1677,4 @@ Author's Address
 
 
 
-McAdams                 Expires January 28, 2021               [Page 30]
+McAdams                  Expires April 10, 2021                [Page 30]

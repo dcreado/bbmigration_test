@@ -4,7 +4,7 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                           July 27, 2020
+                                                         October 7, 2020
 
 
                       FastFed Core 1.0 - draft 03
@@ -53,9 +53,9 @@ Table of Contents
 
 
 
-McAdams                 Expires January 28, 2021                [Page 1]
+McAdams                  Expires April 10, 2021                 [Page 1]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
        4.1.1.  Endpoint Validation . . . . . . . . . . . . . . . . .  26
@@ -109,9 +109,9 @@ McAdams                 Expires January 28, 2021                [Page 1]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 2]
+McAdams                  Expires April 10, 2021                 [Page 2]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
          7.2.2.5.  Identity Provider Obtains Confirmation from
@@ -165,9 +165,9 @@ McAdams                 Expires January 28, 2021                [Page 2]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 3]
+McAdams                  Expires April 10, 2021                 [Page 3]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Finally, a working configuration may cease to function when the
@@ -221,9 +221,9 @@ McAdams                 Expires January 28, 2021                [Page 3]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 4]
+McAdams                  Expires April 10, 2021                 [Page 4]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 1.2.  Terminology
@@ -277,9 +277,9 @@ McAdams                 Expires January 28, 2021                [Page 4]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 5]
+McAdams                  Expires April 10, 2021                 [Page 5]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 2.  Overview
@@ -333,9 +333,9 @@ McAdams                 Expires January 28, 2021                [Page 5]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 6]
+McAdams                  Expires April 10, 2021                 [Page 6]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
  {
@@ -389,9 +389,9 @@ McAdams                 Expires January 28, 2021                [Page 6]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 7]
+McAdams                  Expires April 10, 2021                 [Page 7]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    o  FastFed Handshake Register Endpoint, hosted by the Application
@@ -445,9 +445,9 @@ McAdams                 Expires January 28, 2021                [Page 7]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 8]
+McAdams                  Expires April 10, 2021                 [Page 8]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    7.  Identity Provider captures the federation configuration.
@@ -501,9 +501,9 @@ McAdams                 Expires January 28, 2021                [Page 8]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 9]
+McAdams                  Expires April 10, 2021                 [Page 9]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Administrators bear the burden of this inconsistency.  The lack of
@@ -557,9 +557,9 @@ McAdams                 Expires January 28, 2021                [Page 9]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 10]
+McAdams                  Expires April 10, 2021                [Page 10]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    information with a hosted application.  In recognition of this,
@@ -613,9 +613,9 @@ McAdams                 Expires January 28, 2021               [Page 10]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 11]
+McAdams                  Expires April 10, 2021                [Page 11]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 3.2.  Metadata Languages and Scripts
@@ -669,9 +669,9 @@ McAdams                 Expires January 28, 2021               [Page 11]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 12]
+McAdams                  Expires April 10, 2021                [Page 12]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 3.3.1.  Capabilities
@@ -725,9 +725,9 @@ McAdams                 Expires January 28, 2021               [Page 12]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 13]
+McAdams                  Expires April 10, 2021                [Page 13]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
       Profiles (for example, SCIM provisioning) which require
@@ -781,9 +781,9 @@ McAdams                 Expires January 28, 2021               [Page 13]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 14]
+McAdams                  Expires April 10, 2021                [Page 14]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
       Section 7.1.4.  To maximize interoperability, all Providers are
@@ -837,9 +837,9 @@ McAdams                 Expires January 28, 2021               [Page 14]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 15]
+McAdams                  Expires April 10, 2021                [Page 15]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 3.3.4.  Attribute Reference
@@ -893,9 +893,9 @@ McAdams                 Expires January 28, 2021               [Page 15]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 16]
+McAdams                  Expires April 10, 2021                [Page 16]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    3.  As per Section 3.10 of the SCIM Protocol Specification RFC 7644
@@ -949,9 +949,9 @@ McAdams                 Expires January 28, 2021               [Page 16]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 17]
+McAdams                  Expires April 10, 2021                [Page 17]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
        the SCIM PATH.  Wildcards MUST NOT be used in the
@@ -1005,9 +1005,9 @@ McAdams                 Expires January 28, 2021               [Page 17]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 18]
+McAdams                  Expires April 10, 2021                [Page 18]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    required_user_attributes  REQUIRED.  A list of Attribute References
@@ -1061,9 +1061,9 @@ McAdams                 Expires January 28, 2021               [Page 18]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 19]
+McAdams                  Expires April 10, 2021                [Page 19]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    optional_group_attributes  OPTIONAL.  A list of Attribute References
@@ -1117,9 +1117,9 @@ McAdams                 Expires January 28, 2021               [Page 19]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 20]
+McAdams                  Expires April 10, 2021                [Page 20]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
      {
@@ -1173,9 +1173,9 @@ McAdams                 Expires January 28, 2021               [Page 20]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 21]
+McAdams                  Expires April 10, 2021                [Page 21]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Common Provider Metadata is a structure with the following members:
@@ -1229,9 +1229,9 @@ McAdams                 Expires January 28, 2021               [Page 21]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 22]
+McAdams                  Expires April 10, 2021                [Page 22]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    jwks_uri  REQUIRED.  URL of the Identity Provider's JSON Web Key Set
@@ -1285,9 +1285,9 @@ McAdams                 Expires January 28, 2021               [Page 22]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 23]
+McAdams                  Expires April 10, 2021                [Page 23]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 3.3.9.  Application Provider Metadata
@@ -1341,9 +1341,9 @@ McAdams                 Expires January 28, 2021               [Page 23]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 24]
+McAdams                  Expires April 10, 2021                [Page 24]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
  {
@@ -1397,9 +1397,9 @@ McAdams                 Expires January 28, 2021               [Page 24]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 25]
+McAdams                  Expires April 10, 2021                [Page 25]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Provider Metadata Endpoint (a.k.a.  "FastFed URL") to initiate the
@@ -1453,9 +1453,9 @@ McAdams                 Expires January 28, 2021               [Page 25]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 26]
+McAdams                  Expires April 10, 2021                [Page 26]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 4.1.2.1.  Email-based Discovery via WebFinger
@@ -1509,9 +1509,9 @@ McAdams                 Expires January 28, 2021               [Page 26]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 27]
+McAdams                  Expires April 10, 2021                [Page 27]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    "http://openid.net/specs/fastfed/1.0/provider".  (Per Section 7 of
@@ -1565,9 +1565,9 @@ McAdams                 Expires January 28, 2021               [Page 27]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 28]
+McAdams                  Expires April 10, 2021                [Page 28]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
      HTTP/1.1 200 OK
@@ -1621,9 +1621,9 @@ McAdams                 Expires January 28, 2021               [Page 28]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 29]
+McAdams                  Expires April 10, 2021                [Page 29]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
  HTTP/1.1 200 OK
@@ -1677,9 +1677,9 @@ McAdams                 Expires January 28, 2021               [Page 29]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 30]
+McAdams                  Expires April 10, 2021                [Page 30]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    o  From the Provider Contact Information (Section 3.3.3):
@@ -1733,9 +1733,9 @@ McAdams                 Expires January 28, 2021               [Page 30]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 31]
+McAdams                  Expires April 10, 2021                [Page 31]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    o  For any locally cached data, MUST re-query the URLs at least once
@@ -1789,9 +1789,9 @@ McAdams                 Expires January 28, 2021               [Page 31]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 32]
+McAdams                  Expires April 10, 2021                [Page 32]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Each list is evaluated for compatibility via the following steps:
@@ -1845,9 +1845,9 @@ McAdams                 Expires January 28, 2021               [Page 32]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 33]
+McAdams                  Expires April 10, 2021                [Page 33]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
       request from the Application Provider and the FastFed Handshake
@@ -1901,9 +1901,9 @@ McAdams                 Expires January 28, 2021               [Page 33]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 34]
+McAdams                  Expires April 10, 2021                [Page 34]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    to validate the signature.  Keys can be rolled over by periodically
@@ -1957,9 +1957,9 @@ McAdams                 Expires January 28, 2021               [Page 34]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 35]
+McAdams                  Expires April 10, 2021                [Page 35]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    kid  The JWS signing key MUST exist in the JSON Web Key Set [JWK]
@@ -2013,9 +2013,9 @@ McAdams                 Expires January 28, 2021               [Page 35]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 36]
+McAdams                  Expires April 10, 2021                [Page 36]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    This specification defines a mechanism for exchanging a signed JWT
@@ -2069,9 +2069,9 @@ McAdams                 Expires January 28, 2021               [Page 36]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 37]
+McAdams                  Expires April 10, 2021                [Page 37]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.1.2.  HTTP Redirects
@@ -2125,9 +2125,9 @@ McAdams                 Expires January 28, 2021               [Page 37]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 38]
+McAdams                  Expires April 10, 2021                [Page 38]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Duplicates and redrives are detected by examining the "entity_id" of
@@ -2181,9 +2181,9 @@ McAdams                 Expires January 28, 2021               [Page 38]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 39]
+McAdams                  Expires April 10, 2021                [Page 39]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.2.1.3.  Application Provider Checks For Duplicates
@@ -2237,9 +2237,9 @@ McAdams                 Expires January 28, 2021               [Page 39]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 40]
+McAdams                  Expires April 10, 2021                [Page 40]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    1.  "entity_id" of the Identity Provider, as specified in the
@@ -2293,9 +2293,9 @@ McAdams                 Expires January 28, 2021               [Page 40]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 41]
+McAdams                  Expires April 10, 2021                [Page 41]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.2.1.7.  Application Provider Sends Request to the Identity Provider
@@ -2349,9 +2349,9 @@ McAdams                 Expires January 28, 2021               [Page 41]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 42]
+McAdams                  Expires April 10, 2021                [Page 42]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    Metadata (Section 3.3.8) and the request parameters encoded using
@@ -2405,9 +2405,9 @@ McAdams                 Expires January 28, 2021               [Page 42]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 43]
+McAdams                  Expires April 10, 2021                [Page 43]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    the Administrator SHOULD explain that the incompatibility applies
@@ -2461,9 +2461,9 @@ McAdams                 Expires January 28, 2021               [Page 43]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 44]
+McAdams                  Expires April 10, 2021                [Page 44]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    If new values exist in the capabilities that don't exist in the
@@ -2517,9 +2517,9 @@ McAdams                 Expires January 28, 2021               [Page 44]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 45]
+McAdams                  Expires April 10, 2021                [Page 45]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.2.3.  Handshake Registration
@@ -2573,9 +2573,9 @@ McAdams                 Expires January 28, 2021               [Page 45]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 46]
+McAdams                  Expires April 10, 2021                [Page 46]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    For example, the following is a non-normative example of the contents
@@ -2629,9 +2629,9 @@ McAdams                 Expires January 28, 2021               [Page 46]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 47]
+McAdams                  Expires April 10, 2021                [Page 47]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    2.  Verify the "iss" attribute matches a whitelisted "entity_id" for
@@ -2685,9 +2685,9 @@ McAdams                 Expires January 28, 2021               [Page 47]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 48]
+McAdams                  Expires April 10, 2021                [Page 48]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    If the registration request applies to an existing federation
@@ -2741,9 +2741,9 @@ McAdams                 Expires January 28, 2021               [Page 48]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 49]
+McAdams                  Expires April 10, 2021                [Page 49]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    [FastFedProfile.EnterpriseSCIM] profile will result in the location
@@ -2797,9 +2797,9 @@ McAdams                 Expires January 28, 2021               [Page 49]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 50]
+McAdams                  Expires April 10, 2021                [Page 50]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.2.4.  Handshake Finalization
@@ -2853,9 +2853,9 @@ McAdams                 Expires January 28, 2021               [Page 50]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 51]
+McAdams                  Expires April 10, 2021                [Page 51]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    The following is a non-normative example of the contents of a
@@ -2909,9 +2909,9 @@ McAdams                 Expires January 28, 2021               [Page 51]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 52]
+McAdams                  Expires April 10, 2021                [Page 52]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 7.2.4.3.  Application Provider Sends Finalization Response
@@ -2965,9 +2965,9 @@ McAdams                 Expires January 28, 2021               [Page 52]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 53]
+McAdams                  Expires April 10, 2021                [Page 53]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    by another party, it can allow the malicious actor to access the
@@ -3021,9 +3021,9 @@ McAdams                 Expires January 28, 2021               [Page 53]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 54]
+McAdams                  Expires April 10, 2021                [Page 54]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    approval processes, Test of User Presence [W3C.WebAuthn], or change
@@ -3065,21 +3065,21 @@ McAdams                 Expires January 28, 2021               [Page 54]
 10.  Normative References
 
    [FastFedProfile.EnterpriseSAML]
-              McAdams, K., "FastFed Enterprise SAML Profile 1.0", July
-              2020, <http://openid.net/specs/fastfed-saml-1_0.html>.
+              McAdams, K., "FastFed Enterprise SAML Profile 1.0",
+              October 2020,
+              <http://openid.net/specs/fastfed-saml-1_0.html>.
 
    [FastFedProfile.EnterpriseSCIM]
-              McAdams, K., "FastFed Enterprise SCIM Profile 1.0", July
-              2020, <http://openid.net/specs/fastfed-scim-1_0.html>.
+              McAdams, K., "FastFed Enterprise SCIM Profile 1.0",
+              October 2020,
+              <http://openid.net/specs/fastfed-scim-1_0.html>.
 
 
 
 
-
-
-McAdams                 Expires January 28, 2021               [Page 55]
+McAdams                  Expires April 10, 2021                [Page 55]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    [OpenID.Registration]
@@ -3133,9 +3133,9 @@ McAdams                 Expires January 28, 2021               [Page 55]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 56]
+McAdams                  Expires April 10, 2021                [Page 56]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    [RFC6125]  Saint-Andre, P. and J. Hodges, "Representation and
@@ -3189,9 +3189,9 @@ McAdams                 Expires January 28, 2021               [Page 56]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 57]
+McAdams                  Expires April 10, 2021                [Page 57]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
    [RFC7644]  Hunt, P., Ed., Grizzle, K., Ansari, M., Wahlstroem, E.,
@@ -3245,9 +3245,9 @@ Appendix A.  Acknowledgements
 
 
 
-McAdams                 Expires January 28, 2021               [Page 58]
+McAdams                  Expires April 10, 2021                [Page 58]
 
-                            FastFed Core 1.0                   July 2020
+                            FastFed Core 1.0                October 2020
 
 
 Appendix B.  Notices
@@ -3301,4 +3301,4 @@ Author's Address
 
 
 
-McAdams                 Expires January 28, 2021               [Page 59]
+McAdams                  Expires April 10, 2021                [Page 59]

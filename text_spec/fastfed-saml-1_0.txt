@@ -4,7 +4,7 @@
 
                                                               D. McAdams
                                                                   Amazon
-                                                           July 27, 2020
+                                                         October 7, 2020
 
 
              FastFed Enterprise SAML Profile 1.0 - draft 03
@@ -53,9 +53,9 @@ Table of Contents
 
 
 
-McAdams                 Expires January 28, 2021                [Page 1]
+McAdams                  Expires April 10, 2021                 [Page 1]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
 1.  Introduction
@@ -109,9 +109,9 @@ McAdams                 Expires January 28, 2021                [Page 1]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 2]
+McAdams                  Expires April 10, 2021                 [Page 2]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    The Application Provider fulfills the role of a SAML Application
@@ -165,9 +165,9 @@ McAdams                 Expires January 28, 2021                [Page 2]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 3]
+McAdams                  Expires April 10, 2021                 [Page 3]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    desired_attributes  OPTIONAL.  A structure specifying the values to
@@ -221,9 +221,9 @@ McAdams                 Expires January 28, 2021                [Page 3]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 4]
+McAdams                  Expires April 10, 2021                 [Page 4]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
  {
@@ -277,9 +277,9 @@ McAdams                 Expires January 28, 2021                [Page 4]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 5]
+McAdams                  Expires April 10, 2021                 [Page 5]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
 3.2.  FastFed Handshake
@@ -333,9 +333,9 @@ McAdams                 Expires January 28, 2021                [Page 5]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 6]
+McAdams                  Expires April 10, 2021                 [Page 6]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
  {
@@ -389,9 +389,9 @@ McAdams                 Expires January 28, 2021                [Page 6]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 7]
+McAdams                  Expires April 10, 2021                 [Page 7]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    +--------------+----------------------------------------------------+
@@ -445,9 +445,9 @@ McAdams                 Expires January 28, 2021                [Page 7]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 8]
+McAdams                  Expires April 10, 2021                 [Page 8]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
       Note that "userName" is mutable, meaning an end-user can change
@@ -501,9 +501,9 @@ McAdams                 Expires January 28, 2021                [Page 8]
 
 
 
-McAdams                 Expires January 28, 2021                [Page 9]
+McAdams                  Expires April 10, 2021                 [Page 9]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    could include displaying an informative error message when the end-
@@ -557,9 +557,9 @@ McAdams                 Expires January 28, 2021                [Page 9]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 10]
+McAdams                  Expires April 10, 2021                [Page 10]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    If attributes are requested, and values exist for the user, then the
@@ -613,9 +613,9 @@ McAdams                 Expires January 28, 2021               [Page 10]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 11]
+McAdams                  Expires April 10, 2021                [Page 11]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
  <saml:AttributeStatement>
@@ -669,9 +669,9 @@ McAdams                 Expires January 28, 2021               [Page 11]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 12]
+McAdams                  Expires April 10, 2021                [Page 12]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    The following sections describe the subset of the SAML specifications
@@ -725,9 +725,9 @@ McAdams                 Expires January 28, 2021               [Page 12]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 13]
+McAdams                  Expires April 10, 2021                [Page 13]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    o  MUST implement the required functionality of a SAML Service
@@ -781,9 +781,9 @@ McAdams                 Expires January 28, 2021               [Page 13]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 14]
+McAdams                  Expires April 10, 2021                [Page 14]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    The LoginHint MUST NOT be included in request signature for the HTTP
@@ -837,9 +837,9 @@ McAdams                 Expires January 28, 2021               [Page 14]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 15]
+McAdams                  Expires April 10, 2021                [Page 15]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
       consumers time to read the new certificate from the SAML Metadata
@@ -893,9 +893,9 @@ McAdams                 Expires January 28, 2021               [Page 15]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 16]
+McAdams                  Expires April 10, 2021                [Page 16]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    o  SHOULD alert the Administrator if the Identity Provider has not
@@ -941,7 +941,7 @@ McAdams                 Expires January 28, 2021               [Page 16]
 8.  Normative References
 
    [FastFed.Core]
-              McAdams, K., "FastFed Core 1.0", July 2020,
+              McAdams, K., "FastFed Core 1.0", October 2020,
               <http://openid.net/specs/fastfed-core-1_0.html>.
 
 
@@ -949,14 +949,15 @@ McAdams                 Expires January 28, 2021               [Page 16]
 
 
 
-McAdams                 Expires January 28, 2021               [Page 17]
+McAdams                  Expires April 10, 2021                [Page 17]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    [FastFedProfile.EnterpriseSCIM]
-              McAdams, K., "FastFed Enterprise SCIM Profile 1.0", July
-              2020, <http://openid.net/specs/fastfed-scim-1_0.html>.
+              McAdams, K., "FastFed Enterprise SCIM Profile 1.0",
+              October 2020,
+              <http://openid.net/specs/fastfed-scim-1_0.html>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -1004,10 +1005,9 @@ McAdams                 Expires January 28, 2021               [Page 17]
 
 
 
-
-McAdams                 Expires January 28, 2021               [Page 18]
+McAdams                  Expires April 10, 2021                [Page 18]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    [SAML.SecurityConsiderations]
@@ -1061,9 +1061,9 @@ Appendix B.  Notices
 
 
 
-McAdams                 Expires January 28, 2021               [Page 19]
+McAdams                  Expires April 10, 2021                [Page 19]
 
-                   FastFed Enterprise SAML Profile 1.0         July 2020
+                   FastFed Enterprise SAML Profile 1.0      October 2020
 
 
    The technology described in this specification was made available
@@ -1117,4 +1117,4 @@ Author's Address
 
 
 
-McAdams                 Expires January 28, 2021               [Page 20]
+McAdams                  Expires April 10, 2021                [Page 20]
