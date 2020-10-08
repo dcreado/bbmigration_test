@@ -32,7 +32,7 @@
       </address>
     </author>
 
-    <date day="27" month="July" year="2020" />
+    <date day="7" month="October" year="2020" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -1613,7 +1613,7 @@
           <author fullname="Darin" initials="K." surname="McAdams">                         
             <organization abbrev="Amazon">Amazon</organization>               
           </author>
-          <date day="27" month="July" year="2020"/>
+          <date day="7" month="October" year="2020"/>
         </front>
       </reference>
     </references>
