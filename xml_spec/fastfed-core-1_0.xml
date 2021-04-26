@@ -273,39 +273,40 @@
 	  The following is a non-normative example of Provider Metadata:
 	</t>
 	<figure><artwork><![CDATA[
- {
-   "identity_provider": {
-     "entity_id": "https://tenant-12345.idp.example.com/"
-     "provider_domain": "example.com",
-     "provider_contact_information": {
-       "organization": "Example Inc.",
-       "phone": "+1-800-555-5555",
-       "email": "support@example.com"
-     },
-     "display_settings": {
-       "display_name": "Example Identity Provider",
-       "logo_uri": "https://idp.example.com/images/logo.png",
-       "icon_uri": "https://idp.example.com/images/icon.png",
-       "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
-     }
-     "capabilities": {
-       "authentication_profiles": [
-         "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
-       ],
-       "provisioning_profiles": [
-         "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
-       ],
-       "schema_grammars": [
-         "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
-       ],
-       "signing_algorithms": [
-         "ES512",
-         "RS256"
-       ]
-     },
-     "jwks_uri": "https://idp.example.com/keys",
-     "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start",
- }
+{
+  "identity_provider": {
+    "entity_id": "https://tenant-12345.idp.example.com/",
+    "provider_domain": "example.com",
+    "provider_contact_information": {
+      "organization": "Example Inc.",
+      "phone": "+1-800-555-5555",
+      "email": "support@example.com"
+    },
+    "display_settings": {
+      "display_name": "Example Identity Provider",
+      "logo_uri": "https://idp.example.com/images/logo.png",
+      "icon_uri": "https://idp.example.com/images/icon.png",
+      "license": "https://openid.net/intellectual-property/licenses/fastfed/1.0/"
+    },
+    "capabilities": {
+      "authentication_profiles": [
+        "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
+      ],
+      "provisioning_profiles": [
+        "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
+      ],
+      "schema_grammars": [
+        "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
+      ],
+      "signing_algorithms": [
+        "ES512",
+        "RS256"
+      ]
+    },
+    "jwks_uri": "https://idp.example.com/keys",
+    "fastfed_handshake_start_uri": "https://tenant-12345.idp.example.com/fastfed/start"
+  }
+}
 ]]></artwork></figure>	  
       </section>
 
@@ -369,7 +370,7 @@
 	      Application Provider authenticates the Administrator.
 	    </t>
 	    <t>
-	      Application Provider whitelists the Identity Provider and
+	      Application Provider adds the Identity Provider to their allowlist and
 	      redirects the Administrator to the Identity Provider to perform
 	      the remainder of the registration.
 	    </t>
@@ -383,7 +384,7 @@
 	    </t>
 	    <t>
 	      Application Provider validates the Identity Provider is
-	      whitelisted and captures the federation configuration.
+	      on the allowlist and captures the federation configuration.
 	    </t>
 	    <t>
 	      Application Provider responds with any protocol-specific
@@ -492,7 +493,7 @@
        ...
        "schema_grammars": [
          "urn:ietf:params:fastfed:1.0:schemas:scim:2.0"
-       ],
+       ]
      }
      ...
 ]]></artwork></figure>
@@ -522,15 +523,15 @@
 	  <figure><artwork><![CDATA[
      "desired_attributes": [
        "urn:ietf:params:fastfed:1.0:schemas:scim:2.0": {
-          "required_user_attributes": [
-	    "externalId",
-            "userName", 
-            "active"
+         "required_user_attributes": [
+	       "externalId",
+           "userName", 
+           "active"
           ],
-          "optional_user_attributes": [
-            "displayName",
-            "emails[primary eq true]"
-          ]
+        "optional_user_attributes": [
+          "displayName",
+          "emails[primary eq true]"
+        ]
        }
      ]
 ]]></artwork></figure>
@@ -2311,20 +2312,20 @@
             </t>
           </section> 
 
-          <section anchor="HandshakeApplicationProviderWhitelistsIdentityProvider"
-                   title="Application Provider Whitelists the Identity Provider">
+          <section anchor="HandshakeApplicationProviderIdentityProviderAllowlist"
+                   title="Application Provider adds the Identity Provider to its allowlist">
             <t>
-              The Application Provider whitelists that the tenant of the
+              The Application Provider allowlists that the tenant of the
               Identity Provider is permitted to create a federation relationship
-              with the tenant of the Application. This whitelisting will be
+              with the tenant of the Application. This allowlisting will be
               utilized later in the handshake when the Identity Provider calls
               back to the Application Provider to complete the registration.
             </t>
 	    <t>
-	      The purpose of the whitelist is to defend against unauthorized
+	      The purpose of the allowlist is to defend against unauthorized
 	      callers using the FastFed Handshake flows to register themselves
 	      as a valid Identity Provider for the Application instance. In
-	      addition, the whitelist prevents legitimate callers from
+	      addition, the allowlist prevents legitimate callers from
 	      activating capabilities they should not be permitted to use. For
 	      example, if an Application Provider has allowed an Identity
 	      Provider to authenticate users via SAML, the Identity Provider
@@ -2332,7 +2333,7 @@
 	      as OpenID Connect.
 	    </t>
             <t>
-	      To accomplish these goals, the whitelist MUST capture
+	      To accomplish these goals, the allowlist MUST capture
 	      the following information:
 	      <list style="numbers">
 		<t>
@@ -2355,9 +2356,9 @@
 		</t>
 		<t>
 		  <spanx style="verb">expiration_date</spanx> after which the
-		  whitelisting will be considered expired. If a FastFed
-		  Handshake with the whitelisted properties is
-		  never completed during the validity window, the whitelisting
+		  allowlisting will be considered expired. If a FastFed
+		  Handshake with the allowlisted properties is
+		  never completed during the validity window, the allowlisting
 		  SHOULD expire after a reasonable amount of time. The
 		  amount of time is an implementation detail. As a reference to
 		  implementors, some enterprises require multiple parties to
@@ -2367,25 +2368,25 @@
 	      </list>
 	    </t>
 	    <t>
-              The only usage of the whitelist is to define the valid
+              The only usage of the allowlist is to define the valid
               parameters that the Identity Provider may pass to the Application
               Provider in <xref target="HandshakeRegistrationRequest"/>, and
               which get validated in in
               <xref target="HandshakeRegistrationProcessing"/>. This
-              whitelisting step MUST NOT prematurely alter the behavior of an
+              allowlist step MUST NOT prematurely alter the behavior of an
               existing federation relationship prior to the completion of the
               FastFed Handshake.
 	    </t>
 	    <t>
-	      A pending whitelist is one in which the Identity Provider has not
+	      A pending allowlist is one in which the Identity Provider has not
 	      called back to complete the FastFed Handshake and activate the
-	      whitelisted capabilities. The Application Administrator MUST be
-	      allowed to cancel a pending whitelist within the Application,
+	      allowlisted capabilities. The Application Administrator MUST be
+	      allowed to cancel a pending allowlist within the Application,
 	      effectively halting the ability for the Identity Provider to call
 	      back and complete the handshake. (See
 	      <xref target="HandshakeRegistrationResponse"/> and
 	      <xref target="HandshakeRegistrationResponseHandling"/>.) After
-	      cancelling a pending whitelist in the Application Provider, the
+	      cancelling a pending allowlist in the Application Provider, the
 	      Application Provider MAY proceed with
 	      <xref target="HandshakeApplicationProviderRedirect"/> of the
 	      FastFed Handshake to redirect the Administrator to the Identity
@@ -2393,13 +2394,13 @@
 	      within the Identity Provider (such as an approval workflow). If
 	      this is done, the Application Provider MUST set the capabilities
 	      in the Application Provider Metadata to match the previously
-	      whitelisted capabilities (or set them to be empty if no active
+	      allowlisted capabilities (or set them to be empty if no active
 	      relationship exists yet) in order to signal that the desired end
 	      state of the FastFed Handshake is to preserve the status quo and
 	      cancel any outstanding changes.
 	    </t>
 	    <t>
-	      The representation of the whitelist is an implementation
+	      The representation of the allowlist is an implementation
 	      detail.
 	    </t>
           </section>
@@ -2417,7 +2418,7 @@
 		</t>
 		<t hangText="expiration">
 		  OPTIONAL. The DateTime when the Application Provider will
-		  consider the whitelist to be expired and the administrator
+		  consider the allowlist to be expired and the administrator
 		  must restart the FastFed Handshake. This value is provided as
 		  a convenience to the Identity Provider so that it may be aware
 		  of the deadline for completing the flow.
@@ -2585,7 +2586,7 @@
 	      specification. As a reference to implementors, the Identity
 	      Provider should avoid having multiple FastFed Handshakes
 	      in-process for a single federation relationship, as the
-	      Application Provider only maintains a single whitelist of allowed
+	      Application Provider only maintains a single allowlist of permitted
 	      capabilities (potentially making older stale handshakes impossible
 	      to complete), as well as the usability concerns of having multiple
 	      approval requests for a single federation relationship.
@@ -2746,28 +2747,32 @@
               the Enterprise SAML and Enterprise SCIM profiles:
             </t>
             <figure><artwork><![CDATA[
- {
-   "iss": "https://tenant-12345.idp.example.com",
-   "aud": "https://tenant-67890.app.example.com",
-   "exp": 1234567890,
-   "authentication_profiles": ["urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"],
-   "provisioning_profiles": ["urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"],
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
-     "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
-   },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
-     "provider_contact_information": {
-       "organization": "Example Inc.",
-       "phone": "+1-800-555-6666",
-       "email": "provisioning@example.com"
-     },
-     "provider_authentication_methods": {
-       "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
-         "jwks_uri": "https://provisioning.example.com/keys"
-       }
-     }
-   }
- }
+{
+  "iss": "https://tenant-12345.idp.example.com",
+  "aud": "https://tenant-67890.app.example.com",
+  "exp": 1234567890,
+  "authentication_profiles": [
+    "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise"
+  ],
+  "provisioning_profiles": [
+    "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise"
+  ],
+  "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+    "saml_metadata_uri": "https://tenant-12345.idp.example.com/saml-metadata.xml",
+  },
+  "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
+    "provider_contact_information": {
+      "organization": "Example Inc.",
+      "phone": "+1-800-555-6666",
+      "email": "provisioning@example.com"
+    },
+    "provider_authentication_methods": {
+      "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
+        "jwks_uri": "https://provisioning.example.com/keys"
+      }
+    }
+  }
+}
 ]]></artwork></figure>
             <t> 
               The following is a non-normative example of a POST after JWS
@@ -2797,10 +2802,10 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 		  Application Provider.
                 </t>      
 		<t>
-		  Verify the <spanx style="verb">iss</spanx> attribute matches a whitelisted
+		  Verify the <spanx style="verb">iss</spanx> attribute matches an allowlisted
 		  <spanx style="verb">entity_id</spanx> for
 		  the tenant of the Application Provider, as captured in
-		  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
+		  <xref target="HandshakeApplicationProviderIdentityProviderAllowlist"/>.
 		</t>
 		<t>
 		  Verify the <spanx style="verb">exp</spanx> DateTime in the
@@ -2808,9 +2813,9 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 		</t>
 		<t> 
 		  Verify the <spanx style="verb">kid</spanx> matches an entry in
-		  the key set hosted at the whitelisted <spanx
+		  the key set hosted at the allowlisted <spanx
 		  style="verb">jwks_uri</spanx> captured in <xref
-		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
+		  target="HandshakeApplicationProviderIdentityProviderAllowlist"/>.
                 </t>
 		<t> 
 		  Verify the JWT signature using the key from the key set. The
@@ -2818,16 +2823,16 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 		  the key set MUST match the signing algorithm in the JWT.
 		</t>
                 <t>
-                  If an expiration date exists on the whitelist (<xref
-                  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>),
+                  If an expiration date exists on the allowlist (<xref
+                  target="HandshakeApplicationProviderIdentityProviderAllowlist"/>),
                   verify the expiration date has not been exceeded.
                 </t>
 		<t>
 		  Verify the values of <spanx
 		  style="verb">authentication_profiles</spanx> and <spanx
 		  style="verb">provisioning_profiles</spanx> against the
-		  whitelisted capabilities captured in <xref
-		  target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>. The
+		  allowlisted capabilities captured in <xref
+		  target="HandshakeApplicationProviderIdentityProviderAllowlist"/>. The
 		  request MUST be treated as invalid if any of the following
 		  conditions are true:
 		  <list style="symbols">
@@ -2835,19 +2840,19 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 		      The Identity Provider includes a value in the list of
 		      <spanx style="verb">authentication_profiles</spanx> or
 		      <spanx style="verb">provisioning_profiles</spanx> that
-		      does not exist in the Application Provider whitelist.
+		      does not exist in the Application Provider allowlist.
 		    </t>
 		    <t>
 		      The Identity Provider fails to include at least one value
 		      in <spanx style="verb">authentication_profiles</spanx>
-		      when the Application Provider whitelist contains one or
+		      when the Application Provider allowlist contains one or
 		      more values for <spanx
 		      style="verb">authentication_profiles</spanx>.
 		    </t>
                     <t>                                                                                                                                      
                       The Identity Provider fails to include at least one value
                       in <spanx style="verb">provisioning_profiles</spanx> when
-                      the Application Provider whitelist contains one or more
+                      the Application Provider allowlist contains one or more
                       values for <spanx
                       style="verb">authentication_profiles</spanx>.
                     </t> 
@@ -2881,23 +2886,23 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	    </t> 
 	    <t>
 	      After processing the registration request, the expiration date
-	      MUST be removed from the whitelisting entry.
+	      MUST be removed from the allowlisting entry.
 	    </t>
 	    <t>
               Due to transient failures and retry scenarios, it is possible that
               an Identity Provider may send duplicate registration requests. The
-              Application Provider MUST preserve enough whitelist context to
+              Application Provider MUST preserve enough allowlist context to
               provide an idempotent response to duplicate requests.  If a
               duplicate request is still valid when compared against the current
-              whitelist, the Application Provider MUST return the same response
+              allowlist, the Application Provider MUST return the same response
               contents as in the original response, as specified in
               <xref target="HandshakeRegistrationResponse"/>.
             </t>
 	    <t>
-	      The implementation of the whitelist is outside the scope of the
+	      The implementation of the allowlist is outside the scope of the
 	      specification.  As a reference to implementors, it may be
 	      beneficial to capture contextual information such as the status of
-	      the whitelisting entry (pending, active) and the date when the
+	      the allowlisting entry (pending, active) and the date when the
 	      registration was completed to assist with auditing and debugging.
 	    </t>
 	  </section>
@@ -2963,21 +2968,20 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
  Cache-Control: no-store
  Pragma: no-cache
 
- {  
-   "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
-   "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
-     "saml_metadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
-   },
-   "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
-     "scim_service_uri": "https://tenant-67890.app.example.com/scim",
-     "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
-     "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile":
-     {
-       "token_endpoint": "https://tenant-67890.app.example.com/oauth",
-       "scope": "scim"
-     }
-   }
- }
+{
+  "fastfed_handshake_finalize_uri": "https://tenant-67890.app.example.com/fastfed/finalize",
+  "urn:ietf:params:fastfed:1.0:authentication:saml:2.0:enterprise": {
+    "saml_metadata_uri": "https://tenant-67890.app.example.com/saml-metadata.xml"
+  },
+  "urn:ietf:params:fastfed:1.0:provisioning:scim:2.0:enterprise": {
+    "scim_service_uri": "https://tenant-67890.app.example.com/scim",
+    "provider_authentication_methods": "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile",
+    "urn:ietf:params:fastfed:1.0:provider_authentication:oauth:2.0:jwt_profile": {
+      "token_endpoint": "https://tenant-67890.app.example.com/oauth",
+      "scope": "scim"
+    }
+  }
+}
 ]]></artwork></figure>
 	  </section>
 
@@ -3118,9 +3122,9 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
                 </t>
                 <t> 
 		  Verify the <spanx style="verb">kid</spanx> matches an entry
-                  in the whitelisted key set hosted at
+                  in the allowlisted key set hosted at
                   the <spanx style="verb">jwks_uri</spanx> captured in
-                  <xref target="HandshakeApplicationProviderWhitelistsIdentityProvider"/>.
+                  <xref target="HandshakeApplicationProviderIdentityProviderAllowlist"/>.
                 </t>
                 <t> 
 		  Verify the JWT signature using the key from the key set. The
@@ -3292,15 +3296,15 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	  validated identifier, Identity Providers MAY build lists of Providers
 	  and assign them varying levels of trust. These implementation details
 	  are outside the scope of this specification. As a reference to
-	  implementors, an Identity Provider may create and use a whitelist of
+	  implementors, an Identity Provider may create and use an allowlist of
 	  highly trusted Application Providers. Identity Providers MAY also
-	  utilize blacklists of known malware domains, phishing sites, or
+	  utilize denylists/blocklists of known malware domains, phishing sites, or
 	  similar risk signals. The risk categorizations MAY be used to vary the
 	  customer experience, such as by displaying additional warnings or
 	  requiring additional approvals for riskier scenarios. Other
 	  considerations may include comparing the Display Settings
 	  (<xref target="DisplaySettings"/>) of an unrecognized application with
-	  those of whitelisted Providers to detect possible impersonation
+	  those of allowlisted Providers to detect possible impersonation
 	  attempts.
 	</t> 
       </section> <!-- End of Evaluating Trustworthiness of Application -->
