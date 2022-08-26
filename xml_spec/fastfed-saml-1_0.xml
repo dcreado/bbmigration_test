@@ -23,7 +23,7 @@
   
   <front>
     <title abbrev="FastFed Enterprise SAML Profile 1.0">FastFed Enterprise SAML Profile
-    1.0 - draft 03</title>
+    1.0 - draft 04</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -32,7 +32,7 @@
       </address>
     </author>
 
-    <date day="7" month="October" year="2020" />
+    <date day="26" month="August" year="2022" />
 
     <workgroup>FastFed Working Group</workgroup>
 
@@ -1136,6 +1136,9 @@
 	  <t>
 	    Brian Campbell (bcampbell@pingidentity.com), Ping Identity
 	  </t>
+    <t>
+      Tim Cappalli (tim.cappalli@microsoft.com), Microsoft
+    </t>
 	  <t>
 	    Zhen Chien Chia (chiazhenchien@outlook.com), Microsoft
 	  </t>
