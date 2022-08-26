@@ -22,7 +22,7 @@
   <?rfc private="Draft" ?>
   
   <front>
-    <title abbrev="FastFed Core 1.0">FastFed Core 1.0 - draft 03</title>
+    <title abbrev="FastFed Core 1.0">FastFed Core 1.0 - draft 04</title>
 
     <author fullname="Darin K. McAdams" initials="D.K.M." surname="McAdams">
       <organization abbrev="Amazon">Amazon</organization>
@@ -3456,6 +3456,9 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
         <list style="empty">
 	  <t>
 	    Brian Campbell (bcampbell@pingidentity.com), Ping Identity
+	  </t>
+	  <t>
+	  	Tim Cappalli (tim.cappalli@microsoft.com), Microsoft
 	  </t>
 	  <t>
 	    Zhen Chien Chia (chiazhenchien@outlook.com), Microsoft
