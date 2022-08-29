@@ -275,7 +275,7 @@
 	<figure><artwork><![CDATA[
 {
   "identity_provider": {
-    "entity_id": "https://tenant-12345.idp.example.com/",
+    "id": "https://tenant-12345.idp.example.com/",
     "provider_domain": "example.com",
     "provider_contact_information": {
       "organization": "Example Inc.",
@@ -1163,15 +1163,15 @@
 	    Common Provider Metadata is a structure with the following members:
 
 	    <list style="hanging">
-	      <t hangText="entity_id">
+	      <t hangText="id">
 		REQUIRED. A URI which serves as a globally unique name for a
 		participant in a FastFed exchange. The value MUST represent a
 		combination of the Provider, Tenant, and role 
 		(Identity Provider or Application Provider) such that varying any
 		of those attributes results in a
-		different <spanx style="verb">entity_id</spanx>.
+		different <spanx style="verb">id</spanx>.
 		<vspace/><vspace/> If expressed as a URL,
-		the <spanx style="verb">entity_id</spanx> does not need to be
+		the <spanx style="verb">id</spanx> does not need to be
 		resolvable and does not need to match the FastFed Endpoints.
 	      </t>
 	      <t hangText="provider_domain">
@@ -1247,7 +1247,7 @@
         <figure><artwork><![CDATA[
  {
    "identity_provider": {
-     "entity_id": "https://tenant-12345.idp.example.com/"
+     "id": "https://tenant-12345.idp.example.com/"
      "provider_domain": "example.com",
      "provider_contact_information": {
        "organization": "Example Inc.",
@@ -1319,7 +1319,7 @@
           <figure><artwork><![CDATA[
  {
    "application_provider": {
-     "entity_id": "https://tenant-67890.app.example.com/"
+     "id": "https://tenant-67890.app.example.com/"
      "provider_domain": "example.com",
      "provider_contact_information": {
        "organization": "Example Inc.",
@@ -1625,7 +1625,7 @@
  Content-Type: application/json
  {
    "identity_provider": {
-     "entity_id": "https://tenant-12345.idp.example.com/"
+     "id": "https://tenant-12345.idp.example.com/"
      "provider_domain": "example.com",
      "provider_contact_information": {
        "organization": "Example Inc.",
@@ -2018,13 +2018,13 @@
 	  <list style="hanging">
             <t hangText="iss">
 	      The value MUST match
-	      the <spanx style="verb">entity_id</spanx> of the Provider
+	      the <spanx style="verb">id</spanx> of the Provider
 	      generating the JWT, as specified in the
 	      <xref target="CommonProviderMetadata">Provider Metadata</xref>.
 	    </t>
             <t hangText="aud">
 	      The value MUST match
-              the <spanx style="verb">entity_id</spanx> of the intended
+              the <spanx style="verb">id</spanx> of the intended
               recipient of the JWT, as specified in the recipient's 
               <xref target="CommonProviderMetadata">Provider Metadata</xref>.
             </t>
@@ -2204,7 +2204,7 @@
 	  </t>
           <t>
 	    Duplicates and redrives are detected by examining
-	    the <spanx style="verb">entity_id</spanx> of the Identity Provider
+	    the <spanx style="verb">id</spanx> of the Identity Provider
 	    and Application Provider involved in a FastFed exchange. If the
 	    values match an existing federation relationship, an event will be
 	    evaluated against the existing relationship.
@@ -2280,7 +2280,7 @@
               If the tenant of the Application Provider already has an
               established federation relationship with the tenant of the
               Identity Provider, as determined by examining
-              the <spanx style="verb">entity_id</spanx> of both parties, the
+              the <spanx style="verb">id</spanx> of both parties, the
               Application Provider SHOULD alert the Administrator of a duplicate
               registration attempt and steer the end-user toward the appropriate
               tooling to view or update the existing relationship.
@@ -2337,7 +2337,7 @@
 	      the following information:
 	      <list style="numbers">
 		<t>
-		  <spanx style="verb">entity_id</spanx> of the Identity
+		  <spanx style="verb">id</spanx> of the Identity
 		  Provider, as specified in the Identity Provider Metadata.
 		</t>
 		<t>
@@ -2566,7 +2566,7 @@
 	      If there already exists an active or pending federation
 	      relationship between the tenant of the Identity Provider and the
 	      tenant of the Application Provider, as determined by examining
-	      the <spanx style="verb">entity_id</spanx> of both parties, the
+	      the <spanx style="verb">id</spanx> of both parties, the
 	      handshake request is either a duplicate or an update of an
 	      existing relationship.
 	    </t>
@@ -2798,12 +2798,12 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
 	      <list style="numbers">
 		<t> 
 		  Verify the <spanx style="verb">aud</spanx> attribute matches
-                  the <spanx style="verb">entity_id</spanx> of a tenant in the
+                  the <spanx style="verb">id</spanx> of a tenant in the
 		  Application Provider.
                 </t>      
 		<t>
 		  Verify the <spanx style="verb">iss</spanx> attribute matches an allowlisted
-		  <spanx style="verb">entity_id</spanx> for
+		  <spanx style="verb">id</spanx> for
 		  the tenant of the Application Provider, as captured in
 		  <xref target="HandshakeApplicationProviderIdentityProviderAllowlist"/>.
 		</t>
@@ -3106,12 +3106,12 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjIyIn0[... omitted for brevity...]
               <list style="numbers">
                 <t> 
 		  Verify the <spanx style="verb">aud</spanx> attribute matches
-                  the <spanx style="verb">entity_id</spanx> of a tenant in the
+                  the <spanx style="verb">id</spanx> of a tenant in the
                   Application Provider.
                 </t>
                 <t> 
 		  Verify the <spanx style="verb">iss</spanx> attribute matches
-		  the <spanx style="verb">entity_id</spanx> of a federation
+		  the <spanx style="verb">id</spanx> of a federation
 		  partner for the tenant of the Application Provider, as
 		  established in
 		  <xref target="HandshakeRegistrationProcessing"/>.

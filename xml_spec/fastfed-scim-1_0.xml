@@ -268,7 +268,7 @@
         <figure><artwork><![CDATA[
  {
    "application_provider": {
-     "entity_id": "https://tenant-67890.app.example.com/"
+     "id": "https://tenant-67890.app.example.com/"
      "provider_domain": "example.com",
      "provider_contact_information": {
        "organization": "Example Inc.",
